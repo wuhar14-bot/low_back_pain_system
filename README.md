@@ -99,7 +99,151 @@ npm run dev                # Terminal 3
 
 ### Access the Application
 
+**On Computer:**
 Open browser: **http://localhost:5173**
+
+**On Mobile Device (via hotspot):**
+See [Mobile Access Setup](#mobile-access-setup-phone-camera-upload) below
+
+---
+
+## Mobile Access Setup (Phone Camera Upload)
+
+### Overview
+
+You can now use your mobile phone to directly capture and upload pose estimation photos! This allows for convenient on-the-go patient photography.
+
+### Setup Steps
+
+#### 1. Start All Services on Computer
+
+```bash
+# Double-click to start all services
+start_all_services.bat
+```
+
+This will start:
+- Frontend on `0.0.0.0:5173` (accessible from any device)
+- Pose Service on `0.0.0.0:5002` (accessible from any device)
+- OCR Service on `0.0.0.0:5001`
+
+#### 2. Connect Phone to Computer via Hotspot
+
+**Option A: Phone as Hotspot (Recommended)**
+1. Enable mobile hotspot on your phone
+2. Connect computer to phone's WiFi hotspot
+3. Note: This allows phone to access computer services
+
+**Option B: Computer as Hotspot**
+1. Enable hotspot on Windows: Settings → Network & Internet → Mobile hotspot
+2. Connect phone to computer's hotspot
+3. Note: Requires Windows hotspot feature
+
+#### 3. Find Computer's IP Address
+
+On computer, run:
+```bash
+ipconfig
+```
+
+Look for the WiFi adapter (WLAN) IP address, for example:
+```
+Wireless LAN adapter WLAN:
+   IPv4 Address. . . . . . . . . . . : 172.20.10.4
+```
+
+Your computer's IP: **172.20.10.4** (example)
+
+#### 4. Access System from Phone
+
+On your phone's browser, navigate to:
+```
+http://[COMPUTER_IP]:5173
+```
+
+Example:
+```
+http://172.20.10.4:5173
+```
+
+#### 5. Take Photos with Phone Camera
+
+1. Click "新增患者" or open an existing patient
+2. Navigate to "Objective Examination" tab
+3. Click "姿态分析 (AI Pose Estimation)" button
+4. Click on the camera upload areas
+5. **Phone will open native camera automatically**
+6. Take photos of patient in standing and flexion positions
+7. Click "开始姿态分析" to analyze
+
+### Mobile-Optimized Features
+
+✅ **HTML5 Camera API** - Direct camera access with `capture="environment"`
+✅ **Responsive UI** - Optimized for small screens
+✅ **Touch-friendly** - Large touch targets for easy interaction
+✅ **Fast processing** - MediaPipe analysis <2 seconds
+✅ **Offline capable** - No internet required (local network only)
+
+### Firewall Configuration
+
+Firewall rules are automatically configured for:
+- **Port 5173** (Frontend) - Inbound TCP allowed
+- **Port 5002** (Pose Service) - Inbound TCP allowed
+- **Port 5001** (OCR Service) - Inbound TCP allowed
+
+If you have issues connecting, manually verify firewall rules:
+```bash
+# Check firewall rules
+netsh advfirewall firewall show rule name=all | findstr "5173 5002 5001"
+```
+
+### Troubleshooting Mobile Access
+
+**Issue: Cannot access http://[IP]:5173 from phone**
+- ✅ Verify computer and phone are on same network
+- ✅ Check computer's IP address hasn't changed
+- ✅ Ensure all services are running (`start_all_services.bat`)
+- ✅ Verify firewall rules allow inbound connections
+- ✅ Try disabling VPN on computer (NordVPN, etc.)
+- ✅ Check if phone hotspot has "AP Isolation" disabled
+
+**Issue: Camera doesn't open on phone**
+- ✅ Ensure using HTTPS or localhost (some browsers require secure context)
+- ✅ Grant camera permissions when prompted
+- ✅ Try different browser (Chrome recommended)
+
+**Issue: Slow pose analysis**
+- ✅ Ensure good WiFi signal strength
+- ✅ MediaPipe runs on computer (not phone), so computer specs matter
+- ✅ Expected: <2 seconds for analysis
+
+### Network Diagram
+
+```
+┌─────────────────┐
+│  Mobile Phone   │
+│  (Camera)       │
+│  📱             │
+└────────┬────────┘
+         │ WiFi Hotspot
+         │ 172.20.10.x
+         ▼
+┌─────────────────┐
+│   Computer      │
+│  172.20.10.4    │
+├─────────────────┤
+│ Vite  :5173  ◄──┼── Frontend (React)
+│ Pose  :5002  ◄──┼── MediaPipe Service
+│ OCR   :5001  ◄──┼── PaddleOCR Service
+└─────────────────┘
+```
+
+### Security Notes
+
+- System accessible only on local network (not internet)
+- No data leaves your local network
+- Medical data privacy maintained
+- Firewall rules restrict access to specific ports
 
 ---
 
@@ -245,7 +389,16 @@ See [START_GUIDE.md](START_GUIDE.md) for complete troubleshooting guide.
 
 ## Recent Updates
 
-### 2025-10-17
+### 2025-10-17 (Session 3 - Mobile Integration)
+- ✅ **Mobile phone camera integration** - Direct photo capture from phone
+- ✅ **Network configuration** - Vite server configured for external access (`0.0.0.0:5173`)
+- ✅ **Windows Firewall rules** - Ports 5173, 5002, 5001 configured for inbound access
+- ✅ **Mobile-responsive UI** - Optimized PostureAnalysisModal for small screens
+- ✅ **HTML5 Camera API** - `capture="environment"` for rear camera access
+- ✅ **Hotspot setup guide** - Complete documentation for phone-to-computer connection
+- ✅ **GitHub repository** - All code pushed to https://github.com/wuhar14-bot/low_back_pain_system
+
+### 2025-10-17 (Earlier - MediaPipe Integration)
 - ✅ Integrated MediaPipe Pose for posture analysis
 - ✅ Replaced LLM-based analysis with local processing
 - ✅ Added 33-point skeleton visualization

@@ -378,8 +378,8 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
   };
 
   const PhotoUploadArea = ({ type, title, description }) => (
-    <div 
-      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+    <div
+      className={`border-2 border-dashed rounded-lg p-6 sm:p-4 text-center transition-colors ${
         isDragOver && dragType === type
           ? 'border-emerald-400 bg-emerald-50' 
           : 'border-slate-300'
@@ -397,6 +397,7 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
         ref={type === 'standing' ? standingInputRef : flexionInputRef}
         type="file"
         accept="image/*"
+        capture="environment"  // Mobile: Use rear camera for photo capture
         onChange={(e) => handleFileInputChange(e, type)}
         className="hidden"
         disabled={isAnalyzing || !!photos[type]}
@@ -429,13 +430,14 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
         </div>
       ) : (
         <>
-          <Camera className={`w-12 h-12 mx-auto mb-4 ${isDragOver && dragType === type ? 'text-emerald-600' : 'text-slate-400'}`} />
-          <h4 className={`font-medium mb-2 ${isDragOver && dragType === type ? 'text-emerald-800' : 'text-slate-600'}`}>
+          <Camera className={`w-12 h-12 sm:w-10 sm:h-10 mx-auto mb-4 sm:mb-3 ${isDragOver && dragType === type ? 'text-emerald-600' : 'text-slate-400'}`} />
+          <h4 className={`font-medium mb-2 sm:text-sm ${isDragOver && dragType === type ? 'text-emerald-800' : 'text-slate-600'}`}>
             {title}
           </h4>
-          <p className="text-sm text-slate-500 mb-3">{description}</p>
+          <p className="text-sm sm:text-xs text-slate-500 mb-3 sm:mb-2">{description}</p>
           <div className="text-xs text-slate-400">
-            点击上传或拖拽图片到此处
+            <span className="hidden sm:inline">点击拍照</span>
+            <span className="sm:hidden">点击上传或拖拽图片到此处</span>
           </div>
         </>
       )}
@@ -444,19 +446,20 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto sm:max-w-full sm:h-screen sm:rounded-none">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-lg sm:text-base">
             <RotateCcw className="w-5 h-5 text-blue-600" />
-            AI姿态分析 - 前屈活动范围测量
+            <span className="hidden sm:inline">AI姿态分析 - 前屈活动范围测量</span>
+            <span className="sm:hidden">姿态分析</span>
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-3">
           {/* 使用说明 */}
-          <div className="text-sm text-slate-600 bg-blue-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-3">拍照指导：</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="text-sm sm:text-xs text-slate-600 bg-blue-50 p-4 sm:p-3 rounded-lg">
+            <h4 className="font-medium mb-3 sm:mb-2">拍照指导：</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-2">
               <div>
                 <p className="font-medium text-blue-800 mb-1">📍 拍照要求：</p>
                 <ul className="list-disc list-inside space-y-1">
@@ -487,7 +490,7 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
           )}
 
           {/* 照片上传区域 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-3">
             <PhotoUploadArea
               type="standing"
               title="自然站立位"
