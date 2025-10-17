@@ -284,8 +284,9 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
 
       setAnalysisStep("MediaPipe AI正在分析姿势和计算活动范围...");
 
-      // Call MediaPipe pose service
-      const response = await fetch('http://localhost:5002/pose/analyze-static', {
+      // Call MediaPipe pose service (use current host for mobile compatibility)
+      const apiHost = window.location.hostname;
+      const response = await fetch(`http://${apiHost}:5002/pose/analyze-static`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -397,7 +398,8 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
         ref={type === 'standing' ? standingInputRef : flexionInputRef}
         type="file"
         accept="image/*"
-        capture="environment"  // Mobile: Use rear camera for photo capture
+        // Note: Removed capture="environment" to allow gallery upload
+        // capture="environment" forces camera, but users want gallery option too
         onChange={(e) => handleFileInputChange(e, type)}
         className="hidden"
         disabled={isAnalyzing || !!photos[type]}
@@ -436,7 +438,7 @@ export default function PostureAnalysisModal({ isOpen, onClose, onAnalysisComple
           </h4>
           <p className="text-sm sm:text-xs text-slate-500 mb-3 sm:mb-2">{description}</p>
           <div className="text-xs text-slate-400">
-            <span className="hidden sm:inline">点击拍照</span>
+            <span className="hidden sm:inline">点击拍照或选择相册</span>
             <span className="sm:hidden">点击上传或拖拽图片到此处</span>
           </div>
         </>

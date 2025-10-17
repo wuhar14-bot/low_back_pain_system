@@ -1,0 +1,48 @@
+# Specification Kit Configuration
+# Based on: https://github.com/github/spec-kit
+
+name: "Low Back Pain Data Collection System"
+version: "1.0.0"
+description: "Comprehensive medical system for low back pain patient management with AI-powered features"
+
+# Documentation structure
+specs:
+  - ARCHITECTURE.md
+  - API.md
+  - DEPLOYMENT.md
+  - MOBILE_SETUP.md
+  - DATABASE.md
+
+# Project metadata
+metadata:
+  organization: "University of Hong Kong - Orthopedics & Traumatology"
+  created: "2024-09-01"
+  last_updated: "2025-10-17"
+  status: "active"
+
+# Technology stack
+stack:
+  frontend:
+    - React 18
+    - Vite
+    - TailwindCSS
+    - shadcn/ui
+  backend:
+    - Python 3.12
+    - Flask
+    - SQLite
+    - PaddleOCR
+    - MediaPipe
+  infrastructure:
+    - Node.js 18+
+    - Windows 10/11
+    - Local network deployment
+
+# Key features
+features:
+  - "OCR-based medical form recognition"
+  - "AI pose estimation with MediaPipe"
+  - "Cross-device mobile integration"
+  - "Real-time database synchronization"
+  - "Multi-workspace collaboration"
+  - "Patient anonymization"

@@ -1,7 +1,6 @@
 import { base44 } from './base44Client';
-import generatedPatients from '../../generated_patients.json';
 
-// Default mock data for local development
+// Default workspaces for local development
 const defaultWorkspaces = [
   {
     id: "workspace-1",
@@ -20,6 +19,29 @@ const defaultWorkspaces = [
     created_by_name: "Research Team"
   }
 ];
+
+// Load patients from localStorage (real patients only, no mock data)
+const loadPatients = () => {
+  const stored = localStorage.getItem('realPatients');
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.warn('Failed to parse stored patients, starting fresh');
+    }
+  }
+  return []; // Start with empty array - no mock patients!
+};
+
+// Save patients to localStorage
+const savePatients = (patients) => {
+  try {
+    localStorage.setItem('realPatients', JSON.stringify(patients));
+    console.log(`✅ Saved ${patients.length} patients to localStorage`);
+  } catch (e) {
+    console.error('Failed to save patients to localStorage:', e);
+  }
+};
 
 // Load workspaces from localStorage or use default
 const loadWorkspaces = () => {
@@ -46,59 +68,158 @@ const saveWorkspaces = (workspaces) => {
 // Initialize with stored or default data
 let mockWorkspaces = loadWorkspaces();
 
-const mockPatients = generatedPatients;
+// REAL PATIENTS ONLY - No mock data!
+let mockPatients = loadPatients();
 
-// Mock Entity classes that simulate Base44 API
+// Real Database API URL (dynamic for mobile compatibility)
+const getApiUrl = () => `http://${window.location.hostname}:5003/api`;
+
+// Real Database API Client with localStorage fallback
 class MockPatient {
   static async list(sortOrder = "-created_date") {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const response = await fetch(`${getApiUrl()}/patients?sort=${sortOrder}`);
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
 
-    // Sort mock data
-    const sorted = [...mockPatients].sort((a, b) => {
-      if (sortOrder === "-created_date") {
-        return new Date(b.created_date) - new Date(a.created_date);
-      }
-      return new Date(a.created_date) - new Date(b.created_date);
-    });
+      const patients = await response.json();
+      console.log(`✅ [DB] Loaded ${patients.length} patients from database`);
 
-    return sorted;
+      // Sync to localStorage as backup
+      mockPatients = patients;
+      savePatients(patients);
+
+      return patients;
+    } catch (error) {
+      console.warn('⚠️ [DB] Database unavailable, using localStorage:', error.message);
+      // Fallback to localStorage
+      const sorted = [...mockPatients].sort((a, b) => {
+        if (sortOrder === "-created_date") {
+          return new Date(b.created_date) - new Date(a.created_date);
+        }
+        return new Date(a.created_date) - new Date(b.created_date);
+      });
+      return sorted;
+    }
   }
 
   static async get(id) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return mockPatients.find(p => p.id === id) || null;
+    try {
+      const response = await fetch(`${getApiUrl()}/patients/${id}`);
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+      const patient = await response.json();
+      console.log(`✅ [DB] Loaded patient ${id}`);
+      return patient;
+    } catch (error) {
+      console.warn('⚠️ [DB] Using localStorage fallback:', error.message);
+      return mockPatients.find(p => p.id === id) || null;
+    }
   }
 
   static async create(data) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newPatient = {
-      id: `patient-${Date.now()}`,
-      created_date: new Date().toISOString(),
-      ...data
-    };
-    mockPatients.push(newPatient);
-    return newPatient;
+    try {
+      const response = await fetch(`${getApiUrl()}/patients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+      const newPatient = await response.json();
+      console.log(`✅ [DB] Created patient: ${newPatient.id}`);
+
+      // Also save to localStorage as backup
+      mockPatients.push(newPatient);
+      savePatients(mockPatients);
+
+      return newPatient;
+    } catch (error) {
+      console.warn('⚠️ [DB] Using localStorage only:', error.message);
+      // Fallback to localStorage
+      const newPatient = {
+        id: `patient-${Date.now()}`,
+        created_date: new Date().toISOString(),
+        last_sync_timestamp: new Date().toISOString(),
+        ...data
+      };
+      mockPatients.push(newPatient);
+      savePatients(mockPatients);
+      return newPatient;
+    }
   }
 
   static async update(id, data) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = mockPatients.findIndex(p => p.id === id);
-    if (index !== -1) {
-      mockPatients[index] = { ...mockPatients[index], ...data };
-      return mockPatients[index];
+    try {
+      const response = await fetch(`${getApiUrl()}/patients/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+      const updated = await response.json();
+      console.log(`✅ [DB] Updated patient: ${id}`);
+
+      // Sync to localStorage
+      const index = mockPatients.findIndex(p => p.id === id);
+      if (index !== -1) {
+        mockPatients[index] = updated;
+      } else {
+        mockPatients.push(updated);
+      }
+      savePatients(mockPatients);
+
+      return updated;
+    } catch (error) {
+      console.warn('⚠️ [DB] Using localStorage only:', error.message);
+      // Fallback to localStorage
+      const index = mockPatients.findIndex(p => p.id === id);
+      if (index !== -1) {
+        mockPatients[index] = {
+          ...mockPatients[index],
+          ...data,
+          last_sync_timestamp: new Date().toISOString()
+        };
+        savePatients(mockPatients);
+        return mockPatients[index];
+      }
+      return null;
     }
-    return null;
   }
 
   static async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = mockPatients.findIndex(p => p.id === id);
-    if (index !== -1) {
-      const deleted = mockPatients.splice(index, 1)[0];
+    try {
+      const response = await fetch(`${getApiUrl()}/patients/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+      const deleted = await response.json();
+      console.log(`✅ [DB] Deleted patient: ${id}`);
+
+      // Remove from localStorage
+      const index = mockPatients.findIndex(p => p.id === id);
+      if (index !== -1) {
+        mockPatients.splice(index, 1);
+        savePatients(mockPatients);
+      }
+
       return deleted;
+    } catch (error) {
+      console.warn('⚠️ [DB] Using localStorage only:', error.message);
+      // Fallback to localStorage
+      const index = mockPatients.findIndex(p => p.id === id);
+      if (index !== -1) {
+        const deleted = mockPatients.splice(index, 1)[0];
+        savePatients(mockPatients);
+        return deleted;
+      }
+      throw new Error("Patient not found");
     }
-    throw new Error("Patient not found");
   }
 }
 

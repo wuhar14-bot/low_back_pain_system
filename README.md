@@ -379,23 +379,37 @@ See [START_GUIDE.md](START_GUIDE.md) for complete troubleshooting guide.
 
 ## Documentation
 
+### User Guides
 - **[START_GUIDE.md](START_GUIDE.md)** - Complete startup and troubleshooting guide
 - **[MEDIAPIPE_INTEGRATION_COMPLETE.md](MEDIAPIPE_INTEGRATION_COMPLETE.md)** - MediaPipe integration details
 - **[backend/POSE_SERVICE_README.md](backend/POSE_SERVICE_README.md)** - Pose service API reference
 - **[OCR_INTEGRATION_GUIDE.md](OCR_INTEGRATION_GUIDE.md)** - OCR integration guide
 - **[PATIENT_ANONYMIZATION.md](PATIENT_ANONYMIZATION.md)** - Privacy features
 
+### Technical Specifications (.specify/)
+Complete technical documentation following [GitHub spec-kit](https://github.com/github/spec-kit) format:
+
+- **[.specify/ARCHITECTURE.md](.specify/ARCHITECTURE.md)** - System architecture, components, data flow
+- **[.specify/API.md](.specify/API.md)** - Complete API reference for all services
+- **[.specify/DATABASE.md](.specify/DATABASE.md)** - Database schema, queries, backup procedures
+- **[.specify/DEPLOYMENT.md](.specify/DEPLOYMENT.md)** - Installation, configuration, troubleshooting
+- **[.specify/MOBILE_SETUP.md](.specify/MOBILE_SETUP.md)** - Mobile device setup and usage guide
+- **[.specify/config.yml](.specify/config.yml)** - Project metadata and configuration
+
 ---
 
 ## Recent Updates
 
-### 2025-10-17 (Session 3 - Mobile Integration)
+### 2025-10-17 (Session 3 - Mobile Integration & Database)
 - ✅ **Mobile phone camera integration** - Direct photo capture from phone
 - ✅ **Network configuration** - Vite server configured for external access (`0.0.0.0:5173`)
-- ✅ **Windows Firewall rules** - Ports 5173, 5002, 5001 configured for inbound access
+- ✅ **Windows Firewall rules** - Ports 5173, 5002, 5001, 5003 configured for inbound access
 - ✅ **Mobile-responsive UI** - Optimized PostureAnalysisModal for small screens
 - ✅ **HTML5 Camera API** - `capture="environment"` for rear camera access
-- ✅ **Hotspot setup guide** - Complete documentation for phone-to-computer connection
+- ✅ **Real SQLite database** - Cross-device synchronization enabled (port 5003)
+- ✅ **Database API integration** - Full REST API with localStorage fallback
+- ✅ **Cross-device workflow** - PC → Phone → PC workflow fully operational
+- ✅ **GitHub spec-kit documentation** - Complete technical specifications in `.specify/`
 - ✅ **GitHub repository** - All code pushed to https://github.com/wuhar14-bot/low_back_pain_system
 
 ### 2025-10-17 (Earlier - MediaPipe Integration)
