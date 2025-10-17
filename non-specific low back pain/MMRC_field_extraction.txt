@@ -1,0 +1,325 @@
+========================================================================================================================
+MMRC BACK AND NECK ASSESSMENT - COMPREHENSIVE FIELD EXTRACTION
+Document: MMRC - Back and Neck Assessment for 1 stop Clinic - final.docx
+========================================================================================================================
+
+========================================================================================================================
+DETAILED FIELD STRUCTURE
+========================================================================================================================
+
+========================================================================================================================
+SECTION: I: General Information
+========================================================================================================================
+
+  Field: Chief Complaint
+
+  Field: History of presenting illness
+    - First onset/Recurrence
+    - Initial Onset Date
+    - Pain type
+    - Mechanical / inflammatory
+    - Aggravating Factor(s)
+    - Relieving factor(s)
+    - Radiating pain
+    - Y/N
+    - if yes, to where
+    - Other treatment done
+
+  Field: Progress of Condition:
+    - improving / deteriorating / static / fluctuating
+
+========================================================================================================================
+SECTION: II: Subjective Examination
+========================================================================================================================
+
+  Field: Pain Score (NPRS)
+    - 0-10
+
+  Field: Tolerance (minutes)
+    - Sitting
+    - Standing
+    - Walking
+    - Aid
+
+  Field: Claudication distance
+
+  Field: Red Flags Screening
+    - Potential Serious Pathology /Malignancy
+    - Significant weight loss
+    - Poor appetite
+    - Fever
+    - Night pain
+    - Cauda Equina/ neurology/ myelopathy
+    - Bladder/Bowel (B/B) Disturbance
+    - Saddle Anaesthesia
+    - Bilateral UL/LL weakness
+    - Bilateral UL/LL sensory deficit
+    - Hand Clumsiness
+    - Gait disturbance
+    - hand function for cervical concerns
+    - dropping things, difficulty picking up small objects, writing, using phone, buttoning, chopstick use
+
+========================================================================================================================
+SECTION: III: Objective Examination
+========================================================================================================================
+
+  Field: Cervical
+    - Posture
+    - Excessive Lordosis / Normal Curvature / Straightening Cervical Lordosis / Kyphosis
+    - ROM
+    - Flexion
+    - Extension
+    - Side flexion L
+    - Side flexion R
+    - Rotation L
+    - Rotation R
+
+  Field: Lumbar
+    - Posture:
+    - Hyperlordosis/ Normal Curvature / Flattened Lumbar Spine / Lumbar Kyphosis
+    - ROM:
+    - Flexion:
+    - Extension:
+    - Side flexion L:
+    - Side flexion R:
+    - Rotation L:
+    - Rotation R:
+
+  Field: Straight Leg Raise (SLR)
+    - Left degrees
+    - Right degrees
+
+  Field: Femoral nerve stretch test
+    - Left
+    - Right
+
+  Field: Reflex and Myelopathy Sign:
+    - Jerks
+    - Right
+    - Left
+    - Biceps
+    - -/ +/ ++/ +++/ ++++
+    - Triceps
+    - Knee
+    - Ankle
+    - Babinski Sign
+    - -/ +
+    - Ankle Clonus
+    - Hoffman Sign
+    - Tandem walk
+    - Finger Escape Sign
+    - scapulohumeral
+    - Inverted supinator
+    - 10 sec test
+    - Myotomes: Upper limb
+    - C4 Shoulder shrugs
+    - 0-5
+    - C5 Shoulder abduction, Elbow flexion
+    - C6 Wrist Extension
+    - C7 Elbow extension, Wrist flexion
+    - C8 Thumb extension, Finger flexion
+    - T1 Finger abduction/adduction
+    - Myotomes: Lower limb
+    - L2 hip flexion
+    - L3 Knee extension
+    - L4 Ankle dorsiflexion
+    - L5 Big toe extension
+    - S1 Ankle Plantarflexion
+
+  Field: Distal Lower Limbs Pulse Exam
+    - Present / Not Present
+
+========================================================================================================================
+SECTION: IV: Function Score
+========================================================================================================================
+
+  Field: Roland-Morris Disability Questionnaire (RMDQ) (24-item scale for low back pain impact)
+    - /24
+
+  Field: Neck Disability Index (NDI) (10-item percentage scale for cervical dysfunction)
+    - %
+
+========================================================================================================================
+SECTION: V: Intervention
+========================================================================================================================
+
+  Field: Postural correction
+
+  Field: Pain Modulation (hot pack)
+
+  Field: Therapeutic Exercise
+
+  Field: Gait re-education
+
+========================================================================================================================
+SECTION: VI: Recommendation
+========================================================================================================================
+
+  Field: Discharge with advice & home program
+
+  Field: Further Specialist Outpatient Department (SOPD) follow up
+
+  Field: OPD PT
+
+  Field: Day Rehabilitation
+
+
+========================================================================================================================
+SUMMARY: FIELD LIST BY SECTION
+========================================================================================================================
+
+I: General Information
+----------------------------------------------------------------------------------------------------
+  1. Chief Complaint
+  2. History of presenting illness
+  3. Progress of Condition:
+
+II: Subjective Examination
+----------------------------------------------------------------------------------------------------
+  1. Pain Score (NPRS)
+  2. Tolerance (minutes)
+  3. Claudication distance
+  4. Red Flags Screening
+
+III: Objective Examination
+----------------------------------------------------------------------------------------------------
+  1. Cervical
+  2. Lumbar
+  3. Straight Leg Raise (SLR)
+  4. Femoral nerve stretch test
+  5. Reflex and Myelopathy Sign:
+  6. Distal Lower Limbs Pulse Exam
+
+IV: Function Score
+----------------------------------------------------------------------------------------------------
+  1. Roland-Morris Disability Questionnaire (RMDQ) (24-item scale for low back pain impact)
+  2. Neck Disability Index (NDI) (10-item percentage scale for cervical dysfunction)
+
+V: Intervention
+----------------------------------------------------------------------------------------------------
+  1. Postural correction
+  2. Pain Modulation (hot pack)
+  3. Therapeutic Exercise
+  4. Gait re-education
+
+VI: Recommendation
+----------------------------------------------------------------------------------------------------
+  1. Discharge with advice & home program
+  2. Further Specialist Outpatient Department (SOPD) follow up
+  3. OPD PT
+  4. Day Rehabilitation
+
+
+========================================================================================================================
+CONSOLIDATED FIELD CHECKLIST (For Data Collection Form Comparison)
+========================================================================================================================
+
+I: General Information
+----------------------------------------------------------------------------------------------------
+
+  [1] Chief Complaint
+
+  [2] History of presenting illness
+      Sub-fields:
+        * First onset/Recurrence
+        * Initial Onset Date
+        * Pain type
+        * Aggravating Factor(s)
+        * Relieving factor(s)
+        * Radiating pain
+        * Other treatment done
+
+  [3] Progress of Condition:
+
+II: Subjective Examination
+----------------------------------------------------------------------------------------------------
+
+  [4] Pain Score (NPRS)
+
+  [5] Tolerance (minutes)
+      Options: Sitting, Standing, Walking, Aid
+
+  [6] Claudication distance
+
+  [7] Red Flags Screening
+      Categories:
+        * Potential Serious Pathology/Malignancy
+          - Significant weight loss, Poor appetite, Fever, Night pain
+        * Cauda Equina/neurology/myelopathy
+          - Bladder/Bowel Disturbance, Saddle Anaesthesia
+          - Bilateral UL/LL weakness, Bilateral UL/LL sensory deficit
+          - Hand Clumsiness, Gait disturbance
+        * Hand function for cervical concerns
+          - Dropping things, difficulty with small objects, writing, phone, buttoning, chopsticks
+
+III: Objective Examination
+----------------------------------------------------------------------------------------------------
+
+  [8] Cervical
+      Sub-sections:
+        * Posture: Excessive Lordosis / Normal / Straightening / Kyphosis
+        * ROM: Flexion, Extension, Side flexion L/R, Rotation L/R
+
+  [9] Lumbar
+      Sub-sections:
+        * Posture: Hyperlordosis / Normal / Flattened / Kyphosis
+        * ROM: Flexion, Extension, Side flexion L/R, Rotation L/R
+
+  [10] Straight Leg Raise (SLR)
+
+  [11] Femoral nerve stretch test
+
+  [12] Reflex and Myelopathy Sign:
+      Categories:
+        * Reflex Jerks (Right/Left): Biceps, Triceps, Knee, Ankle (-/+/++/+++/++++)
+        * Myelopathy Signs: Babinski, Ankle Clonus, Hoffman, Tandem walk,
+                           Finger Escape, scapulohumeral, Inverted supinator, 10 sec test
+        * Myotomes - Upper limb (Right/Left, 0-5 scale):
+          - C4: Shoulder shrugs
+          - C5: Shoulder abduction, Elbow flexion
+          - C6: Wrist Extension
+          - C7: Elbow extension, Wrist flexion
+          - C8: Thumb extension, Finger flexion
+          - T1: Finger abduction/adduction
+        * Myotomes - Lower limb (Right/Left, 0-5 scale):
+          - L2: Hip flexion
+          - L3: Knee extension
+          - L4: Ankle dorsiflexion
+          - L5: Big toe extension
+          - S1: Ankle Plantarflexion
+
+  [13] Distal Lower Limbs Pulse Exam
+
+IV: Function Score
+----------------------------------------------------------------------------------------------------
+
+  [14] Roland-Morris Disability Questionnaire (RMDQ) (24-item scale for low back pain impact)
+
+  [15] Neck Disability Index (NDI) (10-item percentage scale for cervical dysfunction)
+
+V: Intervention
+----------------------------------------------------------------------------------------------------
+
+  [16] Postural correction
+
+  [17] Pain Modulation (hot pack)
+
+  [18] Therapeutic Exercise
+
+  [19] Gait re-education
+
+VI: Recommendation
+----------------------------------------------------------------------------------------------------
+
+  [20] Discharge with advice & home program
+
+  [21] Further Specialist Outpatient Department (SOPD) follow up
+
+  [22] OPD PT
+
+  [23] Day Rehabilitation
+
+
+========================================================================================================================
+TOTAL FIELDS TO COLLECT: 23
+========================================================================================================================

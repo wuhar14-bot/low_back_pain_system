@@ -1,0 +1,291 @@
+// Prisma schema file for medical system
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./medical_data.db"
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         String   @default("doctor") // doctor, admin, researcher
+  fullName     String?  @map("full_name")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  createdWorkspaces Workspace[]
+  createdPatients   Patient[]
+  uploadedFiles     PatientFile[]
+  activityLogs      ActivityLog[]
+
+  @@map("users")
+}
+
+model Workspace {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdById Int      @map("created_by")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  createdBy User      @relation(fields: [createdById], references: [id])
+  patients  Patient[]
+
+  @@map("workspaces")
+}
+
+model Patient {
+  id                    Int      @id @default(autoincrement())
+  workspaceId          Int      @map("workspace_id")
+  studyId              String   @unique @map("study_id")
+
+  // Demographics
+  age                  Int?
+  gender               String?
+  phone                String?
+
+  // Clinical Information
+  chiefComplaint       String?  @map("chief_complaint")
+  historyType          String?  @map("history_type")
+  firstOnsetDate       DateTime? @map("first_onset_date")
+  painType             String?  @map("pain_type")
+  aggravatingFactors   String?  @map("aggravating_factors")
+  relievingFactors     String?  @map("relieving_factors")
+  hasRadiation         Boolean? @map("has_radiation")
+  radiationLocation    String?  @map("radiation_location")
+  previousTreatment    String?  @map("previous_treatment")
+  conditionProgress    String?  @map("condition_progress")
+
+  // Scores & Measurements
+  painScore            Int?     @map("pain_score")
+  sittingTolerance     Int?     @map("sitting_tolerance")
+  standingTolerance    Int?     @map("standing_tolerance")
+  walkingTolerance     Int?     @map("walking_tolerance")
+  claudicationDistance String?  @map("claudication_distance")
+  rmdqScore           Int?     @map("rmdq_score")
+  ndiScore            Int?     @map("ndi_score")
+
+  // Physical Exam
+  assistiveTools       String?  @map("assistive_tools")
+  cervicalPosture     String?  @map("cervical_posture")
+  lumbarPosture       String?  @map("lumbar_posture")
+  distalPulse         String?  @map("distal_pulse")
+
+  // ROM Data (Range of Motion)
+  cervicalRom          String?  @map("cervical_rom")  // JSON string
+  lumbarRom            String?  @map("lumbar_rom")    // JSON string
+
+  // Special Tests
+  slrLeftAngle         String?  @map("slr_left_angle")
+  slrRightAngle        String?  @map("slr_right_angle")
+  femoralNerveLeft     String?  @map("femoral_nerve_left")
+  femoralNerveRight    String?  @map("femoral_nerve_right")
+
+  // Reflex Examination (grades: -, +, ++, +++, ++++)
+  reflexBicepsLeft     String?  @map("reflex_biceps_left")
+  reflexBicepsRight    String?  @map("reflex_biceps_right")
+  reflexTricepsLeft    String?  @map("reflex_triceps_left")
+  reflexTricepsRight   String?  @map("reflex_triceps_right")
+  reflexKneeLeft       String?  @map("reflex_knee_left")
+  reflexKneeRight      String?  @map("reflex_knee_right")
+  reflexAnkleLeft      String?  @map("reflex_ankle_left")
+  reflexAnkleRight     String?  @map("reflex_ankle_right")
+
+  // AI Posture Analysis
+  aiPostureAnalysis    String?  @map("ai_posture_analysis")  // JSON string
+
+  // Medication
+  medicationDetails    String?  @map("medication_details")
+
+  // Notes
+  remarks              String?
+
+  // Audit
+  createdById         Int      @map("created_by")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  workspace           Workspace                @relation(fields: [workspaceId], references: [id])
+  createdBy           User                     @relation(fields: [createdById], references: [id])
+  redFlags            PatientRedFlag?
+  cervicalFunction    PatientCervicalFunction?
+  myelopathySigns     PatientMyelopathySign?
+  myotomes            PatientMyotome?
+  interventions       PatientIntervention?
+  recommendations     PatientRecommendation?
+  files               PatientFile[]
+
+  @@map("patients")
+}
+
+model PatientRedFlag {
+  id                           Int     @id @default(autoincrement())
+  patientId                    Int     @unique @map("patient_id")
+  weightLoss                   Boolean @default(false) @map("weight_loss")
+  appetiteLoss                 Boolean @default(false) @map("appetite_loss")
+  fever                        Boolean @default(false)
+  nightPain                    Boolean @default(false) @map("night_pain")
+  bladderBowelDysfunction      Boolean @default(false) @map("bladder_bowel_dysfunction")
+  saddleNumbness              Boolean @default(false) @map("saddle_numbness")
+  bilateralLimbWeakness       Boolean @default(false) @map("bilateral_limb_weakness")
+  bilateralSensoryAbnormal    Boolean @default(false) @map("bilateral_sensory_abnormal")
+  handClumsiness              Boolean @default(false) @map("hand_clumsiness")
+  gaitAbnormal                Boolean @default(false) @map("gait_abnormal")
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_red_flags")
+}
+
+model PatientCervicalFunction {
+  id                          Int     @id @default(autoincrement())
+  patientId                   Int     @unique @map("patient_id")
+  droppingObjects             Boolean @default(false) @map("dropping_objects")
+  difficultyPickingSmallItems Boolean @default(false) @map("difficulty_picking_small_items")
+  writingDifficulty          Boolean @default(false) @map("writing_difficulty")
+  phoneUsageDifficulty       Boolean @default(false) @map("phone_usage_difficulty")
+  buttoningDifficulty        Boolean @default(false) @map("buttoning_difficulty")
+  chopstickUsageDifficulty   Boolean @default(false) @map("chopstick_usage_difficulty")
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_cervical_function")
+}
+
+model PatientFile {
+  id          Int      @id @default(autoincrement())
+  patientId   Int      @map("patient_id")
+  fileName    String   @map("file_name")
+  filePath    String   @map("file_path")
+  fileType    String?  @map("file_type")
+  fileSize    Int?     @map("file_size")
+  description String?
+  uploadedById Int     @map("uploaded_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // OCR Results (for images)
+  ocrProcessed   Boolean   @default(false) @map("ocr_processed")
+  ocrText        String?   @map("ocr_text")           // Full extracted text
+  ocrTextLines   String?   @map("ocr_text_lines")     // JSON array of text lines
+  ocrStructured  String?   @map("ocr_structured")     // JSON structured data with positions
+  ocrProcessedAt DateTime? @map("ocr_processed_at")
+  ocrError       String?   @map("ocr_error")          // Error message if OCR failed
+
+  // Relations
+  patient    Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  uploadedBy User    @relation(fields: [uploadedById], references: [id])
+
+  @@map("patient_files")
+}
+
+model ActivityLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  action     String   // CREATE, UPDATE, DELETE, VIEW
+  tableName  String   @map("table_name")
+  recordId   Int      @map("record_id")
+  changes    String?  // JSON string of changes
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activity_log")
+}
+
+model PatientMyelopathySign {
+  id                 Int     @id @default(autoincrement())
+  patientId          Int     @unique @map("patient_id")
+  babinskiSign       String? @map("babinski_sign")     // -, +
+  ankleClonus        String? @map("ankle_clonus")      // -, +
+  hoffmanSign        String? @map("hoffman_sign")      // -, +
+  tandemWalk         String? @map("tandem_walk")       // -, +
+  fingerEscapeSign   String? @map("finger_escape_sign") // -, +
+  scapulohumeral     String? @map("scapulohumeral")    // -, +
+  invertedSupinator  String? @map("inverted_supinator") // -, +
+  tenSecondTest      String? @map("ten_second_test")   // -, +
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_myelopathy_signs")
+}
+
+model PatientMyotome {
+  id                      Int  @id @default(autoincrement())
+  patientId               Int  @unique @map("patient_id")
+
+  // Upper Limb (0-5 scale)
+  c4ShoulderShrugsLeft    Int? @map("c4_shoulder_shrugs_left")
+  c4ShoulderShrugsRight   Int? @map("c4_shoulder_shrugs_right")
+  c5ShoulderAbdLeft       Int? @map("c5_shoulder_abd_left")
+  c5ShoulderAbdRight      Int? @map("c5_shoulder_abd_right")
+  c6WristExtLeft          Int? @map("c6_wrist_ext_left")
+  c6WristExtRight         Int? @map("c6_wrist_ext_right")
+  c7ElbowExtLeft          Int? @map("c7_elbow_ext_left")
+  c7ElbowExtRight         Int? @map("c7_elbow_ext_right")
+  c8ThumbExtLeft          Int? @map("c8_thumb_ext_left")
+  c8ThumbExtRight         Int? @map("c8_thumb_ext_right")
+  t1FingerAbdLeft         Int? @map("t1_finger_abd_left")
+  t1FingerAbdRight        Int? @map("t1_finger_abd_right")
+
+  // Lower Limb (0-5 scale)
+  l2HipFlexLeft           Int? @map("l2_hip_flex_left")
+  l2HipFlexRight          Int? @map("l2_hip_flex_right")
+  l3KneeExtLeft           Int? @map("l3_knee_ext_left")
+  l3KneeExtRight          Int? @map("l3_knee_ext_right")
+  l4AnkleDorsiLeft        Int? @map("l4_ankle_dorsi_left")
+  l4AnkleDorsiRight       Int? @map("l4_ankle_dorsi_right")
+  l5ToeExtLeft            Int? @map("l5_toe_ext_left")
+  l5ToeExtRight           Int? @map("l5_toe_ext_right")
+  s1AnklePlantarLeft      Int? @map("s1_ankle_plantar_left")
+  s1AnklePlantarRight     Int? @map("s1_ankle_plantar_right")
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_myotomes")
+}
+
+model PatientIntervention {
+  id                    Int      @id @default(autoincrement())
+  patientId             Int      @unique @map("patient_id")
+  postureCorrection     Boolean  @default(false) @map("posture_correction")
+  painManagement        Boolean  @default(false) @map("pain_management")
+  therapeuticExercise   Boolean  @default(false) @map("therapeutic_exercise")
+  gaitReeducation       Boolean  @default(false) @map("gait_reeducation")
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_interventions")
+}
+
+model PatientRecommendation {
+  id                    Int      @id @default(autoincrement())
+  patientId             Int      @unique @map("patient_id")
+  dischargeWithAdvice   Boolean  @default(false) @map("discharge_with_advice")
+  specialistFollowup    Boolean  @default(false) @map("specialist_followup")
+  outpatientPt          Boolean  @default(false) @map("outpatient_pt")
+  dayRehabilitation     Boolean  @default(false) @map("day_rehabilitation")
+  medicationIntervention Boolean @default(false) @map("medication_intervention")
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_recommendations")
+}

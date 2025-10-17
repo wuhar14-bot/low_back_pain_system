@@ -9,6 +9,7 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+pip-log.txt
 
 # Virtual Environment
 venv/

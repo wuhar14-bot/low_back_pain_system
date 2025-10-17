@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用Figma绘制疼痛区域形状 - 完整指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .overview {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .overview h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .overview ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .overview li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .overview li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step h2 {
+            color: #2c3e50;
+            font-size: 1.6em;
+        }
+
+        .step-content {
+            padding-left: 60px;
+        }
+
+        .step-content p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .substeps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .substeps ol {
+            margin-left: 20px;
+        }
+
+        .substeps li {
+            margin: 12px 0;
+            padding-left: 10px;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .code-block .comment {
+            color: #5c6370;
+        }
+
+        .code-block .string {
+            color: #98c379;
+        }
+
+        .code-block .keyword {
+            color: #c678dd;
+        }
+
+        .tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning strong {
+            color: #721c24;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info strong {
+            color: #0c5460;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .keyboard-key {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .area-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .area-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .area-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .area-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .area-item code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 使用Figma绘制疼痛区域形状</h1>
+            <p>从零到完成 SVG 路径数据的完整操作指南</p>
+        </header>
+
+        <div class="content">
+            <div class="overview">
+                <h2>📋 项目概览</h2>
+                <p><strong>目标：</strong>创建符合人体背部解剖结构的可点击疼痛区域</p>
+                <p><strong>当前问题：</strong>现有区域是方框形状，不符合人体结构</p>
+                <p><strong>理想效果：</strong>参考 back-pain-location-charts.pdf，使用平滑自然的区域形状</p>
+                <p><strong>技术方案：</strong>使用 Figma 绘制形状 → 导出 SVG → 提取 path 数据 → 集成到 React 代码</p>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2>创建 Figma 画布</h2>
+                </div>
+                <div class="step-content">
+                    <div class="substeps">
+                        <ol>
+                            <li>访问 <a href="https://www.figma.com" target="_blank">https://www.figma.com</a> 并登录（免费账号即可）</li>
+                            <li>点击 <strong>New Design File</strong> 创建新文件</li>
+                            <li>按快捷键 <span class="keyboard-key">F</span> 创建 Frame（画框）</li>
+                            <li>在右侧属性面板设置尺寸：
+                                <ul>
+                                    <li><strong>Width（宽度）：</strong>285</li>
+                                    <li><strong>Height（高度）：</strong>450</li>
+                                </ul>
+                            </li>
+                            <li>重命名 Frame 为 <code>back-pain-areas</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 提示：</strong>
+                        画布尺寸 285×450 与你现有的 SVG 视图框尺寸一致，确保直接替换时不需要调整坐标。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2>导入参考图像</h2>
+                </div>
+                <div class="step-content">
+                    <p><strong>选项 A：使用你的 PDF 截图</strong></p>
+                    <div class="substeps">
+                        <ol>
+                            <li>打开 <code>back-pain-location-charts.pdf</code></li>
+                            <li>截取背部图像（后视图部分）</li>
+                            <li>保存为 PNG 或 JPG 格式</li>
+                            <li>在 Figma 中：<span class="keyboard-key">Ctrl + Shift + K</span>（Windows）或 <span class="keyboard-key">⌘ + Shift + K</span>（Mac）</li>
+                            <li>选择截图文件并导入</li>
+                            <li>调整图片大小使其填充 285×450 画布</li>
+                            <li>降低图片不透明度至 <strong>30-40%</strong>（方便描边）</li>
+                        </ol>
+                    </div>
+
+                    <p><strong>选项 B：手动绘制背部轮廓</strong></p>
+                    <div class="substeps">
+                        <ol>
+                            <li>使用 Pen 工具 <span class="keyboard-key">P</span> 绘制简单的人体背部轮廓</li>
+                            <li>参考解剖图设置主要区域位置</li>
+                        </ol>
+                    </div>
+
+                    <div class="warning">
+                        <strong>⚠️ 重要：</strong>
+                        参考图像仅用于描边辅助，最终不会包含在导出的 SVG 中。导入后记得锁定图层（<span class="keyboard-key">Ctrl + Shift + L</span>）防止误操作。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2>绘制疼痛区域形状</h2>
+                </div>
+                <div class="step-content">
+                    <p><strong>需要绘制的区域（共14个）：</strong></p>
+
+                    <div class="area-list">
+                        <div class="area-item">
+                            <strong>上颈椎</strong>
+                            <code>upper_cervical</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>下颈椎</strong>
+                            <code>lower_cervical</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左上斜方肌</strong>
+                            <code>left_upper_trap</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右上斜方肌</strong>
+                            <code>right_upper_trap</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左菱形肌</strong>
+                            <code>left_rhomboid</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右菱形肌</strong>
+                            <code>right_rhomboid</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>腰椎竖脊肌</strong>
+                            <code>lumbar_erector</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左臀上肌</strong>
+                            <code>left_upper_glute</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右臀上肌</strong>
+                            <code>right_upper_glute</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左臀下肌</strong>
+                            <code>left_lower_glute</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右臀下肌</strong>
+                            <code>right_lower_glute</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左大腿后侧</strong>
+                            <code>left_hamstring</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右大腿后侧</strong>
+                            <code>right_hamstring</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>左小腿后侧</strong>
+                            <code>left_calf</code>
+                        </div>
+                        <div class="area-item">
+                            <strong>右小腿后侧</strong>
+                            <code>right_calf</code>
+                        </div>
+                    </div>
+
+                    <p><strong>绘制工具选择：</strong></p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>工具</th>
+                                <th>快捷键</th>
+                                <th>适用场景</th>
+                                <th>推荐度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pen Tool（钢笔工具）</strong></td>
+                                <td><span class="keyboard-key">P</span></td>
+                                <td>精确控制形状，适合复杂轮廓</td>
+                                <td>⭐⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ellipse（椭圆工具）</strong></td>
+                                <td><span class="keyboard-key">O</span></td>
+                                <td>快速创建圆润区域（如臀肌）</td>
+                                <td>⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Rectangle（矩形工具）</strong></td>
+                                <td><span class="keyboard-key">R</span></td>
+                                <td>基础形状，需后期转换为路径</td>
+                                <td>⭐⭐⭐</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p><strong>详细绘制步骤（以"腰椎竖脊肌"为例）：</strong></p>
+                    <div class="substeps">
+                        <ol>
+                            <li>选择 <strong>Pen 工具</strong> <span class="keyboard-key">P</span></li>
+                            <li>在参考图的腰椎区域点击创建锚点：
+                                <ul>
+                                    <li>沿着肌肉轮廓点击 8-12 个关键点</li>
+                                    <li>点击并拖动可创建曲线控制柄（贝塞尔曲线）</li>
+                                    <li>按住 <span class="keyboard-key">Alt</span> 可单独调整控制柄</li>
+                                </ul>
+                            </li>
+                            <li>形状闭合后，按 <span class="keyboard-key">Enter</span> 完成绘制</li>
+                            <li>在右侧面板中：
+                                <ul>
+                                    <li><strong>Fill（填充）：</strong>设置为透明或浅色（仅用于可视化）</li>
+                                    <li><strong>Stroke（描边）：</strong>设置为 2px，颜色 #667eea</li>
+                                </ul>
+                            </li>
+                            <li>重命名图层为 <code>lumbar_erector</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="info">
+                        <strong>💡 快捷技巧：</strong>
+                        使用椭圆工具快速创建对称区域：
+                        <ol style="margin-top: 10px;">
+                            <li>按 <span class="keyboard-key">O</span> 选择椭圆工具</li>
+                            <li>按住 <span class="keyboard-key">Shift</span> 拖动绘制正圆</li>
+                            <li>右键 → <strong>Flatten</strong> 转换为路径</li>
+                            <li>使用 <strong>Edit Object</strong> 模式调整锚点位置</li>
+                        </ol>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 对称形状复制：</strong>
+                        绘制完左侧区域后，可以镜像复制右侧：
+                        <ol style="margin-top: 10px;">
+                            <li>选中左侧形状（如 <code>left_upper_trap</code>）</li>
+                            <li>按 <span class="keyboard-key">Ctrl + D</span> 复制</li>
+                            <li>右键 → <strong>Flip Horizontal</strong>（水平翻转）</li>
+                            <li>调整位置到右侧对应位置</li>
+                            <li>重命名为 <code>right_upper_trap</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2>检查与优化形状</h2>
+                </div>
+                <div class="step-content">
+                    <div class="substeps">
+                        <ol>
+                            <li><strong>删除参考图层：</strong>
+                                <ul>
+                                    <li>选中参考图片图层</li>
+                                    <li>按 <span class="keyboard-key">Delete</span> 删除</li>
+                                </ul>
+                            </li>
+                            <li><strong>检查形状覆盖：</strong>
+                                <ul>
+                                    <li>所有14个区域应完整覆盖背部</li>
+                                    <li>区域之间可以有小的重叠（不影响点击）</li>
+                                    <li>不应有大的空白区域</li>
+                                </ul>
+                            </li>
+                            <li><strong>统一命名：</strong>
+                                <ul>
+                                    <li>所有图层使用英文下划线命名</li>
+                                    <li>示例：<code>upper_cervical</code>, <code>left_rhomboid</code></li>
+                                    <li>不要使用中文或空格</li>
+                                </ul>
+                            </li>
+                            <li><strong>平滑曲线：</strong>
+                                <ul>
+                                    <li>选中形状 → 右键 → <strong>Simplify Path</strong></li>
+                                    <li>减少不必要的锚点</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h2>导出 SVG 文件</h2>
+                </div>
+                <div class="step-content">
+                    <div class="substeps">
+                        <ol>
+                            <li>选中整个 Frame（<code>back-pain-areas</code>）</li>
+                            <li>在右侧面板滚动到底部，找到 <strong>Export</strong> 区域</li>
+                            <li>点击 <strong>+ 添加导出格式</strong></li>
+                            <li>选择 <strong>SVG</strong></li>
+                            <li>点击 <strong>Export back-pain-areas</strong> 按钮</li>
+                            <li>保存文件到：<code>E:\claude-code\low back pain system\assets\pain-areas.svg</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="warning">
+                        <strong>⚠️ 导出设置检查：</strong>
+                        确保导出设置中：
+                        <ul style="margin-top: 10px;">
+                            <li>✅ <strong>Include "id" Attribute</strong> 已勾选（保留图层命名）</li>
+                            <li>✅ <strong>Outline Text</strong> 已勾选（如果有文字）</li>
+                            <li>❌ <strong>Simplify Stroke</strong> 不要勾选（保持路径精度）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h2>提取 SVG Path 数据</h2>
+                </div>
+                <div class="step-content">
+                    <p>打开导出的 SVG 文件，你会看到类似这样的代码：</p>
+
+                    <div class="code-block">
+<span class="comment">&lt;!-- SVG 文件结构示例 --&gt;</span>
+<span class="keyword">&lt;svg</span> width="285" height="450" viewBox="0 0 285 450"<span class="keyword">&gt;</span>
+  <span class="comment">&lt;!-- 腰椎竖脊肌区域 --&gt;</span>
+  <span class="keyword">&lt;path</span>
+    id=<span class="string">"lumbar_erector"</span>
+    d=<span class="string">"M 128 185 C 120 185 115 190 115 200 L 115 230 C 115 240 120 245 128 245 C 136 245 141 240 141 230 L 141 200 C 141 190 136 185 128 185 Z"</span>
+    fill=<span class="string">"none"</span>
+    stroke=<span class="string">"#667eea"</span>
+  <span class="keyword">/&gt;</span>
+
+  <span class="comment">&lt;!-- 左上斜方肌区域 --&gt;</span>
+  <span class="keyword">&lt;path</span>
+    id=<span class="string">"left_upper_trap"</span>
+    d=<span class="string">"M 85 85 Q 95 90 100 95 L 110 105 Q 105 110 95 105 L 80 95 Q 80 90 85 85 Z"</span>
+  <span class="keyword">/&gt;</span>
+
+  <span class="comment">&lt;!-- 其他区域... --&gt;</span>
+<span class="keyword">&lt;/svg&gt;</span>
+                    </div>
+
+                    <p><strong>提取步骤：</strong></p>
+                    <div class="substeps">
+                        <ol>
+                            <li>使用文本编辑器（VS Code / Notepad++）打开 <code>pain-areas.svg</code></li>
+                            <li>找到每个 <code>&lt;path&gt;</code> 标签</li>
+                            <li>复制 <code>id</code> 和 <code>d</code> 属性的值</li>
+                            <li>整理成以下格式（我需要这个格式的数据）：</li>
+                        </ol>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 疼痛区域路径数据</span>
+<span class="keyword">const</span> painAreaPaths = {
+  upper_cervical: <span class="string">"M 128 45 C 130 42 135 40 ... Z"</span>,
+  lower_cervical: <span class="string">"M 128 65 C 125 68 120 70 ... Z"</span>,
+  left_upper_trap: <span class="string">"M 85 85 Q 95 90 100 95 ... Z"</span>,
+  right_upper_trap: <span class="string">"M 171 85 Q 161 90 156 95 ... Z"</span>,
+  <span class="comment">// ... 其他区域</span>
+};
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 快速提取：</strong>
+                        你也可以直接把整个 SVG 文件发给我，我会帮你自动提取所有路径数据并整理成代码格式。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <h2>发送文件给我</h2>
+                </div>
+                <div class="step-content">
+                    <p>完成绘制后，请把以下文件发给我：</p>
+
+                    <div class="substeps">
+                        <ol>
+                            <li><strong>首选：</strong>导出的 SVG 文件 <code>pain-areas.svg</code>
+                                <ul>
+                                    <li>我会自动提取所有路径数据</li>
+                                    <li>验证命名规范</li>
+                                    <li>集成到 React 代码中</li>
+                                </ul>
+                            </li>
+                            <li><strong>备选：</strong>Figma 分享链接
+                                <ul>
+                                    <li>在 Figma 右上角点击 <strong>Share</strong></li>
+                                    <li>设置为 <strong>Anyone with the link can view</strong></li>
+                                    <li>复制链接发给我</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="info">
+                        <strong>📤 我会帮你完成：</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>✅ 提取所有 SVG 路径数据</li>
+                            <li>✅ 替换 PainAreaSection.jsx 中的 <code>&lt;rect&gt;</code> 为 <code>&lt;path&gt;</code></li>
+                            <li>✅ 保留所有点击功能和颜色切换逻辑</li>
+                            <li>✅ 添加平滑过渡动画</li>
+                            <li>✅ 测试所有区域可点击性</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Tips -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">💡</div>
+                    <h2>额外建议与常见问题</h2>
+                </div>
+                <div class="step-content">
+                    <p><strong>Q1: 形状边界可以重叠吗？</strong></p>
+                    <p>✅ 可以。轻微重叠不影响点击功能，反而能避免空白区域。</p>
+
+                    <p><strong>Q2: 我不会用钢笔工具怎么办？</strong></p>
+                    <p>✅ 可以先用椭圆/矩形工具创建基础形状，然后转换为路径后调整锚点。或者发参考图给我，我可以手动创建部分示例形状。</p>
+
+                    <p><strong>Q3: 需要绘制前视图吗？</strong></p>
+                    <p>❌ 目前只需要后视图（背部）。如果以后需要前视图，可以用同样的流程再创建一个文件。</p>
+
+                    <p><strong>Q4: 形状需要多精确？</strong></p>
+                    <p>✅ 不需要解剖学级别的精确。只要形状符合大致的肌肉区域轮廓，用户能清晰辨认即可。</p>
+
+                    <p><strong>Q5: 我画完后发现位置不对怎么办？</strong></p>
+                    <p>✅ 没关系，发给我后我可以调整坐标。或者你在 Figma 里重新调整后重新导出。</p>
+
+                    <div class="warning">
+                        <strong>⚠️ 时间估算：</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>首次绘制（含学习 Figma）：1-2 小时</li>
+                            <li>熟练后绘制所有区域：30-45 分钟</li>
+                            <li>使用模板快速复制：15-20 分钟</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>📂 项目路径：</strong> E:\claude-code\low back pain system</p>
+            <p><strong>📄 参考文件：</strong> back-pain-location-charts.pdf</p>
+            <p><strong>🎯 目标组件：</strong> src/components/patient-form/PainAreaSection.jsx</p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
+                完成绘制后，请把 SVG 文件或 Figma 链接发给我，我会帮你完成代码集成 🚀
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

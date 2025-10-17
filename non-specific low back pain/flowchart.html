@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSLBP Diagnostic Pipeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .step {
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+            padding: 15px 30px;
+            margin: 10px 0;
+            width: 60%;
+            text-align: center;
+            background-color: #E9F7FF;
+        }
+        .exit-point {
+            border: 2px solid #FF0000;
+            border-radius: 10px;
+            padding: 15px 30px;
+            margin: 10px 0;
+            width: 60%;
+            text-align: center;
+            background-color: #FFE9E9;
+        }
+        .arrow {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="flowchart">
+        <!-- Step 1 -->
+        <div class="step">
+            <strong>Step 1:</strong> Red Flag Screening  
+            <br> (e.g., neurological deficits, cancer history, trauma)
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Exit Point for Step 1 -->
+        <div class="exit-point">
+            Exit Point: Positive red flag → Immediate referral to specialist
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <strong>Step 2:</strong> Yellow Flag Assessment  
+            <br> (e.g., psychosocial risks like fear-avoidance, depression)
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <strong>Step 3:</strong> History and Physical Examination  
+            <br> (e.g., mechanical pain characteristics, normal neuro exam)
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Exit Point for Step 3 -->
+        <div class="exit-point">
+            Exit Point: Abnormal findings → Imaging and specialist referral
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <strong>Step 4:</strong> Imaging (if needed)  
+            <br> (e.g., only for red flags or failed conservative treatment)
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Exit Point for Step 4 -->
+        <div class="exit-point">
+            Exit Point: Structural pathology found → Exclude from NSLBP pathway
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- Final Step -->
+        <div class="step">
+            <strong>Final Diagnosis:</strong> Non-Specific Low Back Pain (NSLBP)  
+            <br> Eligible for study recruitment and AlignPro app download
+        </div>
+    </div>
+</body>
+</html>
