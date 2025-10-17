@@ -1,0 +1,9 @@
+# MediaPipe Pose Service Dependencies
+# Install with: pip install -r requirements_pose.txt
+
+mediapipe==0.10.18
+opencv-python==4.10.0.84
+numpy==1.26.4
+Pillow==10.4.0
+flask==3.0.3
+flask-cors==5.0.0

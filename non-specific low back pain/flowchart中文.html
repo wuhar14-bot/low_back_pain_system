@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非特异性腰痛诊断流程</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .step {
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+            padding: 15px 30px;
+            margin: 10px 0;
+            width: 60%;
+            text-align: center;
+            background-color: #E9F7FF;
+        }
+        .exit-point {
+            border: 2px solid #FF0000;
+            border-radius: 10px;
+            padding: 15px 30px;
+            margin: 10px 0;
+            width: 60%;
+            text-align: center;
+            background-color: #FFE9E9;
+        }
+        .arrow {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="flowchart">
+        <!-- 第一步 -->
+        <div class="step">
+            <strong>步骤1：</strong> 红旗筛查  
+            <br>（例如：神经系统缺损、癌症病史、创伤）
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第一步出口 -->
+        <div class="exit-point">
+            出口点：红旗筛查阳性 → 立即转诊至专科医生
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第二步 -->
+        <div class="step">
+            <strong>步骤2：</strong> 黄旗评估  
+            <br>（例如：心理社会风险因素，如恐惧回避、抑郁）
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第三步 -->
+        <div class="step">
+            <strong>步骤3：</strong> 病史和体格检查  
+            <br>（例如：机械性疼痛特征、正常神经检查）
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第三步出口 -->
+        <div class="exit-point">
+            出口点：发现异常 → 安排影像检查并转诊专科医生
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第四步 -->
+        <div class="step">
+            <strong>步骤4：</strong> 影像学检查（如有需要）  
+            <br>（例如：仅在红旗筛查阳性或保守治疗失败时进行）
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 第四步出口 -->
+        <div class="exit-point">
+            出口点：发现结构性病变 → 排除非特异性腰痛路径
+        </div>
+        <div class="arrow">↓</div>
+
+        <!-- 最终诊断 -->
+        <div class="step">
+            <strong>最终诊断：</strong> 非特异性腰痛（NSLBP）  
+            <br> 符合研究招募条件，并下载AlignPro应用程序
+        </div>
+    </div>
+</body>
+</html>
