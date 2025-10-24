@@ -1,6 +1,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Clock, Activity } from "lucide-react";
@@ -8,6 +9,13 @@ import { AlertTriangle, Clock, Activity } from "lucide-react";
 export default function SubjectiveExamSection({ formData, updateFormData }) {
   const handleInputChange = (field, value) => {
     updateFormData({ [field]: value });
+  };
+
+  const handleCheckboxWithInput = (checkboxField, inputField, checked) => {
+    updateFormData({
+      [checkboxField]: checked,
+      [inputField]: checked ? (formData[inputField] || '') : ''
+    });
   };
 
   const handleRedFlagChange = (flag, checked) => {
@@ -49,21 +57,26 @@ export default function SubjectiveExamSection({ formData, updateFormData }) {
   return (
     <div className="space-y-6">
       {/* 疼痛评分 */}
-      <div className="space-y-2">
-        <Label htmlFor="pain_score" className="text-slate-700 font-medium flex items-center gap-2">
+      <div className="space-y-3">
+        <Label className="text-slate-700 font-medium flex items-center gap-2">
           <Activity className="w-4 h-4" />
           疼痛评分 (NPRS 0-10分)
         </Label>
-        <Input
-          id="pain_score"
-          type="number"
-          min="0"
-          max="10"
-          value={formData.pain_score || ''}
-          onChange={(e) => handleInputChange('pain_score', parseInt(e.target.value))}
-          placeholder="0-10分，0为无痛，10为最痛"
-          className="bg-white border-slate-200"
-        />
+        <div className="text-sm text-slate-600 mb-2">
+          0为无痛，10为最痛
+        </div>
+        <RadioGroup
+          value={formData.pain_score?.toString() || ''}
+          onValueChange={(value) => handleInputChange('pain_score', parseInt(value))}
+          className="flex justify-between"
+        >
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+            <div key={score} className="flex flex-col items-center space-y-1">
+              <RadioGroupItem value={score.toString()} id={`pain_${score}`} className="h-5 w-5" />
+              <Label htmlFor={`pain_${score}`} className="text-slate-700 font-medium cursor-pointer text-sm">{score}</Label>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
 
       {/* 耐受时间 */}
@@ -113,23 +126,39 @@ export default function SubjectiveExamSection({ formData, updateFormData }) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="assistive_tools" className="text-slate-700 font-medium">辅助工具</Label>
+              <div className="flex items-center space-x-2 mb-2">
+                <Checkbox
+                  id="has_assistive_tools"
+                  checked={formData.has_assistive_tools || false}
+                  onCheckedChange={(checked) => handleCheckboxWithInput('has_assistive_tools', 'assistive_tools', checked)}
+                />
+                <Label htmlFor="has_assistive_tools" className="text-slate-700 font-medium">辅助工具</Label>
+              </div>
               <Input
                 id="assistive_tools"
                 value={formData.assistive_tools || ''}
                 onChange={(e) => handleInputChange('assistive_tools', e.target.value)}
                 placeholder="如：拐杖、助行器等"
                 className="bg-white border-slate-200"
+                disabled={!formData.has_assistive_tools}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="claudication_distance" className="text-slate-700 font-medium">间歇性跛行距离</Label>
+              <div className="flex items-center space-x-2 mb-2">
+                <Checkbox
+                  id="has_claudication"
+                  checked={formData.has_claudication || false}
+                  onCheckedChange={(checked) => handleCheckboxWithInput('has_claudication', 'claudication_distance', checked)}
+                />
+                <Label htmlFor="has_claudication" className="text-slate-700 font-medium">间歇性跛行距离</Label>
+              </div>
               <Input
                 id="claudication_distance"
                 value={formData.claudication_distance || ''}
                 onChange={(e) => handleInputChange('claudication_distance', e.target.value)}
                 placeholder="米或其他描述"
                 className="bg-white border-slate-200"
+                disabled={!formData.has_claudication}
               />
             </div>
           </div>

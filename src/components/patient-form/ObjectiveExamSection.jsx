@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, RotateCcw, Zap, Camera } from "lucide-react";
+import { Activity, RotateCcw, Zap, Camera, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PostureAnalysisModal from "./PostureAnalysisModal";
 
@@ -13,6 +13,14 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
 
   const handleInputChange = (field, value) => {
     updateFormData({ [field]: value });
+  };
+
+  const handleRomReview = () => {
+    updateFormData({ rom_reviewed: true });
+  };
+
+  const handleSpecialTestReview = () => {
+    updateFormData({ special_test_reviewed: true });
   };
 
   const handleNestedObjectChange = (parentField, childField, value) => {
@@ -144,36 +152,34 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-slate-700 font-medium">颈椎体态</Label>
-              <Select
+              <RadioGroup
                 value={formData.cervical_posture || ''}
                 onValueChange={(value) => handleInputChange('cervical_posture', value)}
+                className="grid grid-cols-1 gap-2"
               >
-                <SelectTrigger className="bg-white border-slate-200">
-                  <SelectValue placeholder="请选择颈椎体态" />
-                </SelectTrigger>
-                <SelectContent>
-                  {postureOptions.cervical.map((option) => (
-                    <SelectItem key={option} value={option}>{option}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {postureOptions.cervical.map((option, index) => (
+                  <div key={option} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option} id={`cervical_${index}`} />
+                    <Label htmlFor={`cervical_${index}`} className="text-slate-700 font-normal cursor-pointer">{option}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
 
             <div className="space-y-2">
               <Label className="text-slate-700 font-medium">腰椎体态</Label>
-              <Select
+              <RadioGroup
                 value={formData.lumbar_posture || ''}
                 onValueChange={(value) => handleInputChange('lumbar_posture', value)}
+                className="grid grid-cols-1 gap-2"
               >
-                <SelectTrigger className="bg-white border-slate-200">
-                  <SelectValue placeholder="请选择腰椎体态" />
-                </SelectTrigger>
-                <SelectContent>
-                  {postureOptions.lumbar.map((option) => (
-                    <SelectItem key={option} value={option}>{option}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {postureOptions.lumbar.map((option, index) => (
+                  <div key={option} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option} id={`lumbar_${index}`} />
+                    <Label htmlFor={`lumbar_${index}`} className="text-slate-700 font-normal cursor-pointer">{option}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
           </div>
         </CardContent>
@@ -182,10 +188,36 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
       {/* 活动度检查 */}
       <Card className="border border-slate-200">
         <CardHeader>
-          <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
-            <RotateCcw className="w-5 h-5" />
-            活动度检查 (ROM)
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
+              <RotateCcw className="w-5 h-5" />
+              活动度检查 (ROM)
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              {formData.rom_reviewed && (
+                <span className="text-green-600 font-medium text-sm flex items-center gap-1">
+                  <Check className="w-4 h-4" />
+                  已审核
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRomReview}
+                className="bg-white"
+              >
+                保存
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRomReview}
+                className="bg-white"
+              >
+                审核
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* 颈椎活动度 */}
@@ -238,105 +270,134 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 神经系统检查 */}
+      {/* 特殊试验 */}
+      <Card className="border border-blue-200 bg-blue-50/30">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
+              <Zap className="w-5 h-5" />
+              特殊试验
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              {formData.special_test_reviewed && (
+                <span className="text-green-600 font-medium text-sm flex items-center gap-1">
+                  <Check className="w-4 h-4" />
+                  已审核
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSpecialTestReview}
+                className="bg-white"
+              >
+                保存
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSpecialTestReview}
+                className="bg-white"
+              >
+                审核
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-slate-700">直腿抬高试验 - 左侧角度</Label>
+              <Input
+                value={(formData.slr_test || {}).left_angle || ''}
+                onChange={(e) => handleNestedObjectChange('slr_test', 'left_angle', e.target.value)}
+                placeholder="角度"
+                className="bg-white border-slate-200"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-700">直腿抬高试验 - 右侧角度</Label>
+              <Input
+                value={(formData.slr_test || {}).right_angle || ''}
+                onChange={(e) => handleNestedObjectChange('slr_test', 'right_angle', e.target.value)}
+                placeholder="角度"
+                className="bg-white border-slate-200"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-700">股神经牵拉试验 - 左侧</Label>
+              <Input
+                value={(formData.femoral_nerve_test || {}).left || ''}
+                onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'left', e.target.value)}
+                placeholder="结果"
+                className="bg-white border-slate-200"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-700">股神经牵拉试验 - 右侧</Label>
+              <Input
+                value={(formData.femoral_nerve_test || {}).right || ''}
+                onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'right', e.target.value)}
+                placeholder="结果"
+                className="bg-white border-slate-200"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 神经系统检查 - 反射检查 */}
       <Card className="border border-slate-200">
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Zap className="w-5 h-5" />
-            神经系统检查
+            反射检查
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* 特殊试验 */}
-          <div>
-            <h4 className="font-medium text-slate-700 mb-3">特殊试验</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-slate-700">直腿抬高试验 - 左侧角度</Label>
-                <Input
-                  value={(formData.slr_test || {}).left_angle || ''}
-                  onChange={(e) => handleNestedObjectChange('slr_test', 'left_angle', e.target.value)}
-                  placeholder="角度"
-                  className="bg-white border-slate-200"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-slate-700">直腿抬高试验 - 右侧角度</Label>
-                <Input
-                  value={(formData.slr_test || {}).right_angle || ''}
-                  onChange={(e) => handleNestedObjectChange('slr_test', 'right_angle', e.target.value)}
-                  placeholder="角度"
-                  className="bg-white border-slate-200"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-slate-700">股神经牵拉试验 - 左侧</Label>
-                <Input
-                  value={(formData.femoral_nerve_test || {}).left || ''}
-                  onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'left', e.target.value)}
-                  placeholder="结果"
-                  className="bg-white border-slate-200"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-slate-700">股神经牵拉试验 - 右侧</Label>
-                <Input
-                  value={(formData.femoral_nerve_test || {}).right || ''}
-                  onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'right', e.target.value)}
-                  placeholder="结果"
-                  className="bg-white border-slate-200"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 反射检查 */}
-          <div>
-            <h4 className="font-medium text-slate-700 mb-3">反射检查</h4>
-            <div className="grid grid-cols-4 gap-3 text-sm">
-              <div className="font-medium text-slate-600">反射</div>
-              <div className="font-medium text-slate-600">左侧</div>
-              <div className="font-medium text-slate-600">右侧</div>
-              <div></div>
-
+        <CardContent>
+          <div className="space-y-4">
               {[
                 { key: 'biceps', label: '二头肌' },
                 { key: 'triceps', label: '三头肌' },
                 { key: 'knee', label: '膝反射' },
                 { key: 'ankle', label: '踝反射' }
               ].map((reflex) => (
-                <React.Fragment key={reflex.key}>
-                  <div className="flex items-center text-slate-700">{reflex.label}</div>
-                  <Select
-                    value={(formData.reflexes || {})[`${reflex.key}_left`] || ''}
-                    onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_left`, value)}
-                  >
-                    <SelectTrigger className="bg-white border-slate-200 h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {reflexGrades.map((grade) => (
-                        <SelectItem key={grade} value={grade}>{grade}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={(formData.reflexes || {})[`${reflex.key}_right`] || ''}
-                    onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_right`, value)}
-                  >
-                    <SelectTrigger className="bg-white border-slate-200 h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {reflexGrades.map((grade) => (
-                        <SelectItem key={grade} value={grade}>{grade}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <div></div>
-                </React.Fragment>
+                <div key={reflex.key} className="border border-slate-200 rounded-lg p-3 bg-white">
+                  <div className="font-medium text-slate-700 mb-3">{reflex.label}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-sm text-slate-600 mb-2 block">左侧</Label>
+                      <RadioGroup
+                        value={(formData.reflexes || {})[`${reflex.key}_left`] || ''}
+                        onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_left`, value)}
+                        className="flex flex-wrap gap-2"
+                      >
+                        {reflexGrades.map((grade) => (
+                          <div key={grade} className="flex items-center space-x-1">
+                            <RadioGroupItem value={grade} id={`${reflex.key}_left_${grade}`} />
+                            <Label htmlFor={`${reflex.key}_left_${grade}`} className="text-slate-700 font-normal cursor-pointer text-sm">{grade}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-slate-600 mb-2 block">右侧</Label>
+                      <RadioGroup
+                        value={(formData.reflexes || {})[`${reflex.key}_right`] || ''}
+                        onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_right`, value)}
+                        className="flex flex-wrap gap-2"
+                      >
+                        {reflexGrades.map((grade) => (
+                          <div key={grade} className="flex items-center space-x-1">
+                            <RadioGroupItem value={grade} id={`${reflex.key}_right_${grade}`} />
+                            <Label htmlFor={`${reflex.key}_right_${grade}`} className="text-slate-700 font-normal cursor-pointer text-sm">{grade}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -344,18 +405,20 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
       {/* 远端下肢脉搏检查 */}
       <div className="space-y-2">
         <Label className="text-slate-700 font-medium">远端下肢脉搏检查</Label>
-        <Select
+        <RadioGroup
           value={formData.distal_pulse || ''}
           onValueChange={(value) => handleInputChange('distal_pulse', value)}
+          className="flex gap-4"
         >
-          <SelectTrigger className="bg-white border-slate-200">
-            <SelectValue placeholder="请选择检查结果" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="存在">存在</SelectItem>
-            <SelectItem value="不存在">不存在</SelectItem>
-          </SelectContent>
-        </Select>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="存在" id="pulse_present" />
+            <Label htmlFor="pulse_present" className="text-slate-700 font-normal cursor-pointer">存在</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="不存在" id="pulse_absent" />
+            <Label htmlFor="pulse_absent" className="text-slate-700 font-normal cursor-pointer">不存在</Label>
+          </div>
+        </RadioGroup>
       </div>
 
       {/* AI姿态分析弹窗 */}

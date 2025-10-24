@@ -400,6 +400,15 @@ Complete technical documentation following [GitHub spec-kit](https://github.com/
 
 ## Recent Updates
 
+### 2025-10-24 (UI/UX Improvements)
+- ✅ **Dropdown to radio button conversion** - All dropdowns converted to radio buttons for better usability
+- ✅ **Pain score visualization** - 0-10 pain score with horizontal radio buttons (full-width alignment)
+- ✅ **Expert review workflow** - Added review buttons for ROM and special tests sections
+- ✅ **Conditional inputs** - Checkbox-controlled fields for optional items (辅助工具, 间歇性跛行距离)
+- ✅ **Special tests separation** - Separated special tests into dedicated blue-bordered card
+- ✅ **Improved form structure** - Better visual hierarchy and organization
+- 📄 See [UI_IMPROVEMENTS_2025-10-24.md](UI_IMPROVEMENTS_2025-10-24.md) for complete details
+
 ### 2025-10-17 (Session 3 - Mobile Integration & Database)
 - ✅ **Mobile phone camera integration** - Direct photo capture from phone
 - ✅ **Network configuration** - Vite server configured for external access (`0.0.0.0:5173`)
@@ -435,4 +444,4 @@ For technical support or questions about this system, please refer to the docume
 
 **System Status:** ✅ Fully operational with MediaPipe Pose integration (2025-10-17)
 
-**Last Updated:** 2025-10-17 11:36
+**Last Updated:** 2025-10-24 21:30

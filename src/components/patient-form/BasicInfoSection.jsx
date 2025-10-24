@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { User, Phone, Calendar, Hash } from "lucide-react";
 
 export default function BasicInfoSection({ formData, updateFormData }) {
@@ -74,22 +74,24 @@ export default function BasicInfoSection({ formData, updateFormData }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="gender" className="text-slate-700 font-medium">
+          <Label className="text-slate-700 font-medium">
             性别 <span className="text-red-500">*</span>
           </Label>
-          <Select
+          <RadioGroup
             value={formData.gender || ''}
             onValueChange={(value) => handleInputChange('gender', value)}
+            className="flex gap-4"
             required
           >
-            <SelectTrigger className="bg-white border-slate-200">
-              <SelectValue placeholder="请选择性别（必填）" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="男">男</SelectItem>
-              <SelectItem value="女">女</SelectItem>
-            </SelectContent>
-          </Select>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="男" id="gender_male" />
+              <Label htmlFor="gender_male" className="text-slate-700 font-normal cursor-pointer">男</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="女" id="gender_female" />
+              <Label htmlFor="gender_female" className="text-slate-700 font-normal cursor-pointer">女</Label>
+            </div>
+          </RadioGroup>
         </div>
       </div>
 

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, Calendar, AlertCircle, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -109,18 +109,20 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-slate-700 font-medium">现病史类型</Label>
-            <Select
+            <RadioGroup
               value={formData.history_type || ''}
               onValueChange={(value) => handleInputChange('history_type', value)}
+              className="flex gap-4"
             >
-              <SelectTrigger className="bg-white border-slate-200">
-                <SelectValue placeholder="请选择" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="首次发作">首次发作</SelectItem>
-                <SelectItem value="复发">复发</SelectItem>
-              </SelectContent>
-            </Select>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="首次发作" id="history_first" />
+                <Label htmlFor="history_first" className="text-slate-700 font-normal cursor-pointer">首次发作</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="复发" id="history_relapse" />
+                <Label htmlFor="history_relapse" className="text-slate-700 font-normal cursor-pointer">复发</Label>
+              </div>
+            </RadioGroup>
           </div>
 
           <div className="space-y-2">
@@ -140,18 +142,24 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
 
         <div className="space-y-2">
           <Label className="text-slate-700 font-medium">疼痛类型</Label>
-          <Select
+          <RadioGroup
             value={formData.pain_type || ''}
             onValueChange={(value) => handleInputChange('pain_type', value)}
+            className="flex gap-4"
           >
-            <SelectTrigger className="bg-white border-slate-200">
-              <SelectValue placeholder="请选择疼痛类型" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="机械性">机械性</SelectItem>
-              <SelectItem value="炎症性">炎症性</SelectItem>
-            </SelectContent>
-          </Select>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="局部疼痛" id="pain_local" />
+              <Label htmlFor="pain_local" className="text-slate-700 font-normal cursor-pointer">局部疼痛</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="放射痛" id="pain_radiating" />
+              <Label htmlFor="pain_radiating" className="text-slate-700 font-normal cursor-pointer">放射痛</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="牵涉痛" id="pain_referred" />
+              <Label htmlFor="pain_referred" className="text-slate-700 font-normal cursor-pointer">牵涉痛</Label>
+            </div>
+          </RadioGroup>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -228,20 +236,28 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
 
           <div className="space-y-2">
             <Label className="text-slate-700 font-medium">病情进展</Label>
-            <Select
+            <RadioGroup
               value={formData.condition_progress || ''}
               onValueChange={(value) => handleInputChange('condition_progress', value)}
+              className="grid grid-cols-2 gap-3"
             >
-              <SelectTrigger className="bg-white border-slate-200">
-                <SelectValue placeholder="请选择病情进展情况" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="改善">改善</SelectItem>
-                <SelectItem value="恶化">恶化</SelectItem>
-                <SelectItem value="稳定">稳定</SelectItem>
-                <SelectItem value="波动">波动</SelectItem>
-              </SelectContent>
-            </Select>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="改善" id="progress_improve" />
+                <Label htmlFor="progress_improve" className="text-slate-700 font-normal cursor-pointer">改善</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="恶化" id="progress_worsen" />
+                <Label htmlFor="progress_worsen" className="text-slate-700 font-normal cursor-pointer">恶化</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="稳定" id="progress_stable" />
+                <Label htmlFor="progress_stable" className="text-slate-700 font-normal cursor-pointer">稳定</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="波动" id="progress_fluctuate" />
+                <Label htmlFor="progress_fluctuate" className="text-slate-700 font-normal cursor-pointer">波动</Label>
+              </div>
+            </RadioGroup>
           </div>
         </div>
       </div>
