@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { base44 } from '../api/base44Client';
+import { authService } from '../services/apiService';
 
 const AuthContext = createContext();
 
@@ -22,16 +22,24 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('access_token');
       if (token) {
-        // Simple token validation - no API call needed
-        setIsAuthenticated(true);
-        const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
-        setUser(userInfo);
+        // Validate token by fetching user profile
+        try {
+          const profile = await authService.getProfile();
+          setIsAuthenticated(true);
+          setUser(profile);
+        } catch (error) {
+          // Token invalid or expired
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+          setIsAuthenticated(false);
+          setUser(null);
+        }
       }
     } catch (error) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_info');
+      console.error('Auth check failed:', error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -39,41 +47,35 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     try {
-      // For now, we'll use a simple client-side validation
-      // In production, this should call a proper authentication API
-      const validCredentials = {
-        'kafwu@connect.hku.hk': '2749'
-      };
+      // Call ABP backend login endpoint
+      const response = await authService.login(username, password);
 
-      if (validCredentials[email] === password) {
-        const token = btoa(`${email}:${Date.now()}`); // Simple token generation
-        const userInfo = {
-          email: email,
-          name: 'Hao Wu',
-          role: 'Researcher'
-        };
-
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_info', JSON.stringify(userInfo));
-
-        setUser(userInfo);
+      if (response && response.access_token) {
+        // Get user profile after successful login
+        const profile = await authService.getProfile();
+        setUser(profile);
         setIsAuthenticated(true);
-        return { success: true };
+        return { success: true, user: profile };
       } else {
-        return { success: false, error: 'Invalid credentials' };
+        return { success: false, error: 'Invalid response from server' };
       }
     } catch (error) {
-      return { success: false, error: 'Login failed' };
+      console.error('Login failed:', error);
+      return { success: false, error: error.message || 'Login failed' };
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_info');
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const value = {

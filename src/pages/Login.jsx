@@ -53,15 +53,15 @@ export default function Login() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">Username</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   id="email"
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="kafwu@connect.hku.hk"
+                  placeholder="admin"
                   required
                   disabled={isLoading}
                   className="pl-10"

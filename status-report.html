@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Back Pain System - Status Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: white; text-align: center; margin-bottom: 30px; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .card h2 { color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .status-item { padding: 20px; border-radius: 12px; background: #f8f9fa; }
+        .status-item.running { border-left: 4px solid #10b981; }
+        .status-item.ready { border-left: 4px solid #3b82f6; }
+        .status-item.warning { border-left: 4px solid #f59e0b; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .badge.green { background: #d1fae5; color: #065f46; }
+        .badge.blue { background: #dbeafe; color: #1e40af; }
+        .badge.yellow { background: #fef3c7; color: #92400e; }
+        .url { font-family: monospace; background: #e5e7eb; padding: 8px 12px; border-radius: 6px; display: inline-block; margin: 8px 0; }
+        .url a { color: #4f46e5; text-decoration: none; }
+        .url a:hover { text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .check { color: #10b981; }
+        .cross { color: #ef4444; }
+        .test-section { margin-top: 20px; }
+        .test-item { padding: 12px; margin: 8px 0; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #10b981; }
+        .credentials { background: #fef3c7; padding: 16px; border-radius: 8px; margin-top: 16px; }
+        .credentials code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+        .timestamp { color: #6b7280; font-size: 0.9rem; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Low Back Pain Data Collection System</h1>
+
+        <!-- Service Status -->
+        <div class="card">
+            <h2>🖥️ Service Status</h2>
+            <div class="status-grid">
+                <div class="status-item running">
+                    <h3>Backend API <span class="badge green">RUNNING</span></h3>
+                    <p>ASP.NET Core 7.0 + ABP vNext</p>
+                    <div class="url"><a href="https://localhost:44385" target="_blank">https://localhost:44385</a></div>
+                    <p style="margin-top:8px; color:#666;">Swagger: <a href="https://localhost:44385/swagger" target="_blank">/swagger</a></p>
+                </div>
+                <div class="status-item running">
+                    <h3>Frontend <span class="badge green">RUNNING</span></h3>
+                    <p>React 18 + Vite</p>
+                    <div class="url"><a href="http://localhost:5173" target="_blank">http://localhost:5173</a></div>
+                    <p style="margin-top:8px; color:#666;">Hot Module Reload enabled</p>
+                </div>
+                <div class="status-item ready">
+                    <h3>Database <span class="badge blue">READY</span></h3>
+                    <p>PostgreSQL</p>
+                    <div class="url">localhost:5432 / LowBackPainDB</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Status -->
+        <div class="card">
+            <h2>✅ Feature Implementation Status</h2>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>User Authentication (Login/Logout)</td><td><span class="check">✅ Complete</span></td><td>OAuth 2.0 Password Grant</td></tr>
+                    <tr><td>Patient List Dashboard</td><td><span class="check">✅ Complete</span></td><td>With pagination & search</td></tr>
+                    <tr><td>Create New Patient</td><td><span class="check">✅ Complete</span></td><td>Multi-step form</td></tr>
+                    <tr><td>View Patient Detail</td><td><span class="check">✅ Complete</span></td><td>Full assessment display</td></tr>
+                    <tr><td>Edit Patient</td><td><span class="check">✅ Complete</span></td><td>Navigate from detail page</td></tr>
+                    <tr><td>Delete Patient</td><td><span class="check">✅ Complete</span></td><td>With confirmation dialog</td></tr>
+                    <tr><td>Image Upload API</td><td><span class="check">✅ Complete</span></td><td>Backend ready, frontend integration pending</td></tr>
+                    <tr><td>Pagination Controls</td><td><span class="check">✅ Complete</span></td><td>5/10/20/50 items per page</td></tr>
+                    <tr><td>Swagger API Docs</td><td><span class="check">✅ Fixed</span></td><td>Conflict resolved</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- What to Test -->
+        <div class="card">
+            <h2>🧪 What You Can Test</h2>
+            <div class="test-section">
+                <div class="test-item">
+                    <strong>1. Login</strong><br>
+                    Go to <a href="http://localhost:5173" target="_blank">http://localhost:5173</a><br>
+                    Username: <code>admin</code> | Password: <code>1q2w3E*</code>
+                </div>
+                <div class="test-item">
+                    <strong>2. View Dashboard</strong><br>
+                    After login, see patient list with search and filter options
+                </div>
+                <div class="test-item">
+                    <strong>3. Create Patient</strong><br>
+                    Click "新增患者" button, fill the form, save
+                </div>
+                <div class="test-item">
+                    <strong>4. View Patient Detail</strong><br>
+                    Click on any patient card to see full details
+                </div>
+                <div class="test-item">
+                    <strong>5. Edit Patient</strong><br>
+                    On patient detail page, click "编辑" button
+                </div>
+                <div class="test-item">
+                    <strong>6. Delete Patient</strong><br>
+                    On patient detail page, click "删除" button (with confirmation)
+                </div>
+                <div class="test-item">
+                    <strong>7. Test Pagination</strong><br>
+                    On dashboard, use page controls at bottom to navigate
+                </div>
+                <div class="test-item">
+                    <strong>8. Swagger API</strong><br>
+                    Visit <a href="https://localhost:44385/swagger" target="_blank">https://localhost:44385/swagger</a> (accept SSL cert first)
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="card">
+            <h2>⚠️ Important Notes</h2>
+            <div class="credentials">
+                <p><strong>SSL Certificate:</strong> The backend uses a self-signed certificate. When you first visit <code>https://localhost:44385</code>, click "Advanced" → "Proceed to localhost" to accept it.</p>
+            </div>
+            <div style="margin-top:16px">
+                <p><strong>Default Admin Credentials:</strong></p>
+                <ul style="margin-left:20px; margin-top:8px">
+                    <li>Username: <code>admin</code></li>
+                    <li>Password: <code>1q2w3E*</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="card">
+            <h2>🔌 API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>/connect/token</td><td>POST</td><td>OAuth login</td></tr>
+                    <tr><td>/api/app/patient</td><td>GET</td><td>List patients</td></tr>
+                    <tr><td>/api/app/patient</td><td>POST</td><td>Create patient</td></tr>
+                    <tr><td>/api/app/patient/{id}</td><td>GET</td><td>Get patient</td></tr>
+                    <tr><td>/api/app/patient/{id}</td><td>PUT</td><td>Update patient</td></tr>
+                    <tr><td>/api/app/patient/{id}</td><td>DELETE</td><td>Delete patient</td></tr>
+                    <tr><td>/api/app/patient-image/upload</td><td>POST</td><td>Upload image</td></tr>
+                    <tr><td>/api/app/patient-image/by-patient/{id}</td><td>GET</td><td>List patient images</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="timestamp">Generated: 2025-11-21 15:16 HKT</p>
+    </div>
+</body>
+</html>

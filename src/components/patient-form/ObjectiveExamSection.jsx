@@ -119,7 +119,7 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
                       <img
                         src={formData.ai_posture_analysis.annotatedStandingUrl}
                         alt="站立位姿态分析"
-                        className="rounded-lg border bg-slate-100 w-full h-[600px] object-contain"
+                        className="rounded-lg border bg-slate-100 w-full h-[300px] object-contain"
                       />
                     </div>
                   )}
@@ -129,7 +129,7 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
                       <img
                         src={formData.ai_posture_analysis.annotatedFlexionUrl}
                         alt="屈曲位姿态分析"
-                        className="rounded-lg border bg-slate-100 w-full h-[600px] object-contain"
+                        className="rounded-lg border bg-slate-100 w-full h-[300px] object-contain"
                       />
                     </div>
                   )}

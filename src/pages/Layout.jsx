@@ -3,17 +3,20 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Workspace } from "@/api/entities";
-import { 
-  Smartphone, 
-  Monitor, 
-  FileText, 
-  Users, 
+import { useExternal } from "@/contexts/ExternalContext";
+import {
+  Smartphone,
+  Monitor,
+  FileText,
+  Users,
   Activity,
   Stethoscope,
   Building2,
   Settings,
-  Home
+  Home,
+  LogOut
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -53,38 +56,48 @@ const navigationItems = [
     title: "管理后台",
     url: createPageUrl("AdminPanel"),
     icon: Settings,
-    description: "管理工作室"
-  },
-  {
-    title: "工作室管理",
-    url: createPageUrl("WorkspaceManager"),
-    icon: Building2,
-    description: "选择工作室"
+    description: "系统管理"
   }
 ];
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const { workspaceName, doctorName, isExternalMode } = useExternal();
+  const { user, logout } = useAuth();
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   useEffect(() => {
     loadCurrentWorkspace();
-  }, [location.pathname]);
+  }, [location.pathname, workspaceName]);
 
   const loadCurrentWorkspace = async () => {
+    // 优先使用外部传入的工作室信息
+    if (isExternalMode && workspaceName) {
+      setCurrentWorkspace({
+        id: localStorage.getItem('currentWorkspaceId'),
+        name: workspaceName,
+        created_by_name: doctorName || '外部系统'
+      });
+      return;
+    }
+
+    // 降级：尝试从旧的 Workspace API 加载
     const workspaceId = localStorage.getItem('currentWorkspaceId');
     if (workspaceId) {
       try {
-        // This could be optimized by fetching only one workspace
         const workspaces = await Workspace.list();
         const workspace = workspaces.find(w => w.id === workspaceId);
         setCurrentWorkspace(workspace);
       } catch (error) {
         console.error("加载当前工作室失败:", error);
-        setCurrentWorkspace(null); // Clear if error
+        setCurrentWorkspace(null);
       }
     } else {
-      setCurrentWorkspace(null); // Clear if no ID
+      setCurrentWorkspace(null);
     }
   };
 
@@ -189,12 +202,19 @@ export default function Layout({ children, currentPageName }) {
           <SidebarFooter className="border-t border-slate-200/60 p-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-r from-slate-200 to-slate-300 rounded-full flex items-center justify-center">
-                <span className="text-slate-600 font-bold text-sm">H</span>
+                <span className="text-slate-600 font-bold text-sm">{user?.userName?.[0]?.toUpperCase() || 'U'}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-slate-800 text-sm truncate">Hao Wu</p>
+                <p className="font-semibold text-slate-800 text-sm truncate">{user?.userName || 'User'}</p>
                 <p className="text-xs text-slate-500 truncate">腰痛门诊数据管理</p>
               </div>
+              <button
+                onClick={handleLogout}
+                className="p-2 hover:bg-red-50 rounded-lg transition-colors duration-200 text-slate-400 hover:text-red-500"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </SidebarFooter>
         </Sidebar>

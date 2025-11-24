@@ -1,0 +1,67 @@
+@page
+@model LowBackPainSystem.Pages.Patients.IndexModel
+@{
+    ViewData["Title"] = "Patients - Low Back Pain System";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">患者列表 / Patient List</h3>
+                    <div class="card-tools">
+                        <a href="/Patients/Create" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> 新增患者 / Add Patient
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Patients == null || !Model.Patients.Any())
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 暂无患者数据 / No patient data available
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>研究ID / Study ID</th>
+                                    <th>姓名 / Name</th>
+                                    <th>性别 / Gender</th>
+                                    <th>年龄 / Age</th>
+                                    <th>主诉 / Chief Complaint</th>
+                                    <th>创建时间 / Created</th>
+                                    <th>操作 / Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var patient in Model.Patients)
+                                {
+                                    <tr>
+                                        <td>@patient.StudyId</td>
+                                        <td>@patient.Name</td>
+                                        <td>@patient.Gender</td>
+                                        <td>@patient.Age</td>
+                                        <td>@patient.ChiefComplaint</td>
+                                        <td>@patient.CreationTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                        <td>
+                                            <a href="/Patients/Edit?id=@patient.Id" class="btn btn-sm btn-info">
+                                                <i class="fas fa-edit"></i> 编辑
+                                            </a>
+                                            <a href="/Patients/Details?id=@patient.Id" class="btn btn-sm btn-success">
+                                                <i class="fas fa-eye"></i> 详情
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

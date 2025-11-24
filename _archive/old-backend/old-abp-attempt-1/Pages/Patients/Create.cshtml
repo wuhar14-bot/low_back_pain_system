@@ -1,0 +1,265 @@
+@page
+@model LowBackPainSystem.Pages.Patients.CreateModel
+@{
+    ViewData["Title"] = "新增患者 / Add Patient - Low Back Pain System";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-user-plus"></i> 新增患者 / Add New Patient
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Progress Steps -->
+                        <div class="mb-4">
+                            <ul class="nav nav-pills nav-fill" id="patientFormTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="basic-tab" data-bs-toggle="pill" data-bs-target="#basic" type="button" role="tab">
+                                        <i class="fas fa-user"></i> 基本信息
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="history-tab" data-bs-toggle="pill" data-bs-target="#history" type="button" role="tab">
+                                        <i class="fas fa-file-medical"></i> 病史资料
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="subjective-tab" data-bs-toggle="pill" data-bs-target="#subjective" type="button" role="tab">
+                                        <i class="fas fa-stethoscope"></i> 主观检查
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="objective-tab" data-bs-toggle="pill" data-bs-target="#objective" type="button" role="tab">
+                                        <i class="fas fa-heartbeat"></i> 客观检查
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="functional-tab" data-bs-toggle="pill" data-bs-target="#functional" type="button" role="tab">
+                                        <i class="fas fa-chart-line"></i> 功能评分
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="intervention-tab" data-bs-toggle="pill" data-bs-target="#intervention" type="button" role="tab">
+                                        <i class="fas fa-notes-medical"></i> 干预建议
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="patientFormTabContent">
+                            <!-- 1. Basic Information / 基本信息 -->
+                            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-user text-primary"></i> 基本信息 / Basic Information</h4>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Input.StudyId" class="form-label">研究ID / Study ID <span class="text-danger">*</span></label>
+                                        <input asp-for="Input.StudyId" class="form-control" placeholder="例如: LBP2024001" required />
+                                        <span asp-validation-for="Input.StudyId" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Input.Name" class="form-label">姓名 / Name</label>
+                                        <input asp-for="Input.Name" class="form-control" placeholder="患者姓名" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="Input.Gender" class="form-label">性别 / Gender <span class="text-danger">*</span></label>
+                                        <select asp-for="Input.Gender" class="form-select" required>
+                                            <option value="">请选择</option>
+                                            <option value="男">男 / Male</option>
+                                            <option value="女">女 / Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="Input.Age" class="form-label">年龄 / Age <span class="text-danger">*</span></label>
+                                        <input asp-for="Input.Age" type="number" class="form-control" placeholder="例如: 45" required min="0" max="150" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="Input.Phone" class="form-label">电话 / Phone</label>
+                                        <input asp-for="Input.Phone" type="tel" class="form-control" placeholder="联系电话" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Input.OnsetDate" class="form-label">发病日期 / Onset Date</label>
+                                        <input asp-for="Input.OnsetDate" type="date" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Medical History / 病史资料 -->
+                            <div class="tab-pane fade" id="history" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-file-medical text-primary"></i> 病史资料 / Medical History</h4>
+                                <div class="mb-3">
+                                    <label asp-for="Input.ChiefComplaint" class="form-label">主诉 / Chief Complaint</label>
+                                    <textarea asp-for="Input.ChiefComplaint" class="form-control" rows="4" placeholder="患者主要症状描述..."></textarea>
+                                    <small class="form-text text-muted">描述患者的主要症状、持续时间和严重程度</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Input.MedicalHistory" class="form-label">既往史 / Medical History</label>
+                                    <textarea asp-for="Input.MedicalHistory" class="form-control" rows="6" placeholder="既往病史、手术史、过敏史等..."></textarea>
+                                    <small class="form-text text-muted">包括既往疾病、手术史、家族史、过敏史等</small>
+                                </div>
+                            </div>
+
+                            <!-- 3. Subjective Examination / 主观检查 -->
+                            <div class="tab-pane fade" id="subjective" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-stethoscope text-primary"></i> 主观检查 / Subjective Examination</h4>
+                                <div class="mb-3">
+                                    <label asp-for="Input.SubjectiveExam" class="form-label">主观检查结果</label>
+                                    <textarea asp-for="Input.SubjectiveExam" class="form-control" rows="8" placeholder="疼痛评分、疼痛部位、放射情况、耐受时间等..."></textarea>
+                                    <small class="form-text text-muted">
+                                        包括：疼痛评分（VAS）、疼痛部位、是否有放射痛、坐位耐受时间、站立耐受时间、步行耐受时间等
+                                    </small>
+                                </div>
+                                <div class="alert alert-info">
+                                    <strong>提示：</strong> 可记录疼痛评分 (0-10分)、疼痛性质（刺痛、钝痛、酸痛等）、加重因素、缓解因素等
+                                </div>
+                            </div>
+
+                            <!-- 4. Objective Examination / 客观检查 -->
+                            <div class="tab-pane fade" id="objective" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-heartbeat text-primary"></i> 客观检查 / Objective Examination</h4>
+                                <div class="mb-3">
+                                    <label asp-for="Input.ObjectiveExam" class="form-label">客观检查结果</label>
+                                    <textarea asp-for="Input.ObjectiveExam" class="form-control" rows="8" placeholder="体格检查结果、影像学检查、神经学检查等..."></textarea>
+                                    <small class="form-text text-muted">
+                                        包括：姿势评估、活动度检查、特殊测试（SLR、神经根刺激试验等）、肌力评估、感觉检查、腱反射等
+                                    </small>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Input.AiPostureAnalysisJson" class="form-label">AI姿势分析数据 (JSON)</label>
+                                    <textarea asp-for="Input.AiPostureAnalysisJson" class="form-control" rows="4" placeholder='{"head_tilt": 5, "shoulder_alignment": "level", ...}'></textarea>
+                                    <small class="form-text text-muted">可选：AI姿势分析结果的JSON数据</small>
+                                </div>
+                            </div>
+
+                            <!-- 5. Functional Scores / 功能评分 -->
+                            <div class="tab-pane fade" id="functional" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-chart-line text-primary"></i> 功能评分 / Functional Scores</h4>
+                                <div class="mb-3">
+                                    <label asp-for="Input.FunctionalScoresJson" class="form-label">功能评分数据 (JSON)</label>
+                                    <textarea asp-for="Input.FunctionalScoresJson" class="form-control" rows="6" placeholder='{"rmdq_score": 12, "ndi_score": 15, "oswestry": 30, ...}'></textarea>
+                                    <small class="form-text text-muted">
+                                        包括常用功能评分：<br>
+                                        - RMDQ (Roland-Morris Disability Questionnaire): 0-24分<br>
+                                        - NDI (Neck Disability Index): 0-50分<br>
+                                        - Oswestry功能障碍指数: 0-100%<br>
+                                        - VAS疼痛评分: 0-10分
+                                    </small>
+                                </div>
+                                <div class="alert alert-warning">
+                                    <strong>注意：</strong> 评分越高表示功能障碍越严重。请定期随访评估以追踪治疗效果。
+                                </div>
+                            </div>
+
+                            <!-- 6. Intervention / 干预建议 -->
+                            <div class="tab-pane fade" id="intervention" role="tabpanel">
+                                <h4 class="mb-3"><i class="fas fa-notes-medical text-primary"></i> 干预建议 / Intervention</h4>
+                                <div class="mb-3">
+                                    <label asp-for="Input.Intervention" class="form-label">治疗干预方案</label>
+                                    <textarea asp-for="Input.Intervention" class="form-control" rows="8" placeholder="物理治疗方案、运动处方、药物治疗、手法治疗等..."></textarea>
+                                    <small class="form-text text-muted">
+                                        包括：物理治疗方案、运动处方、生活方式建议、药物治疗方案、手法治疗计划等
+                                    </small>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Input.Remarks" class="form-label">备注 / Remarks</label>
+                                    <textarea asp-for="Input.Remarks" class="form-control" rows="4" placeholder="其他需要记录的信息..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a href="/Patients" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> 取消 / Cancel
+                            </a>
+                            <div>
+                                <button type="button" class="btn btn-outline-primary me-2" id="prevBtn">
+                                    <i class="fas fa-chevron-left"></i> 上一步
+                                </button>
+                                <button type="button" class="btn btn-outline-primary me-2" id="nextBtn">
+                                    下一步 <i class="fas fa-chevron-right"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> 保存 / Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Tab navigation
+        const tabs = ['basic', 'history', 'subjective', 'objective', 'functional', 'intervention'];
+        let currentTab = 0;
+
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentTab > 0) {
+                currentTab--;
+                showTab(currentTab);
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentTab < tabs.length - 1) {
+                currentTab++;
+                showTab(currentTab);
+            }
+        });
+
+        function showTab(index) {
+            const tabId = tabs[index] + '-tab';
+            const tabTrigger = new bootstrap.Tab(document.getElementById(tabId));
+            tabTrigger.show();
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = (index === 0);
+            document.getElementById('nextBtn').disabled = (index === tabs.length - 1);
+
+            // Update current tab index when clicking tabs directly
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach((el, idx) => {
+                el.addEventListener('shown.bs.tab', function() {
+                    currentTab = idx;
+                    document.getElementById('prevBtn').disabled = (currentTab === 0);
+                    document.getElementById('nextBtn').disabled = (currentTab === tabs.length - 1);
+                });
+            });
+        }
+
+        // Initialize
+        showTab(0);
+    </script>
+}
+
+<style>
+    .nav-pills .nav-link {
+        border-radius: 0.5rem;
+        margin: 0 0.25rem;
+    }
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .nav-pills .nav-link:not(.active) {
+        color: #6c757d;
+        background-color: #f8f9fa;
+    }
+    .nav-pills .nav-link:not(.active):hover {
+        background-color: #e9ecef;
+    }
+</style>

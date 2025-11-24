@@ -285,8 +285,7 @@ export default function PatientForm() {
 
   const handleSubmit = async () => {
     if (!currentWorkspaceId) {
-      alert("提交失败：未找到当前工作室信息，请重新选择工作室。");
-      navigate(createPageUrl("WorkspaceManager"));
+      alert("提交失败：未找到工作室信息。请从主系统重新进入本系统。");
       return;
     }
 

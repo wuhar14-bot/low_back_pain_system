@@ -1,4 +1,4 @@
-import { base44 } from './base44Client';
+import { patientService, patientImageService } from '../services/apiService';
 
 // Default workspaces for local development
 const defaultWorkspaces = [
@@ -19,29 +19,6 @@ const defaultWorkspaces = [
     created_by_name: "Research Team"
   }
 ];
-
-// Load patients from localStorage (real patients only, no mock data)
-const loadPatients = () => {
-  const stored = localStorage.getItem('realPatients');
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      console.warn('Failed to parse stored patients, starting fresh');
-    }
-  }
-  return []; // Start with empty array - no mock patients!
-};
-
-// Save patients to localStorage
-const savePatients = (patients) => {
-  try {
-    localStorage.setItem('realPatients', JSON.stringify(patients));
-    console.log(`✅ Saved ${patients.length} patients to localStorage`);
-  } catch (e) {
-    console.error('Failed to save patients to localStorage:', e);
-  }
-};
 
 // Load workspaces from localStorage or use default
 const loadWorkspaces = () => {
@@ -68,159 +45,178 @@ const saveWorkspaces = (workspaces) => {
 // Initialize with stored or default data
 let mockWorkspaces = loadWorkspaces();
 
-// REAL PATIENTS ONLY - No mock data!
-let mockPatients = loadPatients();
-
-// Real Database API URL (dynamic for mobile compatibility)
-const getApiUrl = () => `http://${window.location.hostname}:5003/api`;
-
-// Real Database API Client with localStorage fallback
-class MockPatient {
-  static async list(sortOrder = "-created_date") {
+/**
+ * Patient API wrapper using new backend
+ * Connects to ABP vNext backend at https://localhost:44385
+ */
+class Patient {
+  /**
+   * Get all patients with optional sorting
+   * @param {string} sortOrder - Sort order (not used in ABP, but kept for compatibility)
+   * @param {Object} params - Additional query params
+   */
+  static async list(sortOrder = "-created_date", params = {}) {
     try {
-      const response = await fetch(`${getApiUrl()}/patients?sort=${sortOrder}`);
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-      const patients = await response.json();
-      console.log(`✅ [DB] Loaded ${patients.length} patients from database`);
-
-      // Sync to localStorage as backup
-      mockPatients = patients;
-      savePatients(patients);
-
-      return patients;
-    } catch (error) {
-      console.warn('⚠️ [DB] Database unavailable, using localStorage:', error.message);
-      // Fallback to localStorage
-      const sorted = [...mockPatients].sort((a, b) => {
-        if (sortOrder === "-created_date") {
-          return new Date(b.created_date) - new Date(a.created_date);
-        }
-        return new Date(a.created_date) - new Date(b.created_date);
+      const response = await patientService.getPatients({
+        skipCount: params.skipCount || 0,
+        maxResultCount: params.maxResultCount || 100,
+        ...params
       });
-      return sorted;
+
+      console.log(`✅ [Backend] Loaded ${response.items?.length || 0} patients`);
+
+      // ABP returns { items: [], totalCount: N }
+      // Return items array for compatibility
+      return response.items || [];
+    } catch (error) {
+      console.error('❌ [Backend] Failed to load patients:', error);
+      throw error;
     }
   }
 
+  /**
+   * Get patient by ID
+   * @param {string} id - Patient UUID
+   */
   static async get(id) {
     try {
-      const response = await fetch(`${getApiUrl()}/patients/${id}`);
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-      const patient = await response.json();
-      console.log(`✅ [DB] Loaded patient ${id}`);
+      const patient = await patientService.getPatientById(id);
+      console.log(`✅ [Backend] Loaded patient ${id}`);
       return patient;
     } catch (error) {
-      console.warn('⚠️ [DB] Using localStorage fallback:', error.message);
-      return mockPatients.find(p => p.id === id) || null;
-    }
-  }
-
-  static async create(data) {
-    try {
-      const response = await fetch(`${getApiUrl()}/patients`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-      const newPatient = await response.json();
-      console.log(`✅ [DB] Created patient: ${newPatient.id}`);
-
-      // Also save to localStorage as backup
-      mockPatients.push(newPatient);
-      savePatients(mockPatients);
-
-      return newPatient;
-    } catch (error) {
-      console.warn('⚠️ [DB] Using localStorage only:', error.message);
-      // Fallback to localStorage
-      const newPatient = {
-        id: `patient-${Date.now()}`,
-        created_date: new Date().toISOString(),
-        last_sync_timestamp: new Date().toISOString(),
-        ...data
-      };
-      mockPatients.push(newPatient);
-      savePatients(mockPatients);
-      return newPatient;
-    }
-  }
-
-  static async update(id, data) {
-    try {
-      const response = await fetch(`${getApiUrl()}/patients/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-      const updated = await response.json();
-      console.log(`✅ [DB] Updated patient: ${id}`);
-
-      // Sync to localStorage
-      const index = mockPatients.findIndex(p => p.id === id);
-      if (index !== -1) {
-        mockPatients[index] = updated;
-      } else {
-        mockPatients.push(updated);
-      }
-      savePatients(mockPatients);
-
-      return updated;
-    } catch (error) {
-      console.warn('⚠️ [DB] Using localStorage only:', error.message);
-      // Fallback to localStorage
-      const index = mockPatients.findIndex(p => p.id === id);
-      if (index !== -1) {
-        mockPatients[index] = {
-          ...mockPatients[index],
-          ...data,
-          last_sync_timestamp: new Date().toISOString()
-        };
-        savePatients(mockPatients);
-        return mockPatients[index];
-      }
+      console.error(`❌ [Backend] Failed to load patient ${id}:`, error);
       return null;
     }
   }
 
-  static async delete(id) {
+  /**
+   * Create new patient
+   * @param {Object} data - Patient data
+   */
+  static async create(data) {
     try {
-      const response = await fetch(`${getApiUrl()}/patients/${id}`, {
-        method: 'DELETE'
-      });
+      // Transform frontend data to backend format
+      const backendData = {
+        studyId: data.study_id,
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        phone: data.phone,
+        onsetDate: data.onset_date,
+        chiefComplaint: data.chief_complaint,
+        workspaceId: data.workspace_id,
+        workspaceName: data.workspace_name,
+        doctorId: data.doctor_id,
+        doctorName: data.doctor_name,
+        medicalHistoryJson: data.medical_history,
+        painAreasJson: data.pain_areas,
+        subjectiveExamJson: data.subjective_exam,
+        objectiveExamJson: data.objective_exam,
+        functionalScoresJson: data.functional_scores,
+        aiPostureAnalysisJson: data.ai_analysis,
+        interventionJson: data.intervention,
+        remarks: data.remarks
+      };
 
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      const newPatient = await patientService.createPatient(backendData);
+      console.log(`✅ [Backend] Created patient: ${newPatient.id}`);
 
-      const deleted = await response.json();
-      console.log(`✅ [DB] Deleted patient: ${id}`);
-
-      // Remove from localStorage
-      const index = mockPatients.findIndex(p => p.id === id);
-      if (index !== -1) {
-        mockPatients.splice(index, 1);
-        savePatients(mockPatients);
-      }
-
-      return deleted;
+      // Transform back to frontend format for consistency
+      return transformToFrontend(newPatient);
     } catch (error) {
-      console.warn('⚠️ [DB] Using localStorage only:', error.message);
-      // Fallback to localStorage
-      const index = mockPatients.findIndex(p => p.id === id);
-      if (index !== -1) {
-        const deleted = mockPatients.splice(index, 1)[0];
-        savePatients(mockPatients);
-        return deleted;
-      }
-      throw new Error("Patient not found");
+      console.error('❌ [Backend] Failed to create patient:', error);
+      throw error;
     }
   }
+
+  /**
+   * Update patient
+   * @param {string} id - Patient UUID
+   * @param {Object} data - Updated patient data
+   */
+  static async update(id, data) {
+    try {
+      // Transform frontend data to backend format
+      const backendData = {
+        studyId: data.study_id,
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        phone: data.phone,
+        onsetDate: data.onset_date,
+        chiefComplaint: data.chief_complaint,
+        workspaceId: data.workspace_id,
+        workspaceName: data.workspace_name,
+        doctorId: data.doctor_id,
+        doctorName: data.doctor_name,
+        medicalHistoryJson: data.medical_history,
+        painAreasJson: data.pain_areas,
+        subjectiveExamJson: data.subjective_exam,
+        objectiveExamJson: data.objective_exam,
+        functionalScoresJson: data.functional_scores,
+        aiPostureAnalysisJson: data.ai_analysis,
+        interventionJson: data.intervention,
+        remarks: data.remarks
+      };
+
+      const updated = await patientService.updatePatient(id, backendData);
+      console.log(`✅ [Backend] Updated patient: ${id}`);
+
+      return transformToFrontend(updated);
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to update patient ${id}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete patient
+   * @param {string} id - Patient UUID
+   */
+  static async delete(id) {
+    try {
+      await patientService.deletePatient(id);
+      console.log(`✅ [Backend] Deleted patient: ${id}`);
+      return { id };
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to delete patient ${id}:`, error);
+      throw error;
+    }
+  }
+}
+
+/**
+ * Transform backend patient data to frontend format
+ * @param {Object} backendPatient - Patient from ABP backend
+ * @returns {Object} Frontend-compatible patient object
+ */
+function transformToFrontend(backendPatient) {
+  return {
+    id: backendPatient.id,
+    study_id: backendPatient.studyId,
+    name: backendPatient.name,
+    age: backendPatient.age,
+    gender: backendPatient.gender,
+    phone: backendPatient.phone,
+    onset_date: backendPatient.onsetDate,
+    chief_complaint: backendPatient.chiefComplaint,
+    workspace_id: backendPatient.workspaceId,
+    workspace_name: backendPatient.workspaceName,
+    doctor_id: backendPatient.doctorId,
+    doctor_name: backendPatient.doctorName,
+    medical_history: backendPatient.medicalHistoryJson,
+    pain_areas: backendPatient.painAreasJson,
+    subjective_exam: backendPatient.subjectiveExamJson,
+    objective_exam: backendPatient.objectiveExamJson,
+    functional_scores: backendPatient.functionalScoresJson,
+    ai_analysis: backendPatient.aiPostureAnalysisJson,
+    intervention: backendPatient.interventionJson,
+    remarks: backendPatient.remarks,
+    created_date: backendPatient.creationTime,
+    created_by: backendPatient.creatorId,
+    last_modified: backendPatient.lastModificationTime,
+    last_modified_by: backendPatient.lastModifierId
+  };
 }
 
 class MockWorkspace {
@@ -275,9 +271,99 @@ class MockWorkspace {
   }
 }
 
-// Use mock entities for local development
-export const Patient = MockPatient;
+/**
+ * Patient Image API wrapper
+ * Handles image upload/download for patients
+ */
+class PatientImage {
+  /**
+   * Upload an image for a patient
+   * @param {string} patientId - Patient UUID
+   * @param {File} file - File to upload
+   * @param {string} imageType - Type: xray, mri, photo, posture, other
+   * @param {string} description - Optional description
+   */
+  static async upload(patientId, file, imageType, description = '') {
+    try {
+      const result = await patientImageService.uploadImage(patientId, file, imageType, description);
+      console.log(`✅ [Backend] Uploaded image for patient ${patientId}`);
+      return result;
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to upload image:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all images for a patient
+   * @param {string} patientId - Patient UUID
+   */
+  static async listByPatient(patientId) {
+    try {
+      const images = await patientImageService.getImagesByPatient(patientId);
+      console.log(`✅ [Backend] Loaded ${images.length} images for patient ${patientId}`);
+      return images;
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to load images:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get image by ID
+   * @param {string} id - Image UUID
+   */
+  static async get(id) {
+    try {
+      return await patientImageService.getImage(id);
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to get image ${id}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get download URL for an image
+   * @param {string} id - Image UUID
+   */
+  static getDownloadUrl(id) {
+    return patientImageService.getDownloadUrl(id);
+  }
+
+  /**
+   * Delete an image
+   * @param {string} id - Image UUID
+   */
+  static async delete(id) {
+    try {
+      await patientImageService.deleteImage(id);
+      console.log(`✅ [Backend] Deleted image ${id}`);
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to delete image ${id}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update image description
+   * @param {string} id - Image UUID
+   * @param {string} description - New description
+   */
+  static async updateDescription(id, description) {
+    try {
+      const result = await patientImageService.updateDescription(id, description);
+      console.log(`✅ [Backend] Updated description for image ${id}`);
+      return result;
+    } catch (error) {
+      console.error(`❌ [Backend] Failed to update image description:`, error);
+      throw error;
+    }
+  }
+}
+
+// Export entities for use throughout the app
+export { Patient, PatientImage };
 export const Workspace = MockWorkspace;
 
 // Export for testing/debugging
-export { mockPatients, mockWorkspaces };
+export { mockWorkspaces };

@@ -3,7 +3,17 @@ import { Patient } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, User, Phone, Calendar, Activity, AlertTriangle, FileText } from "lucide-react";
+import { ArrowLeft, User, Phone, Calendar, Activity, AlertTriangle, FileText, Edit, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
@@ -17,9 +27,29 @@ export default function PatientDetail() {
   const navigate = useNavigate();
   const [patient, setPatient] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const urlParams = new URLSearchParams(window.location.search);
   const patientId = urlParams.get('id');
+
+  const handleEdit = () => {
+    // Navigate to PatientForm with patient ID for editing
+    navigate(createPageUrl("PatientForm") + `?id=${patientId}`);
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await Patient.delete(patientId);
+      navigate(createPageUrl("Dashboard"));
+    } catch (error) {
+      console.error("删除患者失败:", error);
+      alert("删除失败，请重试");
+    }
+    setIsDeleting(false);
+    setShowDeleteDialog(false);
+  };
 
   useEffect(() => {
     loadPatient();
@@ -91,20 +121,62 @@ export default function PatientDetail() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* 头部 */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate(createPageUrl("Dashboard"))}
-            className="hover:bg-slate-100"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">患者详情</h1>
-            <p className="text-slate-600 mt-1">完整的腰痛评估记录</p>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate(createPageUrl("Dashboard"))}
+              className="hover:bg-slate-100"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-800">患者详情</h1>
+              <p className="text-slate-600 mt-1">完整的腰痛评估记录</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handleEdit}
+              className="gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              编辑
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(true)}
+              className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="w-4 h-4" />
+              删除
+            </Button>
           </div>
         </div>
+
+        {/* 删除确认对话框 */}
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>确认删除</AlertDialogTitle>
+              <AlertDialogDescription>
+                确定要删除患者 {patient?.study_id} 的记录吗？此操作无法撤销。
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>取消</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isDeleting ? "删除中..." : "确认删除"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* 患者概览卡片 */}
         <Card className="mb-8 border-0 shadow-xl bg-white/90 backdrop-blur-sm">

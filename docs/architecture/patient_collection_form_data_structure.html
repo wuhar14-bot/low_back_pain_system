@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Back Pain System - Patient Collection Form Data Structure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .summary h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border-left: 5px solid #667eea;
+            padding-left: 30px;
+        }
+
+        .section h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .required {
+            background: #dc3545;
+            color: white;
+        }
+
+        .optional {
+            background: #6c757d;
+            color: white;
+        }
+
+        .conditional {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .type-badge {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 10px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .feature-list li strong {
+            color: #667eea;
+        }
+
+        .nested-fields {
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 2px dashed #ccc;
+        }
+
+        .nested-item {
+            padding: 5px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 3px solid #667eea;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .stat-card {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Patient Collection Form</h1>
+            <p>Low Back Pain System - Data Structure Documentation</p>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Generated: 2025-10-24</p>
+        </header>
+
+        <div class="summary">
+            <h2>📊 Overview</h2>
+            <p>The patient collection form collects comprehensive clinical data across 7 major sections, supporting both manual entry and AI-assisted OCR extraction.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">70+</div>
+                    <div class="stat-label">Total Data Fields</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Main Sections</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Required Fields</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Nested Objects</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px; color: #667eea;">Key Features</h3>
+            <ul class="feature-list">
+                <li><strong>OCR Integration:</strong> Automated text extraction from medical record images</li>
+                <li><strong>AI Posture Analysis:</strong> Real-time ROM measurement using MediaPipe pose detection</li>
+                <li><strong>Interactive Body Map:</strong> SVG-based pain area selection with 20 anatomical regions</li>
+                <li><strong>Conditional Logic:</strong> Dynamic field display based on user selections</li>
+                <li><strong>Multi-platform Support:</strong> Optimized for mobile and desktop data collection</li>
+                <li><strong>Auto-save:</strong> Real-time data synchronization with backend database</li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: Basic Info -->
+            <div class="section">
+                <h2><span class="section-number">1</span> Basic Information (基本信息)</h2>
+                <p class="section-subtitle">Essential patient demographics and contact information</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Label (中文)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td><code>name</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>患者姓名</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Study ID</td>
+                            <td><code>study_id</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>Study ID</td>
+                            <td><span class="badge required">Required</span></td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td><code>phone</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>联系电话</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Age</td>
+                            <td><code>age</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>年龄</td>
+                            <td><span class="badge required">Required</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td><code>gender</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>性别 (男/女)</td>
+                            <td><span class="badge required">Required</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 2: Medical History -->
+            <div class="section">
+                <h2><span class="section-number">2</span> Medical History (病史资料)</h2>
+                <p class="section-subtitle">Clinical history, symptom characteristics, and previous treatments</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Label (中文)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chief Complaint</td>
+                            <td><code>chief_complaint</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>主诉 (supports OCR)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>History Type</td>
+                            <td><code>history_type</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>现病史类型 (首次发作/复发)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>First Onset Date</td>
+                            <td><code>first_onset_date</code></td>
+                            <td><span class="type-badge">Date</span></td>
+                            <td>初次发作日期</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Pain Type</td>
+                            <td><code>pain_type</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>疼痛类型 (局部/放射/牵涉)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Aggravating Factors</td>
+                            <td><code>aggravating_factors</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>加重因素</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Relieving Factors</td>
+                            <td><code>relieving_factors</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>缓解因素</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Has Radiation</td>
+                            <td><code>has_radiation</code></td>
+                            <td><span class="type-badge">Boolean</span></td>
+                            <td>是否有放射痛</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Radiation Location</td>
+                            <td><code>radiation_location</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>放射至何处</td>
+                            <td><span class="badge conditional">Conditional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Previous Treatment</td>
+                            <td><code>previous_treatment</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>其他已接受治疗</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Condition Progress</td>
+                            <td><code>condition_progress</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>病情进展 (改善/恶化/稳定/波动)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 3: Pain Areas -->
+            <div class="section">
+                <h2><span class="section-number">3</span> Pain Area Selection (疼痛区域选择)</h2>
+                <p class="section-subtitle">Interactive body diagram for anatomical pain location mapping</p>
+
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>pain_areas</code> - Object with boolean values for each anatomical region</p>
+
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                        <div class="nested-item">✓ <code>upper_cervical</code> - 上颈椎</div>
+                        <div class="nested-item">✓ <code>lower_cervical</code> - 下颈椎</div>
+                        <div class="nested-item">✓ <code>left_upper_trap</code> - 左上斜方肌</div>
+                        <div class="nested-item">✓ <code>right_upper_trap</code> - 右上斜方肌</div>
+                        <div class="nested-item">✓ <code>left_mid_trap</code> - 左中斜方肌</div>
+                        <div class="nested-item">✓ <code>right_mid_trap</code> - 右中斜方肌</div>
+                        <div class="nested-item">✓ <code>left_lower_trap</code> - 左下斜方肌</div>
+                        <div class="nested-item">✓ <code>right_lower_trap</code> - 右下斜方肌</div>
+                        <div class="nested-item">✓ <code>left_latissimus</code> - 左背阔肌</div>
+                        <div class="nested-item">✓ <code>right_latissimus</code> - 右背阔肌</div>
+                        <div class="nested-item">✓ <code>thoracic_erector</code> - 胸椎竖脊肌</div>
+                        <div class="nested-item">✓ <code>lumbar_erector</code> - 腰椎竖脊肌</div>
+                        <div class="nested-item">✓ <code>left_glute_max</code> - 左臀大肌</div>
+                        <div class="nested-item">✓ <code>right_glute_max</code> - 右臀大肌</div>
+                        <div class="nested-item">✓ <code>left_glute_med</code> - 左臀中肌</div>
+                        <div class="nested-item">✓ <code>right_glute_med</code> - 右臀中肌</div>
+                        <div class="nested-item">✓ <code>left_hamstring</code> - 左腘绳肌</div>
+                        <div class="nested-item">✓ <code>right_hamstring</code> - 右腘绳肌</div>
+                        <div class="nested-item">✓ <code>left_gastrocnemius</code> - 左腓肠肌</div>
+                        <div class="nested-item">✓ <code>right_gastrocnemius</code> - 右腓肠肌</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Subjective Exam -->
+            <div class="section">
+                <h2><span class="section-number">4</span> Subjective Examination (主观检查)</h2>
+                <p class="section-subtitle">Patient-reported pain, function, and red flag screening</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px; color: #667eea;">Pain & Function Assessment</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Label (中文)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pain Score</td>
+                            <td><code>pain_score</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>NPRS 疼痛评分 (0-10)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sitting Tolerance</td>
+                            <td><code>sitting_tolerance</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>坐姿耐受时间 (分钟)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Standing Tolerance</td>
+                            <td><code>standing_tolerance</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>站立耐受时间 (分钟)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Walking Tolerance</td>
+                            <td><code>walking_tolerance</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>行走耐受时间 (分钟)</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Has Assistive Tools</td>
+                            <td><code>has_assistive_tools</code></td>
+                            <td><span class="type-badge">Boolean</span></td>
+                            <td>是否使用辅助工具</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Assistive Tools</td>
+                            <td><code>assistive_tools</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>辅助工具描述</td>
+                            <td><span class="badge conditional">Conditional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Has Claudication</td>
+                            <td><code>has_claudication</code></td>
+                            <td><span class="type-badge">Boolean</span></td>
+                            <td>是否有间歇性跛行</td>
+                            <td><span class="badge optional">Optional</span></td>
+                        </tr>
+                        <tr>
+                            <td>Claudication Distance</td>
+                            <td><code>claudication_distance</code></td>
+                            <td><span class="type-badge">Text</span></td>
+                            <td>间歇性跛行距离</td>
+                            <td><span class="badge conditional">Conditional</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #dc3545;">Red Flags Screening</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>red_flags</code> - Object with boolean values</p>
+
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                        <div class="nested-item">⚠️ <code>weight_loss</code> - 显著体重减轻</div>
+                        <div class="nested-item">⚠️ <code>appetite_loss</code> - 食欲不振</div>
+                        <div class="nested-item">⚠️ <code>fever</code> - 发热</div>
+                        <div class="nested-item">⚠️ <code>night_pain</code> - 夜间疼痛</div>
+                        <div class="nested-item">⚠️ <code>bladder_bowel_dysfunction</code> - 膀胱/肠道功能障碍</div>
+                        <div class="nested-item">⚠️ <code>saddle_numbness</code> - 鞍区麻木</div>
+                        <div class="nested-item">⚠️ <code>bilateral_limb_weakness</code> - 双侧肢体无力</div>
+                        <div class="nested-item">⚠️ <code>bilateral_sensory_abnormal</code> - 双侧感觉异常</div>
+                        <div class="nested-item">⚠️ <code>hand_clumsiness</code> - 手部不灵活</div>
+                        <div class="nested-item">⚠️ <code>gait_abnormal</code> - 步态异常</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Cervical Function Problems</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>cervical_function_problems</code> - Object with boolean values</p>
+
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                        <div class="nested-item">✓ <code>dropping_objects</code> - 物品掉落</div>
+                        <div class="nested-item">✓ <code>difficulty_picking_small_items</code> - 难以拾取小物件</div>
+                        <div class="nested-item">✓ <code>writing_difficulty</code> - 书写困难</div>
+                        <div class="nested-item">✓ <code>phone_usage_difficulty</code> - 使用手机困难</div>
+                        <div class="nested-item">✓ <code>buttoning_difficulty</code> - 扣纽扣困难</div>
+                        <div class="nested-item">✓ <code>chopstick_usage_difficulty</code> - 使用筷子困难</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Objective Exam -->
+            <div class="section">
+                <h2><span class="section-number">5</span> Objective Examination (客观检查)</h2>
+                <p class="section-subtitle">Physical examination findings including posture, ROM, special tests, and reflexes</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px; color: #667eea;">AI Posture Analysis (MediaPipe)</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>ai_posture_analysis</code> - Complex object with ROM measurements and clinical recommendations</p>
+                <div class="nested-fields">
+                    <div class="nested-item">📊 <code>rom_degrees</code> - Measured ROM angles</div>
+                    <div class="nested-item">📊 <code>rom_assessment</code> - Functional assessment</div>
+                    <div class="nested-item">📊 <code>compensations</code> - Compensation patterns</div>
+                    <div class="nested-item">📊 <code>recommendations</code> - Clinical recommendations</div>
+                    <div class="nested-item">📊 <code>annotatedStandingUrl</code> - Standing posture image</div>
+                    <div class="nested-item">📊 <code>annotatedFlexionUrl</code> - Flexion posture image</div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Posture Assessment</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cervical Posture</td>
+                            <td><code>cervical_posture</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>前凸过度 / 正常 / 前凸消失 / 后凸</td>
+                        </tr>
+                        <tr>
+                            <td>Lumbar Posture</td>
+                            <td><code>lumbar_posture</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>前凸过度 / 正常 / 曲度变平 / 后凸</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Range of Motion (ROM)</h3>
+                <p style="margin-bottom: 15px;"><strong>Cervical ROM:</strong> <code>cervical_rom</code> - Object with 6 directional measurements</p>
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <div class="nested-item">📐 <code>flexion</code> - 屈曲</div>
+                        <div class="nested-item">📐 <code>extension</code> - 伸展</div>
+                        <div class="nested-item">📐 <code>left_lateral</code> - 左侧屈</div>
+                        <div class="nested-item">📐 <code>right_lateral</code> - 右侧屈</div>
+                        <div class="nested-item">📐 <code>left_rotation</code> - 左旋转</div>
+                        <div class="nested-item">📐 <code>right_rotation</code> - 右旋转</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; margin-bottom: 15px;"><strong>Lumbar ROM:</strong> <code>lumbar_rom</code> - Object with 6 directional measurements</p>
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <div class="nested-item">📐 <code>flexion</code> - 屈曲</div>
+                        <div class="nested-item">📐 <code>extension</code> - 伸展</div>
+                        <div class="nested-item">📐 <code>left_lateral</code> - 左侧屈</div>
+                        <div class="nested-item">📐 <code>right_lateral</code> - 右侧屈</div>
+                        <div class="nested-item">📐 <code>left_rotation</code> - 左旋转</div>
+                        <div class="nested-item">📐 <code>right_rotation</code> - 右旋转</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Special Tests</h3>
+                <p style="margin-bottom: 15px;"><strong>SLR Test:</strong> <code>slr_test</code> - Object with bilateral angles</p>
+                <div class="nested-fields">
+                    <div class="nested-item">📏 <code>left_angle</code> - 左侧角度</div>
+                    <div class="nested-item">📏 <code>right_angle</code> - 右侧角度</div>
+                </div>
+
+                <p style="margin-top: 20px; margin-bottom: 15px;"><strong>Femoral Nerve Test:</strong> <code>femoral_nerve_test</code> - Object with bilateral results</p>
+                <div class="nested-fields">
+                    <div class="nested-item">🔍 <code>left</code> - 左侧结果</div>
+                    <div class="nested-item">🔍 <code>right</code> - 右侧结果</div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Reflex Examination</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>reflexes</code> - Object with 5-grade scale (-, +, ++, +++, ++++)</p>
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <div class="nested-item">🔨 <code>biceps_left</code> - 二头肌左</div>
+                        <div class="nested-item">🔨 <code>biceps_right</code> - 二头肌右</div>
+                        <div class="nested-item">🔨 <code>triceps_left</code> - 三头肌左</div>
+                        <div class="nested-item">🔨 <code>triceps_right</code> - 三头肌右</div>
+                        <div class="nested-item">🔨 <code>knee_left</code> - 膝反射左</div>
+                        <div class="nested-item">🔨 <code>knee_right</code> - 膝反射右</div>
+                        <div class="nested-item">🔨 <code>ankle_left</code> - 踝反射左</div>
+                        <div class="nested-item">🔨 <code>ankle_right</code> - 踝反射右</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Vascular Assessment</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Distal Pulse</td>
+                            <td><code>distal_pulse</code></td>
+                            <td><span class="type-badge">Select</span></td>
+                            <td>存在 / 不存在</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 6: Functional Score -->
+            <div class="section">
+                <h2><span class="section-number">6</span> Functional Score (功能评分)</h2>
+                <p class="section-subtitle">Standardized disability and function assessment tools</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scale</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Range</th>
+                            <th>Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>RMDQ</td>
+                            <td><code>rmdq_score</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>0-24</td>
+                            <td>
+                                0-4: 轻微<br>
+                                5-14: 中等<br>
+                                15-24: 重度
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>NDI</td>
+                            <td><code>ndi_score</code></td>
+                            <td><span class="type-badge">Number</span></td>
+                            <td>0-100%</td>
+                            <td>
+                                0-20%: 轻微<br>
+                                21-40%: 中等<br>
+                                41-60%: 重度<br>
+                                >60%: 完全残疾
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 7: Intervention -->
+            <div class="section">
+                <h2><span class="section-number">7</span> Intervention & Recommendations (干预建议)</h2>
+                <p class="section-subtitle">Treatment interventions and clinical recommendations</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px; color: #667eea;">Interventions Provided</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>interventions</code> - Object with boolean values</p>
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                        <div class="nested-item">💊 <code>posture_correction</code> - 姿势矫正</div>
+                        <div class="nested-item">💊 <code>pain_management</code> - 疼痛调节（热敷）</div>
+                        <div class="nested-item">💊 <code>therapeutic_exercise</code> - 治疗性运动</div>
+                        <div class="nested-item">💊 <code>gait_reeducation</code> - 步态再教育</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Clinical Recommendations</h3>
+                <p style="margin-bottom: 15px;"><strong>Data Structure:</strong> <code>recommendations</code> - Object with boolean values</p>
+                <div class="nested-fields">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px;">
+                        <div class="nested-item">📋 <code>discharge_with_advice</code> - 出院并提供建议及家庭锻炼计划</div>
+                        <div class="nested-item">📋 <code>specialist_followup</code> - 进一步专科门诊(SOPD)随访</div>
+                        <div class="nested-item">📋 <code>outpatient_pt</code> - 门诊物理治疗</div>
+                        <div class="nested-item">📋 <code>day_rehabilitation</code> - 日间康复</div>
+                        <div class="nested-item">📋 <code>medication_intervention</code> - 药物干预</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 10px; color: #667eea;">Additional Documentation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Field Key</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Medication Details</td>
+                            <td><code>medication_details</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>Drug name, dosage, frequency, timing, duration</td>
+                        </tr>
+                        <tr>
+                            <td>Remarks</td>
+                            <td><code>remarks</code></td>
+                            <td><span class="type-badge">Textarea</span></td>
+                            <td>General clinical notes and observations</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="section" style="border-left-color: #764ba2;">
+                <h2><span class="section-number" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">⚙️</span> Technical Implementation</h2>
+
+                <h3 style="margin-top: 20px; margin-bottom: 15px; color: #667eea;">Data Validation & Sanitization</h3>
+                <ul class="feature-list">
+                    <li><strong>Numeric Fields:</strong> age, pain_score, sitting_tolerance, standing_tolerance, walking_tolerance, rmdq_score, ndi_score - Validated as integers with range checking</li>
+                    <li><strong>Boolean Fields:</strong> has_radiation, has_assistive_tools, has_claudication - Converted to strict boolean values</li>
+                    <li><strong>Nested Boolean Objects:</strong> red_flags, cervical_function_problems, interventions, recommendations - Each key converted to boolean</li>
+                    <li><strong>Required Field Validation:</strong> study_id, age, gender must be present for form submission</li>
+                </ul>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px; color: #667eea;">Auto-Save & Synchronization</h3>
+                <ul class="feature-list">
+                    <li><strong>Real-time Auto-save:</strong> Form data automatically saved to backend after each section completion</li>
+                    <li><strong>Sync Interval:</strong> 3-second polling for remote updates via <code>last_sync_timestamp</code></li>
+                    <li><strong>Conflict Resolution:</strong> Remote changes override local data when timestamps indicate newer version</li>
+                    <li><strong>Workspace Association:</strong> All patient data linked to <code>workspace_id</code> for multi-tenant support</li>
+                </ul>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px; color: #667eea;">AI Features</h3>
+                <ul class="feature-list">
+                    <li><strong>OCR Extraction:</strong> Upload medical record images → AI extracts structured data → Auto-populate form fields</li>
+                    <li><strong>MediaPipe Pose Analysis:</strong> Real-time body posture detection → Automatic ROM calculation → Generate clinical recommendations</li>
+                    <li><strong>Data Sanitization:</strong> AI-extracted data validated and sanitized before form population</li>
+                    <li><strong>Section Completion Tracking:</strong> Smart detection of completed sections based on non-empty validated fields</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Low Back Pain System</strong> - Patient Collection Form Data Structure</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Generated: 2025-10-24 |
+                Total Fields: 70+ |
+                Sections: 7 |
+                Technology: React + MediaPipe + OCR
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

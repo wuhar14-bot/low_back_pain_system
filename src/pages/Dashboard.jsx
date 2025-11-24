@@ -14,10 +14,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Monitor, 
-  Users, 
-  Activity, 
+import {
+  Monitor,
+  Users,
+  Activity,
   Calendar,
   Search,
   Filter,
@@ -25,7 +25,11 @@ import {
   Phone,
   AlertTriangle,
   Download,
-  Building2
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
@@ -46,6 +50,11 @@ export default function Dashboard() {
   const [isExporting, setIsExporting] = useState(false);
   const [currentWorkspaceId, setCurrentWorkspaceId] = useState(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+
   useEffect(() => {
     const workspaceId = localStorage.getItem('currentWorkspaceId');
     setCurrentWorkspaceId(workspaceId);
@@ -59,6 +68,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     filterPatients();
+    setCurrentPage(1); // Reset to first page when filters change
   }, [patients, searchTerm, filterType]);
 
   const loadPatients = async (workspaceId) => {
@@ -331,12 +341,75 @@ export default function Dashboard() {
         </Card>
 
         {/* 患者列表 */}
-        <PatientList 
-          patients={filteredPatients}
+        <PatientList
+          patients={filteredPatients.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
           isLoading={isLoading}
           searchTerm={searchTerm}
           onDeleteClick={handleDeleteRequest}
         />
+
+        {/* 分页控件 */}
+        {filteredPatients.length > 0 && (
+          <Card className="mt-6 border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+            <CardContent className="p-4">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-slate-600">
+                  显示 {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, filteredPatients.length)} 条，共 {filteredPatients.length} 条记录
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <span className="px-3 py-1 text-sm font-medium">
+                    第 {currentPage} / {Math.ceil(filteredPatients.length / pageSize)} 页
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filteredPatients.length / pageSize), prev + 1))}
+                    disabled={currentPage >= Math.ceil(filteredPatients.length / pageSize)}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(Math.ceil(filteredPatients.length / pageSize))}
+                    disabled={currentPage >= Math.ceil(filteredPatients.length / pageSize)}
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </Button>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="ml-2 px-2 py-1 text-sm border rounded-md bg-white"
+                  >
+                    <option value={5}>5条/页</option>
+                    <option value={10}>10条/页</option>
+                    <option value={20}>20条/页</option>
+                    <option value={50}>50条/页</option>
+                  </select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* 删除确认弹窗 */}
         <AlertDialog 

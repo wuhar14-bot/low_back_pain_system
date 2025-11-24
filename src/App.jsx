@@ -3,18 +3,19 @@ import Home from "@/pages/index.jsx"
 import PatientForm from "@/pages/PatientForm.jsx"
 import Dashboard from "@/pages/Dashboard.jsx"
 import AdminPanel from "@/pages/AdminPanel.jsx"
-import WorkspaceManager from "@/pages/WorkspaceManager.jsx"
 import PatientDetail from "@/pages/PatientDetail.jsx"
 import Login from "@/pages/Login.jsx"
 import { Toaster } from "@/components/ui/toaster"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "@/contexts/AuthContext"
+import { ExternalProvider } from "@/contexts/ExternalContext"
 import ProtectedRoute from "@/components/auth/ProtectedRoute"
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <ExternalProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={
@@ -42,11 +43,6 @@ function App() {
               <AdminPanel />
             </ProtectedRoute>
           } />
-          <Route path="/workspacemanager" element={
-            <ProtectedRoute>
-              <WorkspaceManager />
-            </ProtectedRoute>
-          } />
           <Route path="/patientdetail/*" element={
             <ProtectedRoute>
               <PatientDetail />
@@ -54,7 +50,8 @@ function App() {
           } />
         </Routes>
         <Toaster />
-      </BrowserRouter>
+        </BrowserRouter>
+      </ExternalProvider>
     </AuthProvider>
   )
 }
