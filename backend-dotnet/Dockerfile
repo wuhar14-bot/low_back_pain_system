@@ -2,8 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
-COPY ["aspnet-core/LowBackPain.sln", "aspnet-core/"]
+# Copy project files
 COPY ["aspnet-core/src/LowBackPain.Domain.Shared/LowBackPain.Domain.Shared.csproj", "aspnet-core/src/LowBackPain.Domain.Shared/"]
 COPY ["aspnet-core/src/LowBackPain.Domain/LowBackPain.Domain.csproj", "aspnet-core/src/LowBackPain.Domain/"]
 COPY ["aspnet-core/src/LowBackPain.Application.Contracts/LowBackPain.Application.Contracts.csproj", "aspnet-core/src/LowBackPain.Application.Contracts/"]
@@ -12,8 +11,8 @@ COPY ["aspnet-core/src/LowBackPain.EntityFrameworkCore/LowBackPain.EntityFramewo
 COPY ["aspnet-core/src/LowBackPain.HttpApi/LowBackPain.HttpApi.csproj", "aspnet-core/src/LowBackPain.HttpApi/"]
 COPY ["aspnet-core/src/LowBackPain.HttpApi.Host/LowBackPain.HttpApi.Host.csproj", "aspnet-core/src/LowBackPain.HttpApi.Host/"]
 
-# Restore dependencies
-RUN dotnet restore "aspnet-core/LowBackPain.sln"
+# Restore dependencies (only for HttpApi.Host which will restore its dependencies)
+RUN dotnet restore "aspnet-core/src/LowBackPain.HttpApi.Host/LowBackPain.HttpApi.Host.csproj"
 
 # Copy everything else
 COPY aspnet-core/ aspnet-core/
