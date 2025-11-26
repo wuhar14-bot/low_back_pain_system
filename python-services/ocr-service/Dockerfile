@@ -3,9 +3,13 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies for OpenCV and PaddleOCR
+# Install system dependencies for Tesseract OCR
 RUN apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends \
+    tesseract-ocr \
+    tesseract-ocr-chi-sim \
+    tesseract-ocr-chi-tra \
+    tesseract-ocr-eng \
     libgomp1 \
     libglib2.0-0 \
     libsm6 \
