@@ -261,3 +261,19 @@ LowBackPainSystem/Logs/*
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
+
+# Frontend build artifacts
+dist/
+.vite/
+
+# Test results
+test-results/
+playwright-report/
+
+# Temporary files
+temp/
+*.backup
+*.old
+
+# Test data (archived in _archive/test-data/)
+test_images/
