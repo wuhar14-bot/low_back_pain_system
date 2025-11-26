@@ -11,7 +11,7 @@ RUN apt-get update --fix-missing && \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    libgl1-mesa-glx \
+    libgl1 \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
