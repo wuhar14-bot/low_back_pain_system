@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Back Pain System - Architecture Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+        }
+
+        .architecture-diagram {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .layer {
+            margin-bottom: 40px;
+        }
+
+        .layer-title {
+            font-size: 1.2em;
+            color: #475569;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .component {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #3b82f6;
+        }
+
+        .component-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .component-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .frontend-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .backend-icon { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .database-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .service-icon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+        .component-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .component-info {
+            margin-top: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .info-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .info-value {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .url-link {
+            color: #3b82f6;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .url-link:hover {
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-live {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .tech-tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .arrow-down {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-table th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .summary-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .footer {
+            background: #1e293b;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .component:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Low Back Pain Data Collection System</h1>
+            <p>系统架构报告 | System Architecture Report</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">生成日期: 2025-11-26</p>
+        </div>
+
+        <div class="content">
+            <!-- Architecture Diagram -->
+            <div class="section">
+                <h2 class="section-title">📊 系统架构图</h2>
+
+                <div class="architecture-diagram">
+                    <!-- Frontend Layer -->
+                    <div class="layer">
+                        <div class="layer-title">🖥️ FRONTEND LAYER (前端层)</div>
+                        <div class="components">
+                            <div class="component">
+                                <div class="component-header">
+                                    <div class="component-icon frontend-icon">⚛️</div>
+                                    <div class="component-title">React Frontend</div>
+                                </div>
+                                <div class="component-info">
+                                    <div class="info-item">
+                                        <span class="info-label">URL:</span><br>
+                                        <a href="https://low-back-pain-system.onrender.com" target="_blank" class="url-link">
+                                            https://low-back-pain-system.onrender.com
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">部署平台:</span>
+                                        <span class="info-value">Render (Static Site)</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">构建工具:</span>
+                                        <span class="info-value">Vite</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">认证状态:</span>
+                                        <span class="info-value">临时禁用 (VITE_DISABLE_AUTH=true)</span>
+                                    </div>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">React</span>
+                                    <span class="tech-tag">Vite</span>
+                                    <span class="tech-tag">Shadcn/ui</span>
+                                    <span class="tech-tag">Tailwind CSS</span>
+                                </div>
+                                <span class="status-badge status-pending">⏳ Deploying</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="arrow-down">↓</div>
+
+                    <!-- Backend Layer -->
+                    <div class="layer">
+                        <div class="layer-title">⚙️ BACKEND LAYER (后端层)</div>
+                        <div class="components">
+                            <div class="component">
+                                <div class="component-header">
+                                    <div class="component-icon backend-icon">🔷</div>
+                                    <div class="component-title">.NET Backend API</div>
+                                </div>
+                                <div class="component-info">
+                                    <div class="info-item">
+                                        <span class="info-label">URL:</span><br>
+                                        <a href="https://low-back-pain-backend.onrender.com" target="_blank" class="url-link">
+                                            https://low-back-pain-backend.onrender.com
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Swagger API:</span><br>
+                                        <a href="https://low-back-pain-backend.onrender.com/swagger" target="_blank" class="url-link">
+                                            /swagger
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">部署平台:</span>
+                                        <span class="info-value">Render (Web Service - Docker)</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">认证框架:</span>
+                                        <span class="info-value">ABP vNext</span>
+                                    </div>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">ASP.NET Core 7.0</span>
+                                    <span class="tech-tag">ABP Framework</span>
+                                    <span class="tech-tag">Entity Framework</span>
+                                </div>
+                                <span class="status-badge status-live">✅ Live</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="arrow-down">↓</div>
+
+                    <!-- Database Layer -->
+                    <div class="layer">
+                        <div class="layer-title">💾 DATABASE LAYER (数据库层)</div>
+                        <div class="components">
+                            <div class="component">
+                                <div class="component-header">
+                                    <div class="component-icon database-icon">🐘</div>
+                                    <div class="component-title">PostgreSQL Database</div>
+                                </div>
+                                <div class="component-info">
+                                    <div class="info-item">
+                                        <span class="info-label">部署平台:</span>
+                                        <span class="info-value">Render (PostgreSQL Service)</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">数据库名:</span>
+                                        <span class="info-value">LowBackPainDB</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">用途:</span>
+                                        <span class="info-value">患者数据、医疗记录、用户管理</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">备份:</span>
+                                        <span class="info-value">自动备份 (Render)</span>
+                                    </div>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">PostgreSQL 15</span>
+                                    <span class="tech-tag">Relational DB</span>
+                                </div>
+                                <span class="status-badge status-live">✅ Live</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="arrow-down">↓</div>
+
+                    <!-- Microservices Layer -->
+                    <div class="layer">
+                        <div class="layer-title">🔧 MICROSERVICES LAYER (微服务层)</div>
+                        <div class="components">
+                            <div class="component">
+                                <div class="component-header">
+                                    <div class="component-icon service-icon">📝</div>
+                                    <div class="component-title">OCR Service</div>
+                                </div>
+                                <div class="component-info">
+                                    <div class="info-item">
+                                        <span class="info-label">URL:</span><br>
+                                        <a href="https://lowbackpain-ocr-service.onrender.com" target="_blank" class="url-link">
+                                            https://lowbackpain-ocr-service.onrender.com
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">健康检查:</span><br>
+                                        <a href="https://lowbackpain-ocr-service.onrender.com/health" target="_blank" class="url-link">
+                                            /health
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">OCR引擎:</span>
+                                        <span class="info-value">Tesseract 5.5.0</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">支持语言:</span>
+                                        <span class="info-value">简体中文、繁体中文、英文</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">功能:</span>
+                                        <span class="info-value">医疗文档文字识别</span>
+                                    </div>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">Python 3.10</span>
+                                    <span class="tech-tag">Flask</span>
+                                    <span class="tech-tag">Tesseract OCR</span>
+                                    <span class="tech-tag">OpenCV</span>
+                                </div>
+                                <span class="status-badge status-live">✅ Live</span>
+                            </div>
+
+                            <div class="component">
+                                <div class="component-header">
+                                    <div class="component-icon service-icon">🤸</div>
+                                    <div class="component-title">MediaPipe Service</div>
+                                </div>
+                                <div class="component-info">
+                                    <div class="info-item">
+                                        <span class="info-label">URL:</span><br>
+                                        <a href="https://lowbackpain-mediapipe-service.onrender.com" target="_blank" class="url-link">
+                                            https://lowbackpain-mediapipe-service.onrender.com
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">健康检查:</span><br>
+                                        <a href="https://lowbackpain-mediapipe-service.onrender.com/health" target="_blank" class="url-link">
+                                            /health
+                                        </a>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">模型:</span>
+                                        <span class="info-value">MediaPipe Pose (Complexity 2)</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">关键点:</span>
+                                        <span class="info-value">33个人体姿态关键点</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">功能:</span>
+                                        <span class="info-value">姿态分析、体态评估</span>
+                                    </div>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">Python 3.10</span>
+                                    <span class="tech-tag">Flask</span>
+                                    <span class="tech-tag">MediaPipe 0.10.18</span>
+                                    <span class="tech-tag">OpenCV</span>
+                                </div>
+                                <span class="status-badge status-live">✅ Live</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Table -->
+            <div class="section">
+                <h2 class="section-title">📋 组件汇总表</h2>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>组件</th>
+                            <th>类型</th>
+                            <th>平台</th>
+                            <th>状态</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>React Frontend</strong></td>
+                            <td>前端应用</td>
+                            <td>Render Static Site</td>
+                            <td><span class="status-badge status-pending">部署中</span></td>
+                            <td><a href="https://low-back-pain-system.onrender.com" target="_blank" class="url-link">链接</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>.NET Backend</strong></td>
+                            <td>RESTful API</td>
+                            <td>Render Web Service</td>
+                            <td><span class="status-badge status-live">运行中</span></td>
+                            <td><a href="https://low-back-pain-backend.onrender.com" target="_blank" class="url-link">链接</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PostgreSQL</strong></td>
+                            <td>关系型数据库</td>
+                            <td>Render PostgreSQL</td>
+                            <td><span class="status-badge status-live">运行中</span></td>
+                            <td>内部连接</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OCR Service</strong></td>
+                            <td>微服务</td>
+                            <td>Render Web Service</td>
+                            <td><span class="status-badge status-live">运行中</span></td>
+                            <td><a href="https://lowbackpain-ocr-service.onrender.com" target="_blank" class="url-link">链接</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>MediaPipe Service</strong></td>
+                            <td>微服务</td>
+                            <td>Render Web Service</td>
+                            <td><span class="status-badge status-live">运行中</span></td>
+                            <td><a href="https://lowbackpain-mediapipe-service.onrender.com" target="_blank" class="url-link">链接</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Technical Stack -->
+            <div class="section">
+                <h2 class="section-title">🛠️ 技术栈总览</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="component">
+                        <h3 style="color: #1e293b; margin-bottom: 15px;">前端技术</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">React 18</span>
+                            <span class="tech-tag">Vite</span>
+                            <span class="tech-tag">React Router</span>
+                            <span class="tech-tag">Tailwind CSS</span>
+                            <span class="tech-tag">Shadcn/ui</span>
+                            <span class="tech-tag">Lucide Icons</span>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <h3 style="color: #1e293b; margin-bottom: 15px;">后端技术</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">ASP.NET Core 7.0</span>
+                            <span class="tech-tag">ABP vNext</span>
+                            <span class="tech-tag">Entity Framework</span>
+                            <span class="tech-tag">AutoMapper</span>
+                            <span class="tech-tag">Swagger/OpenAPI</span>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <h3 style="color: #1e293b; margin-bottom: 15px;">AI/ML服务</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Python 3.10</span>
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">Tesseract OCR</span>
+                            <span class="tech-tag">MediaPipe</span>
+                            <span class="tech-tag">OpenCV</span>
+                            <span class="tech-tag">NumPy</span>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <h3 style="color: #1e293b; margin-bottom: 15px;">基础设施</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">PostgreSQL 15</span>
+                            <span class="tech-tag">Render Cloud</span>
+                            <span class="tech-tag">GitHub</span>
+                            <span class="tech-tag">Git</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deployment Notes -->
+            <div class="section">
+                <h2 class="section-title">📝 部署说明</h2>
+                <div class="component">
+                    <h3 style="color: #1e293b; margin-bottom: 15px;">当前部署状态</h3>
+                    <div class="info-item">
+                        <span class="info-label">部署平台:</span>
+                        <span class="info-value">Render (免费层 Free Tier)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">容器化:</span>
+                        <span class="info-value">后端和微服务使用Docker部署</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">自动部署:</span>
+                        <span class="info-value">通过GitHub自动触发部署</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">限制:</span>
+                        <span class="info-value">512MB RAM, 无GPU, 闲置15分钟后休眠</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">优化:</span>
+                        <span class="info-value">使用Tesseract替代PaddleOCR (CPU兼容), MediaPipe使用轻量模型</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">认证:</span>
+                        <span class="info-value">临时禁用 (VITE_DISABLE_AUTH=true) 用于测试</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Low Back Pain Data Collection System</strong></p>
+            <p>Department of Orthopaedics & Traumatology</p>
+            <p>The University of Hong Kong</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">Generated: 2025-11-26 | Architecture Report v1.0</p>
+        </div>
+    </div>
+</body>
+</html>

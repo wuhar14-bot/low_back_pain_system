@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Workspace } from "@/api/entities";
 import { Patient } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Stethoscope,
-  Building2,
   Users,
   Activity,
   ArrowRight,
-  Settings,
-  BarChart3,
   Smartphone,
   Monitor,
   RefreshCw,
   LogOut,
-  User
+  User,
+  FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
+import { useExternal } from "@/contexts/ExternalContext";
 
 export default function Home() {
   const { user, logout } = useAuth();
-  // Debug: checking page render
+  const { workspaceName, doctorName, isExternalMode } = useExternal();
+
   const [stats, setStats] = useState({
-    totalWorkspaces: 0,
     totalPatients: 0,
     recentPatients: 0,
-    activeWorkspaces: 0
+    todayPatients: 0
   });
-  const [recentWorkspaces, setRecentWorkspaces] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,43 +37,30 @@ export default function Home() {
   const loadStats = async () => {
     setIsLoading(true);
     try {
-      // 获取当前选择的工作室ID
-      const workspaceId = localStorage.getItem('currentWorkspaceId');
-
-      // 加载工作室数据 (全局)
-      const workspaces = await Workspace.list("-created_date");
-      const activeWorkspaces = workspaces.filter(w => w.is_active);
-
       // 加载患者数据
       const allPatients = await Patient.list("-created_date");
 
-      // 根据工作室ID筛选患者
-      const relevantPatients = workspaceId
-        ? allPatients.filter(p => p.workspace_id === workspaceId)
-        : allPatients;
-
       // 计算最近24小时的新增患者数量
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const recentPatientsCount = relevantPatients.filter(p => new Date(p.created_date) > oneDayAgo).length;
+      const recentPatientsCount = allPatients.filter(p => new Date(p.created_date) > oneDayAgo).length;
+
+      // 计算今天的新增患者数量
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayPatientsCount = allPatients.filter(p => new Date(p.created_date) >= today).length;
 
       setStats({
-        totalWorkspaces: workspaces.length,
-        totalPatients: relevantPatients.length,
+        totalPatients: allPatients.length,
         recentPatients: recentPatientsCount,
-        activeWorkspaces: activeWorkspaces.length
+        todayPatients: todayPatientsCount
       });
-
-      setRecentWorkspaces(workspaces.slice(0, 3));
     } catch (error) {
       console.error("加载统计数据失败:", error);
-      // Set demo/placeholder data when API fails
       setStats({
-        totalWorkspaces: 0,
         totalPatients: 0,
         recentPatients: 0,
-        activeWorkspaces: 0
+        todayPatients: 0
       });
-      setRecentWorkspaces([]);
     }
     setIsLoading(false);
   };
@@ -92,16 +74,16 @@ export default function Home() {
       color: "from-emerald-500 to-teal-500"
     },
     {
-      title: "医生工作台",
+      title: "患者数据查看",
       description: "查看和管理患者数据",
       icon: Monitor,
       url: createPageUrl("Dashboard"),
       color: "from-blue-500 to-cyan-500"
     },
     {
-      title: "管理后台",
-      description: "管理工作室、查看系统数据",
-      icon: Settings,
+      title: "数据报告",
+      description: "查看系统数据和统计报告",
+      icon: FileText,
       url: createPageUrl("AdminPanel"),
       color: "from-purple-500 to-indigo-500"
     }
@@ -135,7 +117,7 @@ export default function Home() {
               <Stethoscope className="w-10 h-10 text-white" />
             </div>
           </div>
-          
+
           <div className="flex justify-center items-center gap-4 mb-4">
             <h1 className="text-4xl md:text-5xl font-bold text-slate-800">
               腰痛门诊数据收集系统
@@ -146,26 +128,20 @@ export default function Home() {
           </div>
 
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            专业临床数据收集，支持跨平台协作和患者匿名化处理
+            专业临床数据收集、OCR文档识别和姿态分析服务
           </p>
+
+          {isExternalMode && (workspaceName || doctorName) && (
+            <div className="mt-4 inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm">
+              {workspaceName && <span>工作室: <strong>{workspaceName}</strong></span>}
+              {workspaceName && doctorName && <span className="mx-2">|</span>}
+              {doctorName && <span>医生: <strong>{doctorName}</strong></span>}
+            </div>
+          )}
         </div>
 
         {/* 系统统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">工作室总数</p>
-                  <p className="text-3xl font-bold text-slate-800">{stats.totalWorkspaces}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm">
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
@@ -184,8 +160,8 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">24小时新增</p>
-                  <p className="text-3xl font-bold text-slate-800">{stats.recentPatients}</p>
+                  <p className="text-sm font-medium text-slate-500">今日新增</p>
+                  <p className="text-3xl font-bold text-slate-800">{stats.todayPatients}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                   <Activity className="w-6 h-6 text-blue-600" />
@@ -198,11 +174,11 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">活跃工作室</p>
-                  <p className="text-3xl font-bold text-slate-800">{stats.activeWorkspaces}</p>
+                  <p className="text-sm font-medium text-slate-500">24小时新增</p>
+                  <p className="text-3xl font-bold text-slate-800">{stats.recentPatients}</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-orange-600" />
+                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <Activity className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
             </CardHeader>
@@ -231,78 +207,33 @@ export default function Home() {
           ))}
         </div>
 
-        {/* 最近工作室 */}
-        {recentWorkspaces.length > 0 && (
-          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-slate-800">
-                <Building2 className="w-5 h-5" />
-                最近的工作室
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {recentWorkspaces.map((workspace) => (
-                  <div key={workspace.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-semibold text-slate-800">{workspace.name}</h4>
-                      <Badge className="bg-emerald-100 text-emerald-800 text-xs">
-                        活跃
-                      </Badge>
-                    </div>
-                    {workspace.description && (
-                      <p className="text-sm text-slate-600 mb-2 line-clamp-2">
-                        {workspace.description}
-                      </p>
-                    )}
-                    <div className="flex items-center justify-between text-xs text-slate-500">
-                      <span>创建于 {format(new Date(workspace.created_date), "MM月dd日")}</span>
-                      {workspace.created_by_name && (
-                        <span>{workspace.created_by_name}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 text-center">
-                <Link to={createPageUrl("AdminPanel")}>
-                  <Button variant="outline" className="hover:bg-slate-50">
-                    查看所有工作室
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* 使用指南 */}
+        {/* 系统功能说明 */}
         <Card className="border-0 shadow-xl bg-gradient-to-r from-emerald-50 to-teal-50">
           <CardHeader>
-            <CardTitle className="text-slate-800">使用指南</CardTitle>
+            <CardTitle className="text-slate-800">系统功能</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-emerald-600 font-bold">1</span>
+                  <Smartphone className="w-6 h-6 text-emerald-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">创建工作室</h4>
-                <p className="text-sm text-slate-600">在管理后台创建您的工作室，设置基本信息和权限</p>
+                <h4 className="font-semibold text-slate-800 mb-2">数据收集</h4>
+                <p className="text-sm text-slate-600">便捷的患者腰痛评估数据收集表单</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-blue-600 font-bold">2</span>
+                  <FileText className="w-6 h-6 text-blue-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">收集数据</h4>
-                <p className="text-sm text-slate-600">使用手机端表单收集患者腰痛评估数据</p>
+                <h4 className="font-semibold text-slate-800 mb-2">OCR识别</h4>
+                <p className="text-sm text-slate-600">医疗文档自动文字识别（中英文）</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-purple-600 font-bold">3</span>
+                  <Monitor className="w-6 h-6 text-purple-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">分析管理</h4>
-                <p className="text-sm text-slate-600">在医生工作台查看分析数据，制定治疗方案</p>
+                <h4 className="font-semibold text-slate-800 mb-2">姿态分析</h4>
+                <p className="text-sm text-slate-600">基于MediaPipe的体态评估和分析</p>
               </div>
             </div>
           </CardContent>
