@@ -46,7 +46,7 @@ try:
     # Initialize pose estimator for static images
     pose_static = mp_pose.Pose(
         static_image_mode=True,
-        model_complexity=2,  # Highest accuracy (0=lite, 1=full, 2=heavy)
+        model_complexity=0,  # Lite model for low memory environments (0=lite, 1=full, 2=heavy)
         enable_segmentation=False,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5
