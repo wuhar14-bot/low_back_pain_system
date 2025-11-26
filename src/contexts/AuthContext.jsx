@@ -12,12 +12,17 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  // Check if authentication is disabled via environment variable
+  const isAuthDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
+
+  const [user, setUser] = useState(isAuthDisabled ? { username: 'test-user', id: 'test' } : null);
+  const [isAuthenticated, setIsAuthenticated] = useState(isAuthDisabled);
+  const [isLoading, setIsLoading] = useState(!isAuthDisabled);
 
   useEffect(() => {
-    checkAuthStatus();
+    if (!isAuthDisabled) {
+      checkAuthStatus();
+    }
   }, []);
 
   const checkAuthStatus = async () => {
@@ -48,6 +53,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (username, password) => {
+    // If auth is disabled, bypass login
+    if (isAuthDisabled) {
+      const mockUser = { username: 'test-user', id: 'test' };
+      setUser(mockUser);
+      setIsAuthenticated(true);
+      return { success: true, user: mockUser };
+    }
+
     try {
       // Call ABP backend login endpoint
       const response = await authService.login(username, password);
