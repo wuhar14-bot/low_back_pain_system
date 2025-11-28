@@ -7,16 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { 
-  Settings, 
-  Plus, 
+import {
+  Settings,
+  Plus,
   Building2,
-  Users, 
+  Users,
   Calendar,
   Edit,
   Trash2,
   Eye,
-  ArrowLeft,
   Activity,
   BarChart3,
   Download
@@ -41,6 +40,7 @@ import {
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import NavigationHeader from "@/components/ui/navigation";
 
 export default function AdminPanel() {
   const [workspaces, setWorkspaces] = useState([]);
@@ -157,15 +157,11 @@ export default function AdminPanel() {
   const totalPatients = patients.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* 头部导航 */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
+      <NavigationHeader title="管理后台" />
+      <div className="max-w-7xl mx-auto p-4">
+        {/* 头部 */}
         <div className="flex items-center gap-4 mb-8">
-          <Link to={createPageUrl("index")}>
-            <Button variant="outline" size="icon" className="hover:bg-slate-100">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Settings className="w-8 h-8 text-purple-600" />
@@ -175,66 +171,7 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* 统计概览 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">工作室总数</p>
-                  <p className="text-2xl font-bold text-slate-800">{workspaces.length}</p>
-                </div>
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-purple-600" />
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">活跃工作室</p>
-                  <p className="text-2xl font-bold text-slate-800">{activeWorkspaces}</p>
-                </div>
-                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-emerald-600" />
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">患者总数</p>
-                  <p className="text-2xl font-bold text-slate-800">{totalPatients}</p>
-                </div>
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-blue-600" />
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">平均患者数</p>
-                  <p className="text-2xl font-bold text-slate-800">
-                    {activeWorkspaces > 0 ? Math.round(totalPatients / activeWorkspaces) : 0}
-                  </p>
-                </div>
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-orange-600" />
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-        </div>
+        {/* 数据统计中不需要工作室相关内容 */}
 
         {/* 工作室管理 */}
         <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm">

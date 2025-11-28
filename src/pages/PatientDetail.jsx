@@ -3,7 +3,7 @@ import { Patient } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, User, Phone, Calendar, Activity, AlertTriangle, FileText, Edit, Trash2 } from "lucide-react";
+import { User, Phone, Calendar, Activity, AlertTriangle, FileText, Edit, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +22,7 @@ import PatientDetailInfo from "../components/patient-detail/PatientDetailInfo";
 import MedicalHistoryDetail from "../components/patient-detail/MedicalHistoryDetail";
 import ExaminationResults from "../components/patient-detail/ExaminationResults";
 import TreatmentPlan from "../components/patient-detail/TreatmentPlan";
+import NavigationHeader from "@/components/ui/navigation";
 
 export default function PatientDetail() {
   const navigate = useNavigate();
@@ -118,23 +119,14 @@ export default function PatientDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* 头部 */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
+      <NavigationHeader title="患者详情" />
+      <div className="max-w-6xl mx-auto p-4">
+        {/* 头部操作按钮 */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate(createPageUrl("Dashboard"))}
-              className="hover:bg-slate-100"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-800">患者详情</h1>
-              <p className="text-slate-600 mt-1">完整的腰痛评估记录</p>
-            </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">患者详情</h1>
+            <p className="text-slate-600 mt-1">完整的腰痛评估记录</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
