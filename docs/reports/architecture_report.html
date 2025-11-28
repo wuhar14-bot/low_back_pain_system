@@ -11,6 +11,59 @@
             box-sizing: border-box;
         }
 
+        /* Print-specific CSS for PDF generation */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            /* Prevent page breaks inside these elements */
+            .section,
+            .info-box,
+            .layer,
+            .component,
+            table,
+            .architecture-diagram {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* Allow page breaks in folder structure */
+            .folder-structure {
+                page-break-inside: auto;
+                break-inside: auto;
+            }
+
+            /* Allow page breaks before sections if needed */
+            .section {
+                page-break-before: auto;
+            }
+
+            /* Keep table rows together */
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* Prevent orphaned headers */
+            h1, h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            /* Allow page breaks in details content */
+            details {
+                page-break-inside: auto;
+                break-inside: auto;
+            }
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -59,6 +112,28 @@
             margin-bottom: 25px;
             padding-bottom: 10px;
             border-bottom: 3px solid #3b82f6;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .info-box h3 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+            color: #475569;
         }
 
         .architecture-diagram {
@@ -233,6 +308,29 @@
             background: #f8fafc;
         }
 
+        .folder-structure {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .folder-structure .folder {
+            color: #60a5fa;
+        }
+
+        .folder-structure .file {
+            color: #a3e635;
+        }
+
+        .folder-structure .comment {
+            color: #94a3b8;
+        }
+
         .footer {
             background: #1e293b;
             color: white;
@@ -263,10 +361,37 @@
         <div class="header">
             <h1>🏥 Low Back Pain Data Collection System</h1>
             <p>系统架构报告 | System Architecture Report</p>
-            <p style="margin-top: 10px; font-size: 0.9em;">生成日期: 2025-11-26</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">生成日期: 2025-11-26 (更新)</p>
+            <p style="margin-top: 5px; font-size: 0.85em; opacity: 0.9;">集成模式: 作为H5服务集成到主系统 | Integration Mode: H5 Service for Main System</p>
         </div>
 
         <div class="content">
+            <!-- Integration Model -->
+            <div class="section">
+                <h2 class="section-title">🔗 集成模式说明</h2>
+                <div class="info-box">
+                    <h3>系统定位</h3>
+                    <p>本系统作为<strong>H5服务</strong>集成到主系统，不需要内部工作室管理功能。</p>
+
+                    <h3 style="margin-top: 20px;">参数传递</h3>
+                    <p>主系统通过URL参数传递以下信息：</p>
+                    <ul>
+                        <li><code>workspace_id</code> - 工作室ID</li>
+                        <li><code>workspace_name</code> - 工作室名称</li>
+                        <li><code>doctor_id</code> - 医生ID</li>
+                        <li><code>doctor_name</code> - 医生名称</li>
+                        <li><code>auth_token</code> - 认证令牌</li>
+                    </ul>
+
+                    <h3 style="margin-top: 20px;">核心服务</h3>
+                    <ul>
+                        <li>患者数据收集表单</li>
+                        <li>OCR文档识别 (Tesseract)</li>
+                        <li>姿态分析 (MediaPipe)</li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Architecture Diagram -->
             <div class="section">
                 <h2 class="section-title">📊 系统架构图</h2>
@@ -300,19 +425,21 @@
                                         <span class="info-label">认证状态:</span>
                                         <span class="info-value">临时禁用 (VITE_DISABLE_AUTH=true)</span>
                                     </div>
+                                    <div class="info-item">
+                                        <span class="info-label">集成方式:</span>
+                                        <span class="info-value">通过URL参数接收主系统信息</span>
+                                    </div>
                                 </div>
                                 <div class="tech-stack">
-                                    <span class="tech-tag">React</span>
+                                    <span class="tech-tag">React 18</span>
                                     <span class="tech-tag">Vite</span>
                                     <span class="tech-tag">Shadcn/ui</span>
                                     <span class="tech-tag">Tailwind CSS</span>
                                 </div>
-                                <span class="status-badge status-pending">⏳ Deploying</span>
+                                <span class="status-badge status-live">✅ Live</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="arrow-down">↓</div>
 
                     <!-- Backend Layer -->
                     <div class="layer">
@@ -341,21 +468,19 @@
                                         <span class="info-value">Render (Web Service - Docker)</span>
                                     </div>
                                     <div class="info-item">
-                                        <span class="info-label">认证框架:</span>
-                                        <span class="info-value">ABP vNext</span>
+                                        <span class="info-label">框架版本:</span>
+                                        <span class="info-value">ASP.NET Core 7.0 + ABP vNext 7.3</span>
                                     </div>
                                 </div>
                                 <div class="tech-stack">
                                     <span class="tech-tag">ASP.NET Core 7.0</span>
-                                    <span class="tech-tag">ABP Framework</span>
+                                    <span class="tech-tag">ABP vNext 7.3</span>
                                     <span class="tech-tag">Entity Framework</span>
                                 </div>
                                 <span class="status-badge status-live">✅ Live</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="arrow-down">↓</div>
 
                     <!-- Database Layer -->
                     <div class="layer">
@@ -377,7 +502,7 @@
                                     </div>
                                     <div class="info-item">
                                         <span class="info-label">用途:</span>
-                                        <span class="info-value">患者数据、医疗记录、用户管理</span>
+                                        <span class="info-value">患者数据、医疗记录</span>
                                     </div>
                                     <div class="info-item">
                                         <span class="info-label">备份:</span>
@@ -393,11 +518,9 @@
                         </div>
                     </div>
 
-                    <div class="arrow-down">↓</div>
-
-                    <!-- Microservices Layer -->
+                    <!-- Python Services Layer -->
                     <div class="layer">
-                        <div class="layer-title">🔧 MICROSERVICES LAYER (微服务层)</div>
+                        <div class="layer-title">🔧 PYTHON SERVICES LAYER (Python服务层)</div>
                         <div class="components">
                             <div class="component">
                                 <div class="component-header">
@@ -424,10 +547,6 @@
                                     <div class="info-item">
                                         <span class="info-label">支持语言:</span>
                                         <span class="info-value">简体中文、繁体中文、英文</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <span class="info-label">功能:</span>
-                                        <span class="info-value">医疗文档文字识别</span>
                                     </div>
                                 </div>
                                 <div class="tech-stack">
@@ -465,10 +584,6 @@
                                         <span class="info-label">关键点:</span>
                                         <span class="info-value">33个人体姿态关键点</span>
                                     </div>
-                                    <div class="info-item">
-                                        <span class="info-label">功能:</span>
-                                        <span class="info-value">姿态分析、体态评估</span>
-                                    </div>
                                 </div>
                                 <div class="tech-stack">
                                     <span class="tech-tag">Python 3.10</span>
@@ -481,6 +596,135 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Repository Structure -->
+            <div class="section">
+                <h2 class="section-title">📂 GitHub仓库结构
+                    <a href="https://github.com/HarwuSherlock/low-back-pain-system" target="_blank" style="font-size: 0.6em; margin-left: 15px; color: #3b82f6; text-decoration: none;">
+                        🔗 github.com/HarwuSherlock/low-back-pain-system
+                    </a>
+                </h2>
+
+                <div class="info-box" style="margin-bottom: 30px;">
+                    <h3>主要目录说明</h3>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">目录/文件</th>
+                                <th style="width: 15%;">类型</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>backend-dotnet/</strong></td>
+                                <td><span class="status-badge" style="background: #dbeafe; color: #1e40af;">后端</span></td>
+                                <td>ASP.NET Core 7.0 + ABP vNext 7.3 后端服务，包含RESTful API和PostgreSQL数据访问</td>
+                            </tr>
+                            <tr>
+                                <td><strong>python-services/</strong></td>
+                                <td><span class="status-badge" style="background: #fef3c7; color: #92400e;">Python服务</span></td>
+                                <td>OCR服务(Tesseract)和MediaPipe姿态分析服务</td>
+                            </tr>
+                            <tr>
+                                <td><strong>src/</strong></td>
+                                <td><span class="status-badge" style="background: #d1fae5; color: #065f46;">前端</span></td>
+                                <td>React + Vite前端应用源代码，包含页面、组件和上下文</td>
+                            </tr>
+                            <tr>
+                                <td><strong>docs/</strong></td>
+                                <td><span class="status-badge" style="background: #e9d5ff; color: #6b21a8;">文档</span></td>
+                                <td>系统文档和生成的报告(architecture_report.html等)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>scripts/</strong></td>
+                                <td><span class="status-badge" style="background: #fecaca; color: #991b1b;">脚本</span></td>
+                                <td>数据生成、测试和PDF生成脚本</td>
+                            </tr>
+                            <tr>
+                                <td><strong>_archive/</strong></td>
+                                <td><span class="status-badge" style="background: #f3f4f6; color: #374151;">归档</span></td>
+                                <td>历史版本代码和测试数据归档</td>
+                            </tr>
+                            <tr>
+                                <td><strong>.specify/</strong></td>
+                                <td><span class="status-badge" style="background: #f3f4f6; color: #374151;">文档</span></td>
+                                <td>项目规格文档(19个MD文件)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <details>
+                    <summary style="font-size: 1.1em; font-weight: 600; color: #1e40af; cursor: pointer; margin-bottom: 15px;">
+                        📋 查看完整文件树结构
+                    </summary>
+                    <div class="folder-structure">
+low-back-pain-system/
+├── <span class="folder">.git/</span>
+├── <span class="folder">.specify/</span>                      <span class="comment"># 项目文档 (19个MD文件)</span>
+├── <span class="folder">_archive/</span>                      <span class="comment"># 归档文件夹</span>
+│   ├── <span class="folder">demo/</span>
+│   ├── <span class="folder">old-backend/</span>
+│   ├── <span class="folder">old-docs/</span>
+│   ├── <span class="folder">old-frontend/</span>
+│   ├── <span class="folder">old-scripts/</span>
+│   ├── <span class="folder">reference-materials/</span>
+│   └── <span class="folder">test-data/</span>                 <span class="comment"># 测试数据归档 (NEW)</span>
+│       ├── <span class="folder">images/test_images/</span>    <span class="comment"># 6个测试图片</span>
+│       └── <span class="folder">temp/</span>                  <span class="comment"># 临时测试文件</span>
+├── <span class="folder">backend-dotnet/</span>                <span class="comment"># .NET后端</span>
+│   ├── <span class="folder">aspnet-core/</span>
+│   ├── <span class="file">Dockerfile</span>
+│   └── <span class="file">README.md</span>
+├── <span class="folder">docs/</span>                          <span class="comment"># 文档</span>
+│   ├── <span class="folder">architecture/</span>
+│   ├── <span class="folder">reports/</span>                   <span class="comment"># 生成的报告 (NEW)</span>
+│   │   ├── <span class="file">architecture_report.html</span>
+│   │   ├── <span class="file">status-report.html</span>
+│   │   └── <span class="file">swagger-ui-screenshot.png</span>
+│   └── <span class="file">README.md</span>
+├── <span class="folder">python-services/</span>               <span class="comment"># Python服务 (OCR & MediaPipe)</span>
+│   ├── <span class="folder">mediapipe-service/</span>
+│   │   ├── <span class="file">Dockerfile</span>
+│   │   ├── <span class="file">pose_service.py</span>
+│   │   └── <span class="file">requirements_pose.txt</span>
+│   └── <span class="folder">ocr-service/</span>
+│       ├── <span class="file">Dockerfile</span>
+│       ├── <span class="file">ocr_service.py</span>
+│       └── <span class="file">requirements_ocr.txt</span>
+├── <span class="folder">reference/</span>                     <span class="comment"># 参考PDF</span>
+├── <span class="folder">scripts/</span>                       <span class="comment"># 工具脚本</span>
+│   ├── <span class="folder">data-generation/</span>
+│   ├── <span class="folder">setup/</span>
+│   └── <span class="folder">testing/</span>                   <span class="comment"># 测试脚本 (REORGANIZED)</span>
+│       ├── <span class="folder">backend/</span>               <span class="comment"># 后端测试</span>
+│       │   ├── <span class="file">test-db.ps1</span>
+│       │   └── <span class="file">test-postgres-passwords.ps1</span>
+│       ├── <span class="folder">frontend/</span>              <span class="comment"># 前端测试</span>
+│       │   ├── <span class="file">capture-swagger.js</span>
+│       │   └── <span class="file">test-system.cjs</span>
+│       └── <span class="file">test_mediapipe.py</span>
+├── <span class="folder">src/</span>                           <span class="comment"># 前端源代码</span>
+│   ├── <span class="folder">api/</span>
+│   ├── <span class="folder">components/</span>
+│   ├── <span class="folder">contexts/</span>
+│   │   ├── <span class="file">AuthContext.jsx</span>        <span class="comment"># 认证上下文</span>
+│   │   └── <span class="file">ExternalContext.jsx</span>    <span class="comment"># 外部参数上下文</span>
+│   ├── <span class="folder">pages/</span>
+│   └── <span class="file">App.jsx</span>
+│
+└── <span class="comment"># 配置文件 (16个)</span>
+    ├── <span class="file">.env.development</span>
+    ├── <span class="file">.env.local</span>
+    ├── <span class="file">.env.production</span>
+    ├── <span class="file">.gitignore</span>
+    ├── <span class="file">package.json</span>
+    ├── <span class="file">vite.config.js</span>
+    └── <span class="file">...</span>
+                    </div>
+                </details>
             </div>
 
             <!-- Summary Table -->
@@ -501,7 +745,7 @@
                             <td><strong>React Frontend</strong></td>
                             <td>前端应用</td>
                             <td>Render Static Site</td>
-                            <td><span class="status-badge status-pending">部署中</span></td>
+                            <td><span class="status-badge status-live">运行中</span></td>
                             <td><a href="https://low-back-pain-system.onrender.com" target="_blank" class="url-link">链接</a></td>
                         </tr>
                         <tr>
@@ -520,14 +764,14 @@
                         </tr>
                         <tr>
                             <td><strong>OCR Service</strong></td>
-                            <td>微服务</td>
+                            <td>Python服务</td>
                             <td>Render Web Service</td>
                             <td><span class="status-badge status-live">运行中</span></td>
                             <td><a href="https://lowbackpain-ocr-service.onrender.com" target="_blank" class="url-link">链接</a></td>
                         </tr>
                         <tr>
                             <td><strong>MediaPipe Service</strong></td>
-                            <td>微服务</td>
+                            <td>Python服务</td>
                             <td>Render Web Service</td>
                             <td><span class="status-badge status-live">运行中</span></td>
                             <td><a href="https://lowbackpain-mediapipe-service.onrender.com" target="_blank" class="url-link">链接</a></td>
@@ -556,7 +800,7 @@
                         <h3 style="color: #1e293b; margin-bottom: 15px;">后端技术</h3>
                         <div class="tech-stack">
                             <span class="tech-tag">ASP.NET Core 7.0</span>
-                            <span class="tech-tag">ABP vNext</span>
+                            <span class="tech-tag">ABP vNext 7.3</span>
                             <span class="tech-tag">Entity Framework</span>
                             <span class="tech-tag">AutoMapper</span>
                             <span class="tech-tag">Swagger/OpenAPI</span>
@@ -599,7 +843,7 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">容器化:</span>
-                        <span class="info-value">后端和微服务使用Docker部署</span>
+                        <span class="info-value">后端和Python服务使用Docker部署</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">自动部署:</span>
@@ -617,6 +861,92 @@
                         <span class="info-label">认证:</span>
                         <span class="info-value">临时禁用 (VITE_DISABLE_AUTH=true) 用于测试</span>
                     </div>
+                    <div class="info-item">
+                        <span class="info-label">集成方式:</span>
+                        <span class="info-value">接收主系统URL参数 (workspace_id, doctor_id等)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Render Platform and Migration -->
+            <div class="section">
+                <h2 class="section-title">☁️ 关于Render平台及后续迁移方案</h2>
+
+                <div class="info-box">
+                    <h3>Render平台介绍</h3>
+                    <div class="info-item">
+                        <span class="info-label">平台定位:</span>
+                        <span class="info-value">现代化云部署平台，类似Heroku，提供简化的部署流程</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">选择原因:</span>
+                        <span class="info-value">快速部署、免费层可用、自动CI/CD、原生支持Docker、GitHub集成</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">当前限制:</span>
+                        <span class="info-value">免费层配置(512MB RAM)、闲置15分钟后休眠、无GPU支持</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">适用场景:</span>
+                        <span class="info-value">开发测试环境、原型验证、小规模应用</span>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <h3 style="color: #1e293b; margin-bottom: 15px;">迁移到生产环境的方案</h3>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">方案1: 迁移到阿里云</h4>
+                        <div class="info-item">
+                            <span class="info-label">部署方式:</span>
+                            <span class="info-value">阿里云ECS + Docker容器部署</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">数据库:</span>
+                            <span class="info-value">PostgreSQL迁移到阿里云RDS (托管数据库服务)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">优势:</span>
+                            <span class="info-value">国内访问速度快、稳定性高、可配置更高规格、可选GPU实例(如需要)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">成本估算:</span>
+                            <span class="info-value">基础配置约¥200-500/月 (2核4G ECS + RDS基础版)</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">方案2: 集成到现有PMS系统</h4>
+                        <div class="info-item">
+                            <span class="info-label">前端集成:</span>
+                            <span class="info-value">H5界面通过WebView嵌入到PMS系统</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">后端整合:</span>
+                            <span class="info-value">.NET后端API可合并到PMS后端服务</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">数据库:</span>
+                            <span class="info-value">PostgreSQL可合并到PMS数据库或独立部署</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Python服务:</span>
+                            <span class="info-value">OCR和MediaPipe服务保持独立部署(推荐阿里云函数计算)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">优势:</span>
+                            <span class="info-value">统一管理、减少维护成本、共享用户认证体系</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b;">
+                        <h4 style="color: #92400e; margin-bottom: 10px;">📌 推荐迁移路径</h4>
+                        <ul style="margin-left: 20px; color: #78350f;">
+                            <li><strong>短期 (1-2周):</strong> 保持Render部署，用于开发测试和功能验证</li>
+                            <li><strong>中期 (1-2月):</strong> 迁移到阿里云进行生产环境部署和性能测试</li>
+                            <li><strong>长期 (3-6月):</strong> 根据实际使用情况决定是否完全集成到PMS系统</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -625,7 +955,7 @@
             <p><strong>Low Back Pain Data Collection System</strong></p>
             <p>Department of Orthopaedics & Traumatology</p>
             <p>The University of Hong Kong</p>
-            <p style="margin-top: 15px; font-size: 0.9em;">Generated: 2025-11-26 | Architecture Report v1.0</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">Generated: 2025-11-26 | Architecture Report v2.0 (Updated)</p>
         </div>
     </div>
 </body>

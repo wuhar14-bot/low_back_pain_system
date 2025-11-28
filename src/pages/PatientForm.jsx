@@ -49,7 +49,14 @@ export default function PatientForm() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const id = urlParams.get('id');
-    const workspaceId = localStorage.getItem('currentWorkspaceId');
+    let workspaceId = localStorage.getItem('currentWorkspaceId');
+
+    // If auth is disabled and no workspace ID exists, use a test workspace
+    if (!workspaceId && import.meta.env.VITE_DISABLE_AUTH === 'true') {
+      workspaceId = 'test-workspace';
+      localStorage.setItem('currentWorkspaceId', workspaceId);
+    }
+
     setCurrentWorkspaceId(workspaceId);
 
     if (id) {
