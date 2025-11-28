@@ -79,13 +79,6 @@ export default function Home() {
       icon: Monitor,
       url: createPageUrl("Dashboard"),
       color: "from-blue-500 to-cyan-500"
-    },
-    {
-      title: "数据报告",
-      description: "查看系统数据和统计报告",
-      icon: FileText,
-      url: createPageUrl("AdminPanel"),
-      color: "from-purple-500 to-indigo-500"
     }
   ];
 
@@ -186,7 +179,7 @@ export default function Home() {
         </div>
 
         {/* 快速操作区域 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {quickActions.map((action) => (
             <Link key={action.title} to={action.url}>
               <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group">

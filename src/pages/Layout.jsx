@@ -51,12 +51,6 @@ const navigationItems = [
     url: createPageUrl("Dashboard"),
     icon: Monitor,
     description: "查看患者数据"
-  },
-  {
-    title: "管理后台",
-    url: createPageUrl("AdminPanel"),
-    icon: Settings,
-    description: "系统管理"
   }
 ];
 

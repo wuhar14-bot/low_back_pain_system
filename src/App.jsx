@@ -2,7 +2,6 @@ import './App.css'
 import Home from "@/pages/index.jsx"
 import PatientForm from "@/pages/PatientForm.jsx"
 import Dashboard from "@/pages/Dashboard.jsx"
-import AdminPanel from "@/pages/AdminPanel.jsx"
 import PatientDetail from "@/pages/PatientDetail.jsx"
 import Login from "@/pages/Login.jsx"
 import { Toaster } from "@/components/ui/toaster"
@@ -36,11 +35,6 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/adminpanel" element={
-            <ProtectedRoute>
-              <AdminPanel />
             </ProtectedRoute>
           } />
           <Route path="/patientdetail/*" element={
