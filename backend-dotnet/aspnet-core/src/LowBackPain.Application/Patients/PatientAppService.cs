@@ -86,9 +86,9 @@ public class PatientAppService : CrudAppService<
             input.StudyId,
             input.Name,
             input.WorkspaceId,
-            input.WorkspaceName,
+            input.WorkspaceName ?? string.Empty,
             input.DoctorId,
-            input.DoctorName);
+            input.DoctorName ?? string.Empty);
 
         // 更新基本信息
         patient.UpdateBasicInfo(
