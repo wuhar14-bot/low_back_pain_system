@@ -30,12 +30,12 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 性别 (男/女)
     /// </summary>
-    public string Gender { get; set; }
+    public string? Gender { get; set; }
 
     /// <summary>
     /// 联系电话
     /// </summary>
-    public string Phone { get; set; }
+    public string? Phone { get; set; }
 
     /// <summary>
     /// 发病日期
@@ -45,7 +45,7 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 主诉
     /// </summary>
-    public string ChiefComplaint { get; set; }
+    public string? ChiefComplaint { get; set; }
 
     // ==================== 外部系统关联 ====================
 
@@ -75,43 +75,43 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// 病史资料 JSON
     /// 包含：既往治疗史、手术史、用药史、过敏史等
     /// </summary>
-    public string MedicalHistoryJson { get; set; }
+    public string? MedicalHistoryJson { get; set; }
 
     /// <summary>
     /// 疼痛区域 JSON
     /// 数组格式，每个区域包含：区域名称、强度、描述等
     /// </summary>
-    public string PainAreasJson { get; set; }
+    public string? PainAreasJson { get; set; }
 
     /// <summary>
     /// 主观检查 JSON
     /// 包含：疼痛持续时间、疼痛模式、加重因素、缓解因素等
     /// </summary>
-    public string SubjectiveExamJson { get; set; }
+    public string? SubjectiveExamJson { get; set; }
 
     /// <summary>
     /// 客观检查 JSON
     /// 包含：活动度、神经学检查、特殊测试等
     /// </summary>
-    public string ObjectiveExamJson { get; set; }
+    public string? ObjectiveExamJson { get; set; }
 
     /// <summary>
     /// 功能评分 JSON
     /// 包含：VAS、Oswestry、Roland-Morris 等评分
     /// </summary>
-    public string FunctionalScoresJson { get; set; }
+    public string? FunctionalScoresJson { get; set; }
 
     /// <summary>
     /// AI 姿势分析 JSON
     /// 包含：站立躯干角、屈曲躯干角、ROM 度数、代偿模式等
     /// </summary>
-    public string AiPostureAnalysisJson { get; set; }
+    public string? AiPostureAnalysisJson { get; set; }
 
     /// <summary>
     /// 干预建议 JSON
     /// 包含：诊断、治疗计划、建议等
     /// </summary>
-    public string InterventionJson { get; set; }
+    public string? InterventionJson { get; set; }
 
     // ==================== 关联实体 ====================
 
@@ -125,7 +125,7 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// <summary>
     /// 备注
     /// </summary>
-    public string Remarks { get; set; }
+    public string? Remarks { get; set; }
 
     // ==================== 构造函数 ====================
 
@@ -161,10 +161,10 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     public void UpdateBasicInfo(
         string name,
         int? age,
-        string gender,
-        string phone,
+        string? gender,
+        string? phone,
         DateTime? onsetDate,
-        string chiefComplaint)
+        string? chiefComplaint)
     {
         Name = name;
         Age = age;
@@ -178,13 +178,13 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// 更新临床数据
     /// </summary>
     public void UpdateClinicalData(
-        string medicalHistoryJson,
-        string painAreasJson,
-        string subjectiveExamJson,
-        string objectiveExamJson,
-        string functionalScoresJson,
-        string aiPostureAnalysisJson,
-        string interventionJson)
+        string? medicalHistoryJson,
+        string? painAreasJson,
+        string? subjectiveExamJson,
+        string? objectiveExamJson,
+        string? functionalScoresJson,
+        string? aiPostureAnalysisJson,
+        string? interventionJson)
     {
         MedicalHistoryJson = medicalHistoryJson;
         PainAreasJson = painAreasJson;
