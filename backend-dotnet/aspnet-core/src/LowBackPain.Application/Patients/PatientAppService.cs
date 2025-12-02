@@ -85,9 +85,9 @@ public class PatientAppService : CrudAppService<
             GuidGenerator.Create(),
             input.StudyId,
             input.Name,
-            input.WorkspaceId,
+            input.WorkspaceId ?? Guid.Empty,
             input.WorkspaceName ?? string.Empty,
-            input.DoctorId,
+            input.DoctorId ?? Guid.Empty,
             input.DoctorName ?? string.Empty);
 
         // 更新基本信息

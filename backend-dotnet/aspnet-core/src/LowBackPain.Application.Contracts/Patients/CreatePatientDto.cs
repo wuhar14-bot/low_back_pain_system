@@ -29,15 +29,13 @@ public class CreatePatientDto
     [StringLength(500)]
     public string? ChiefComplaint { get; set; }
 
-    // 外部系统关联 (由外部系统传入)
-    [Required]
-    public Guid WorkspaceId { get; set; }
+    // 外部系统关联 (由外部系统传入，可选)
+    public Guid? WorkspaceId { get; set; }
 
     [StringLength(200)]
     public string? WorkspaceName { get; set; }
 
-    [Required]
-    public Guid DoctorId { get; set; }
+    public Guid? DoctorId { get; set; }
 
     [StringLength(200)]
     public string? DoctorName { get; set; }
