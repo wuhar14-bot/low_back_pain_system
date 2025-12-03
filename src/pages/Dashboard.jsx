@@ -59,7 +59,8 @@ export default function Dashboard() {
     const workspaceId = localStorage.getItem('currentWorkspaceId');
     setCurrentWorkspaceId(workspaceId);
 
-    if (workspaceId) {
+    const isAuthDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
+    if (isAuthDisabled || workspaceId) {
       loadPatients(workspaceId);
     } else {
       setIsLoading(false);
@@ -75,8 +76,12 @@ export default function Dashboard() {
     setIsLoading(true);
     try {
       const allPatients = await Patient.list("-created_date");
-      const workspacePatients = allPatients.filter(p => p.workspace_id === workspaceId);
-      setPatients(workspacePatients);
+      // 认证禁用时显示所有患者，否则按 workspace 过滤
+      const isAuthDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
+      const displayPatients = isAuthDisabled
+        ? allPatients
+        : allPatients.filter(p => p.workspace_id === workspaceId);
+      setPatients(displayPatients);
     } catch (error) {
       console.error("加载患者数据失败:", error);
     }
