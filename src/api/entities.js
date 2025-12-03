@@ -66,8 +66,9 @@ class Patient {
       console.log(`✅ [Backend] Loaded ${response.items?.length || 0} patients`);
 
       // ABP returns { items: [], totalCount: N }
-      // Return items array for compatibility
-      return response.items || [];
+      // Transform to frontend format for compatibility
+      const patients = (response.items || []).map(transformToFrontend);
+      return patients;
     } catch (error) {
       console.error('❌ [Backend] Failed to load patients:', error);
       throw error;
@@ -82,7 +83,7 @@ class Patient {
     try {
       const patient = await patientService.getPatientById(id);
       console.log(`✅ [Backend] Loaded patient ${id}`);
-      return patient;
+      return transformToFrontend(patient);
     } catch (error) {
       console.error(`❌ [Backend] Failed to load patient ${id}:`, error);
       return null;
