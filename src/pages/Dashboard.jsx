@@ -29,7 +29,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  Home
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
@@ -231,12 +232,19 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* 头部 */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Monitor className="w-8 h-8 text-emerald-600" />
-              <h1 className="text-3xl font-bold text-slate-800">医生工作台</h1>
+          <div className="flex items-center gap-4">
+            <Link to={createPageUrl("Home")}>
+              <Button variant="outline" size="icon" className="rounded-full">
+                <Home className="w-5 h-5" />
+              </Button>
+            </Link>
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Monitor className="w-8 h-8 text-emerald-600" />
+                <h1 className="text-3xl font-bold text-slate-800">医生工作台</h1>
+              </div>
+              <p className="text-slate-600">查看和管理患者腰痛评估数据</p>
             </div>
-            <p className="text-slate-600">查看和管理患者腰痛评估数据</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button
