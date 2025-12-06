@@ -233,7 +233,7 @@ export default function Dashboard() {
         {/* 头部 */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="flex items-center gap-4">
-            <Link to={createPageUrl("Home")}>
+            <Link to="/">
               <Button variant="outline" size="icon" className="rounded-full">
                 <Home className="w-5 h-5" />
               </Button>
