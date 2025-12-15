@@ -90,7 +90,7 @@ public class LowBackPainDbContext :
 
             // Required fields
             b.Property(x => x.StudyId).IsRequired().HasMaxLength(50);
-            b.Property(x => x.Name).IsRequired().HasMaxLength(200);
+            b.Property(x => x.Name).IsRequired(false).HasMaxLength(200); // Name is optional
             b.Property(x => x.WorkspaceId).IsRequired();
             b.Property(x => x.WorkspaceName).HasMaxLength(200);
             b.Property(x => x.DoctorId).IsRequired();
