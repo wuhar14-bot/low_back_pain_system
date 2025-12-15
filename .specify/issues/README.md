@@ -12,12 +12,14 @@ This folder documents development issues, bugs, and their solutions for the Low 
 | 004 | [Form Input Selectors Not Working](004-form-input-selectors.md) | RESOLVED | 2025-12-15 |
 | 005 | [Render Deployment Delay Causing Test Failures](005-render-deployment-delay.md) | EXPECTED BEHAVIOR | 2025-12-15 |
 | 006 | [Database NOT NULL Constraint on Name Column](006-database-not-null-constraint.md) | RESOLVED | 2025-12-15 |
+| 007 | [Database Migrations Not Auto-Applied on Render](007-migrations-not-auto-applied.md) | RESOLVED | 2025-12-15 |
 
 ## Categories
 
 ### Backend Issues
 - #001 - Validation mismatch
 - #006 - Database constraint
+- #007 - Auto-migration
 
 ### Testing Issues
 - #002 - ES Module syntax
