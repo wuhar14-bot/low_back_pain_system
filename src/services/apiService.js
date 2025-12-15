@@ -45,10 +45,29 @@ class ApiClient {
    */
   async handleResponse(response) {
     if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: `HTTP ${response.status}: ${response.statusText}`
-      }));
-      throw new Error(error.message || 'API request failed');
+      let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+      try {
+        const errorData = await response.json();
+        console.error('❌ API Error Response:', errorData);
+
+        // Handle ABP validation errors
+        if (errorData.error) {
+          errorMessage = errorData.error.message || errorData.error.details || errorMessage;
+          if (errorData.error.validationErrors) {
+            const validationMessages = errorData.error.validationErrors
+              .map(e => `${e.members?.join(', ')}: ${e.message}`)
+              .join('; ');
+            errorMessage = `Validation failed: ${validationMessages}`;
+          }
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch (parseError) {
+        console.error('❌ Failed to parse error response:', parseError);
+      }
+
+      throw new Error(`API request failed: ${errorMessage}`);
     }
 
     // Handle 204 No Content
