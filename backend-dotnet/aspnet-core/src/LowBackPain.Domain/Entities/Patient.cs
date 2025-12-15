@@ -18,9 +18,9 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     public string StudyId { get; set; }
 
     /// <summary>
-    /// 患者姓名
+    /// 患者姓名（可选）
     /// </summary>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// 年龄
