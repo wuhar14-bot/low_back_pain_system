@@ -56,11 +56,8 @@ import { chromium } from 'playwright';
     console.log('📸 Basic info page screenshot saved');
 
     // Fill in basic info using placeholders to find the right inputs
-    // First fill patient name (required by backend)
-    console.log('📍 Filling Patient Name...');
-    await page.fill('input[placeholder*="患者姓名"]', '测试患者');
-    console.log('✅ Patient Name filled');
-    await page.waitForTimeout(500);
+    // Patient name is now optional, skip it to test the fix
+    console.log('📍 Skipping Patient Name (testing optional field)...');
 
     console.log('📍 Filling Study ID...');
     // Study ID input has placeholder containing "Study ID"

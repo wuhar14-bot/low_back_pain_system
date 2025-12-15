@@ -138,7 +138,7 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     public Patient(
         Guid id,
         string studyId,
-        string name,
+        string? name,
         Guid workspaceId,
         string workspaceName,
         Guid doctorId,
@@ -159,7 +159,7 @@ public class Patient : FullAuditedAggregateRoot<Guid>
     /// 更新基本信息
     /// </summary>
     public void UpdateBasicInfo(
-        string name,
+        string? name,
         int? age,
         string? gender,
         string? phone,
