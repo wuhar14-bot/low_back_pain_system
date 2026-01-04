@@ -228,5 +228,25 @@
     "selectWorkspace": "選擇工作室",
     "noWorkspace": "未找到工作室資訊",
     "enterFromMainSystem": "請從主系統進入本系統"
+  },
+  "home": {
+    "title": "腰痛門診數據收集系統",
+    "subtitle": "專業臨床數據收集、OCR文檔識別和姿態分析服務",
+    "workspace": "工作室",
+    "doctor": "醫生",
+    "totalPatients": "病人總數",
+    "todayNew": "今日新增",
+    "recentNew": "24小時新增",
+    "patientCollection": "病人數據收集",
+    "patientCollectionDesc": "手機端數據收集表單",
+    "patientView": "病人數據查看",
+    "patientViewDesc": "查看和管理病人數據",
+    "systemFeatures": "系統功能",
+    "dataCollection": "數據收集",
+    "dataCollectionDesc": "便捷的病人腰痛評估數據收集表單",
+    "ocrRecognition": "OCR識別",
+    "ocrRecognitionDesc": "醫療文檔自動文字識別（中英文）",
+    "postureAnalysis": "姿態分析",
+    "postureAnalysisDesc": "基於MediaPipe的體態評估和分析"
   }
 }

@@ -228,5 +228,25 @@
     "selectWorkspace": "Select Workspace",
     "noWorkspace": "Workspace information not found",
     "enterFromMainSystem": "Please enter from the main system"
+  },
+  "home": {
+    "title": "Low Back Pain Data Collection System",
+    "subtitle": "Professional clinical data collection, OCR document recognition and posture analysis services",
+    "workspace": "Workspace",
+    "doctor": "Doctor",
+    "totalPatients": "Total Patients",
+    "todayNew": "Today's New",
+    "recentNew": "24h New",
+    "patientCollection": "Patient Data Collection",
+    "patientCollectionDesc": "Mobile data collection form",
+    "patientView": "Patient Data View",
+    "patientViewDesc": "View and manage patient data",
+    "systemFeatures": "System Features",
+    "dataCollection": "Data Collection",
+    "dataCollectionDesc": "Convenient patient low back pain assessment data collection form",
+    "ocrRecognition": "OCR Recognition",
+    "ocrRecognitionDesc": "Automatic medical document text recognition (Chinese & English)",
+    "postureAnalysis": "Posture Analysis",
+    "postureAnalysisDesc": "MediaPipe-based posture assessment and analysis"
   }
 }

@@ -18,10 +18,13 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useExternal } from "@/contexts/ExternalContext";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 export default function Home() {
   const { user, logout } = useAuth();
   const { workspaceName, doctorName, isExternalMode } = useExternal();
+  const { t } = useTranslation();
 
   const [stats, setStats] = useState({
     totalPatients: 0,
@@ -67,15 +70,15 @@ export default function Home() {
 
   const quickActions = [
     {
-      title: "患者数据收集",
-      description: "手机端数据收集表单",
+      title: t('home.patientCollection'),
+      description: t('home.patientCollectionDesc'),
       icon: Smartphone,
       url: createPageUrl("PatientForm"),
       color: "from-emerald-500 to-teal-500"
     },
     {
-      title: "患者数据查看",
-      description: "查看和管理患者数据",
+      title: t('home.patientView'),
+      description: t('home.patientViewDesc'),
       icon: Monitor,
       url: createPageUrl("Dashboard"),
       color: "from-blue-500 to-cyan-500"
@@ -88,6 +91,7 @@ export default function Home() {
         {/* 顶部用户信息栏 */}
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-3 bg-white rounded-lg shadow-sm px-4 py-2">
+            <LanguageSwitcher variant="compact" />
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-gray-500" />
               <span className="text-sm text-gray-700">{user?.name || user?.email}</span>
@@ -113,7 +117,7 @@ export default function Home() {
 
           <div className="flex justify-center items-center gap-4 mb-4">
             <h1 className="text-4xl md:text-5xl font-bold text-slate-800">
-              腰痛门诊数据收集系统
+              {t('home.title')}
             </h1>
             <Button variant="ghost" size="icon" onClick={loadStats} disabled={isLoading}>
                 <RefreshCw className={`w-6 h-6 text-slate-500 ${isLoading ? 'animate-spin' : ''}`} />
@@ -121,14 +125,14 @@ export default function Home() {
           </div>
 
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            专业临床数据收集、OCR文档识别和姿态分析服务
+            {t('home.subtitle')}
           </p>
 
           {isExternalMode && (workspaceName || doctorName) && (
             <div className="mt-4 inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm">
-              {workspaceName && <span>工作室: <strong>{workspaceName}</strong></span>}
+              {workspaceName && <span>{t('home.workspace')}: <strong>{workspaceName}</strong></span>}
               {workspaceName && doctorName && <span className="mx-2">|</span>}
-              {doctorName && <span>医生: <strong>{doctorName}</strong></span>}
+              {doctorName && <span>{t('home.doctor')}: <strong>{doctorName}</strong></span>}
             </div>
           )}
         </div>
@@ -139,7 +143,7 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">患者总数</p>
+                  <p className="text-sm font-medium text-slate-500">{t('home.totalPatients')}</p>
                   <p className="text-3xl font-bold text-slate-800">{stats.totalPatients}</p>
                 </div>
                 <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -153,7 +157,7 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">今日新增</p>
+                  <p className="text-sm font-medium text-slate-500">{t('home.todayNew')}</p>
                   <p className="text-3xl font-bold text-slate-800">{stats.todayPatients}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -167,7 +171,7 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">24小时新增</p>
+                  <p className="text-sm font-medium text-slate-500">{t('home.recentNew')}</p>
                   <p className="text-3xl font-bold text-slate-800">{stats.recentPatients}</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -203,7 +207,7 @@ export default function Home() {
         {/* 系统功能说明 */}
         <Card className="border-0 shadow-xl bg-gradient-to-r from-emerald-50 to-teal-50">
           <CardHeader>
-            <CardTitle className="text-slate-800">系统功能</CardTitle>
+            <CardTitle className="text-slate-800">{t('home.systemFeatures')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -211,22 +215,22 @@ export default function Home() {
                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Smartphone className="w-6 h-6 text-emerald-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">数据收集</h4>
-                <p className="text-sm text-slate-600">便捷的患者腰痛评估数据收集表单</p>
+                <h4 className="font-semibold text-slate-800 mb-2">{t('home.dataCollection')}</h4>
+                <p className="text-sm text-slate-600">{t('home.dataCollectionDesc')}</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <FileText className="w-6 h-6 text-blue-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">OCR识别</h4>
-                <p className="text-sm text-slate-600">医疗文档自动文字识别（中英文）</p>
+                <h4 className="font-semibold text-slate-800 mb-2">{t('home.ocrRecognition')}</h4>
+                <p className="text-sm text-slate-600">{t('home.ocrRecognitionDesc')}</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Monitor className="w-6 h-6 text-purple-600" />
                 </div>
-                <h4 className="font-semibold text-slate-800 mb-2">姿态分析</h4>
-                <p className="text-sm text-slate-600">基于MediaPipe的体态评估和分析</p>
+                <h4 className="font-semibold text-slate-800 mb-2">{t('home.postureAnalysis')}</h4>
+                <p className="text-sm text-slate-600">{t('home.postureAnalysisDesc')}</p>
               </div>
             </div>
           </CardContent>
