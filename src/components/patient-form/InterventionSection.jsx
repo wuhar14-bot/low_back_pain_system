@@ -4,8 +4,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, Lightbulb, ClipboardEdit, Pill } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function InterventionSection({ formData, updateFormData }) {
+  const { t } = useTranslation();
+
   const handleInterventionChange = (intervention, checked) => {
     const currentInterventions = formData.interventions || {};
     updateFormData({
@@ -19,24 +22,24 @@ export default function InterventionSection({ formData, updateFormData }) {
       recommendations: { ...currentRecommendations, [recommendation]: checked }
     });
   };
-  
+
   const handleInputChange = (field, value) => {
     updateFormData({ [field]: value });
   };
 
   const interventions = [
-    { key: 'posture_correction', label: '姿势矫正' },
-    { key: 'pain_management', label: '疼痛调节（热敷）' },
-    { key: 'therapeutic_exercise', label: '治疗性运动' },
-    { key: 'gait_reeducation', label: '步态再教育' }
+    { key: 'posture_correction', label: t('form.intervention.options.postureCorrection') },
+    { key: 'pain_management', label: t('form.intervention.options.painManagement') },
+    { key: 'therapeutic_exercise', label: t('form.intervention.options.therapeuticExercise') },
+    { key: 'gait_reeducation', label: t('form.intervention.options.gaitReeducation') }
   ];
 
   const recommendations = [
-    { key: 'discharge_with_advice', label: '出院并提供建议及家庭锻炼计划' },
-    { key: 'specialist_followup', label: '进一步专科门诊(SOPD)随访' },
-    { key: 'outpatient_pt', label: '门诊物理治疗' },
-    { key: 'day_rehabilitation', label: '日间康复' },
-    { key: 'medication_intervention', label: '药物干预' }
+    { key: 'discharge_with_advice', label: t('form.intervention.options.discharge') },
+    { key: 'specialist_followup', label: t('form.intervention.options.specialistFollowup') },
+    { key: 'outpatient_pt', label: t('form.intervention.options.outpatientPT') },
+    { key: 'day_rehabilitation', label: t('form.intervention.options.dayRehab') },
+    { key: 'medication_intervention', label: t('form.intervention.options.medication') }
   ];
 
   return (
@@ -46,7 +49,7 @@ export default function InterventionSection({ formData, updateFormData }) {
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Settings className="w-5 h-5" />
-            干预措施
+            {t('form.intervention.interventions')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -72,7 +75,7 @@ export default function InterventionSection({ formData, updateFormData }) {
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-emerald-600" />
-            后续建议
+            {t('form.intervention.recommendations')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -98,7 +101,7 @@ export default function InterventionSection({ formData, updateFormData }) {
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Pill className="w-5 h-5 text-blue-600" />
-            药物信息
+            {t('form.intervention.medicationInfo')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -106,7 +109,7 @@ export default function InterventionSection({ formData, updateFormData }) {
             id="medication_details"
             value={formData.medication_details || ''}
             onChange={(e) => handleInputChange('medication_details', e.target.value)}
-            placeholder="请详细记录药物信息，包括：&#10;• 药物名称（如：布洛芬缓释胶囊）&#10;• 用药剂量（如：200mg）&#10;• 用药频次（如：每日2次）&#10;• 用药时间（如：餐后服用）&#10;• 疗程（如：连续服用7天）"
+            placeholder={t('form.intervention.medicationPlaceholder')}
             className="bg-white border-slate-200 h-32"
           />
         </CardContent>
@@ -117,7 +120,7 @@ export default function InterventionSection({ formData, updateFormData }) {
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <ClipboardEdit className="w-5 h-5" />
-            备注
+            {t('form.intervention.remarks')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -125,7 +128,7 @@ export default function InterventionSection({ formData, updateFormData }) {
             id="remarks"
             value={formData.remarks || ''}
             onChange={(e) => handleInputChange('remarks', e.target.value)}
-            placeholder="请填写其他需要备注的信息"
+            placeholder={t('form.intervention.remarksPlaceholder')}
             className="bg-white border-slate-200 h-24"
           />
         </CardContent>
@@ -133,7 +136,7 @@ export default function InterventionSection({ formData, updateFormData }) {
 
       <div className="bg-blue-50 p-4 rounded-lg">
         <p className="text-sm text-slate-600">
-          <strong>提示：</strong>请根据患者的具体情况选择合适的干预措施和后续建议。药物信息栏会自动从上传的截图中提取相关信息，您也可以手动补充完善。完成后点击"完成提交"保存患者信息。
+          {t('form.intervention.hint')}
         </p>
       </div>
     </div>

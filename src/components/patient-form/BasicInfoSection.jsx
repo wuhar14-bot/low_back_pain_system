@@ -3,8 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { User, Phone, Calendar, Hash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function BasicInfoSection({ formData, updateFormData }) {
+  const { t } = useTranslation();
   const handleInputChange = (field, value) => {
     updateFormData({ [field]: value });
   };
@@ -15,13 +17,13 @@ export default function BasicInfoSection({ formData, updateFormData }) {
         <div className="space-y-2">
           <Label htmlFor="name" className="text-slate-700 font-medium flex items-center gap-2">
             <User className="w-4 h-4" />
-            患者姓名
+            {t('form.basicInfo.patientName')}
           </Label>
           <Input
             id="name"
             value={formData.name || ''}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="请输入患者姓名"
+            placeholder={t('form.basicInfo.patientNamePlaceholder')}
             className="bg-white border-slate-200"
           />
         </div>
@@ -29,13 +31,13 @@ export default function BasicInfoSection({ formData, updateFormData }) {
         <div className="space-y-2">
           <Label htmlFor="study_id" className="text-slate-700 font-medium flex items-center gap-2">
             <Hash className="w-4 h-4" />
-            Study ID <span className="text-red-500">*</span>
+            {t('form.basicInfo.studyId')} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="study_id"
             value={formData.study_id || ''}
             onChange={(e) => handleInputChange('study_id', e.target.value)}
-            placeholder="请输入Study ID（必填）"
+            placeholder={t('form.basicInfo.studyIdPlaceholder')}
             className="bg-white border-slate-200"
             required
           />
@@ -44,13 +46,13 @@ export default function BasicInfoSection({ formData, updateFormData }) {
         <div className="space-y-2">
           <Label htmlFor="phone" className="text-slate-700 font-medium flex items-center gap-2">
             <Phone className="w-4 h-4" />
-            联系电话
+            {t('form.basicInfo.phone')}
           </Label>
           <Input
             id="phone"
             value={formData.phone || ''}
             onChange={(e) => handleInputChange('phone', e.target.value)}
-            placeholder="请输入联系电话"
+            placeholder={t('form.basicInfo.phonePlaceholder')}
             className="bg-white border-slate-200"
           />
         </div>
@@ -58,7 +60,7 @@ export default function BasicInfoSection({ formData, updateFormData }) {
         <div className="space-y-2">
           <Label htmlFor="age" className="text-slate-700 font-medium flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            年龄 <span className="text-red-500">*</span>
+            {t('form.basicInfo.age')} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="age"
@@ -67,7 +69,7 @@ export default function BasicInfoSection({ formData, updateFormData }) {
             max="150"
             value={formData.age || ''}
             onChange={(e) => handleInputChange('age', e.target.value ? parseInt(e.target.value) : '')}
-            placeholder="请输入年龄（必填）"
+            placeholder={t('form.basicInfo.agePlaceholder')}
             className="bg-white border-slate-200"
             required
           />
@@ -75,7 +77,7 @@ export default function BasicInfoSection({ formData, updateFormData }) {
 
         <div className="space-y-2">
           <Label className="text-slate-700 font-medium">
-            性别 <span className="text-red-500">*</span>
+            {t('form.basicInfo.gender')} <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
             value={formData.gender || ''}
@@ -85,11 +87,11 @@ export default function BasicInfoSection({ formData, updateFormData }) {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="男" id="gender_male" />
-              <Label htmlFor="gender_male" className="text-slate-700 font-normal cursor-pointer">男</Label>
+              <Label htmlFor="gender_male" className="text-slate-700 font-normal cursor-pointer">{t('form.basicInfo.male')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="女" id="gender_female" />
-              <Label htmlFor="gender_female" className="text-slate-700 font-normal cursor-pointer">女</Label>
+              <Label htmlFor="gender_female" className="text-slate-700 font-normal cursor-pointer">{t('form.basicInfo.female')}</Label>
             </div>
           </RadioGroup>
         </div>
@@ -97,7 +99,7 @@ export default function BasicInfoSection({ formData, updateFormData }) {
 
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
         <p className="text-sm text-amber-800">
-          <span className="font-medium">注意：</span>标有 <span className="text-red-500">*</span> 的字段为必填项，必须填写才能提交患者信息。
+          {t('form.basicInfo.requiredNote')}
         </p>
       </div>
     </div>

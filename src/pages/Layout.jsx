@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Workspace } from "@/api/entities";
 import { useExternal } from "@/contexts/ExternalContext";
+import { useTranslation } from "react-i18next";
 import {
   Smartphone,
   Monitor,
@@ -17,6 +18,7 @@ import {
   LogOut
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -33,32 +35,33 @@ import {
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 
-const navigationItems = [
-  {
-    title: "首页",
-    url: createPageUrl("index"),
-    icon: Home,
-    description: "系统首页"
-  },
-  {
-    title: "患者数据收集",
-    url: createPageUrl("PatientForm"),
-    icon: Smartphone,
-    description: "手机端数据收集"
-  },
-  {
-    title: "医生工作台",
-    url: createPageUrl("Dashboard"),
-    icon: Monitor,
-    description: "查看患者数据"
-  }
-];
-
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const { workspaceName, doctorName, isExternalMode } = useExternal();
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
+
+  const navigationItems = [
+    {
+      title: t('nav.home'),
+      url: createPageUrl("index"),
+      icon: Home,
+      description: t('nav.homeDesc')
+    },
+    {
+      title: t('nav.patientForm'),
+      url: createPageUrl("PatientForm"),
+      icon: Smartphone,
+      description: t('nav.patientFormDesc')
+    },
+    {
+      title: t('nav.dashboard'),
+      url: createPageUrl("Dashboard"),
+      icon: Monitor,
+      description: t('nav.dashboardDesc')
+    }
+  ];
 
   const handleLogout = async () => {
     await logout();
@@ -105,8 +108,8 @@ export default function Layout({ children, currentPageName }) {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-800 text-lg">腰痛门诊</h2>
-                <p className="text-xs text-slate-500 font-medium">数据收集系统</p>
+                <h2 className="font-bold text-slate-800 text-lg">{t('nav.systemName')}</h2>
+                <p className="text-xs text-slate-500 font-medium">{t('nav.systemSubtitle')}</p>
               </div>
             </Link>
           </SidebarHeader>
@@ -116,7 +119,7 @@ export default function Layout({ children, currentPageName }) {
             {currentWorkspace && (
               <SidebarGroup>
                 <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-3">
-                  当前工作室
+                  {t('nav.currentWorkspace')}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
                   <div className="px-3 py-2 bg-emerald-50 rounded-lg border border-emerald-200">
@@ -126,7 +129,7 @@ export default function Layout({ children, currentPageName }) {
                     </div>
                     {currentWorkspace.created_by_name && (
                       <p className="text-xs text-emerald-600 mt-1">
-                        创建者: {currentWorkspace.created_by_name}
+                        {t('nav.createdBy')}: {currentWorkspace.created_by_name}
                       </p>
                     )}
                   </div>
@@ -136,7 +139,7 @@ export default function Layout({ children, currentPageName }) {
 
             <SidebarGroup>
               <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-3">
-                功能导航
+                {t('nav.navigation')}
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-2">
@@ -166,7 +169,7 @@ export default function Layout({ children, currentPageName }) {
 
             <SidebarGroup className="mt-8">
               <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-3">
-                系统信息
+                {t('nav.systemInfo')}
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <div className="px-3 py-4 space-y-3">
@@ -175,8 +178,8 @@ export default function Layout({ children, currentPageName }) {
                       <Users className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-700">患者记录</p>
-                      <p className="text-xs text-slate-500">实时同步数据</p>
+                      <p className="font-medium text-slate-700">{t('nav.patientRecords')}</p>
+                      <p className="text-xs text-slate-500">{t('nav.realtimeSync')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
@@ -184,8 +187,8 @@ export default function Layout({ children, currentPageName }) {
                       <Activity className="w-4 h-4 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-700">系统状态</p>
-                      <p className="text-xs text-emerald-600 font-medium">正常运行</p>
+                      <p className="font-medium text-slate-700">{t('nav.systemStatus')}</p>
+                      <p className="text-xs text-emerald-600 font-medium">{t('nav.running')}</p>
                     </div>
                   </div>
                 </div>
@@ -200,8 +203,9 @@ export default function Layout({ children, currentPageName }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-slate-800 text-sm truncate">{user?.userName || 'User'}</p>
-                <p className="text-xs text-slate-500 truncate">腰痛门诊数据管理</p>
+                <p className="text-xs text-slate-500 truncate">{t('nav.dataManagement')}</p>
               </div>
+              <LanguageSwitcher variant="compact" />
               <button
                 onClick={handleLogout}
                 className="p-2 hover:bg-red-50 rounded-lg transition-colors duration-200 text-slate-400 hover:text-red-500"
@@ -221,9 +225,10 @@ export default function Layout({ children, currentPageName }) {
                 <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200 -ml-2" />
                 <Link to={createPageUrl("index")} className="flex items-center gap-2 min-w-0">
                   <Stethoscope className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                  <h1 className="text-lg font-bold text-slate-800 truncate">腰痛门诊</h1>
+                  <h1 className="text-lg font-bold text-slate-800 truncate">{t('nav.systemName')}</h1>
                 </Link>
               </div>
+              <LanguageSwitcher variant="compact" />
             </div>
           </header>
 

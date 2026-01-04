@@ -6,6 +6,7 @@ import { CheckCircle, Smartphone, ArrowRight, List, Play, Image, Loader2 } from 
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { UploadFile, InvokeLLM } from "@/api/integrations";
+import { useTranslation } from "react-i18next";
 
 import PainAreaSection from "../components/patient-form/PainAreaSection";
 import BasicInfoSection from "../components/patient-form/BasicInfoSection";
@@ -19,17 +20,18 @@ import PatientFormCatalog from "../components/patient-form/PatientFormCatalog";
 import ImageUploadModal from "../components/patient-form/ImageUploadModal";
 import NavigationHeader from "@/components/ui/navigation";
 
-const SECTIONS = [
-  { id: 'basic', title: '基本信息', component: BasicInfoSection, required: true },
-  { id: 'history', title: '病史资料', component: MedicalHistorySection, required: false },
-  { id: 'pain_areas', title: '疼痛区域选择', component: PainAreaSection, required: true },
-  { id: 'subjective', title: '主观检查', component: SubjectiveExamSection, required: false },
-  { id: 'objective', title: '客观检查', component: ObjectiveExamSection, required: false },
-  { id: 'functional', title: '功能评分', component: FunctionalScoreSection, required: false },
-  { id: 'intervention', title: '干预建议', component: InterventionSection, required: false }
-];
-
 export default function PatientForm() {
+  const { t } = useTranslation();
+
+  const SECTIONS = [
+    { id: 'basic', title: t('form.sections.basicInfo'), component: BasicInfoSection, required: true },
+    { id: 'history', title: t('form.sections.medicalHistory'), component: MedicalHistorySection, required: false },
+    { id: 'pain_areas', title: t('form.sections.painAreas'), component: PainAreaSection, required: true },
+    { id: 'subjective', title: t('form.sections.subjective'), component: SubjectiveExamSection, required: false },
+    { id: 'objective', title: t('form.sections.objective'), component: ObjectiveExamSection, required: false },
+    { id: 'functional', title: t('form.sections.functional'), component: FunctionalScoreSection, required: false },
+    { id: 'intervention', title: t('form.sections.intervention'), component: InterventionSection, required: false }
+  ];
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -392,21 +394,21 @@ export default function PatientForm() {
               <CheckCircle className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-slate-800 mb-3">
-              {patientId ? '更新成功！' : '提交成功！'}
+              {patientId ? t('messages.updateSuccess') : t('messages.submitSuccess')}
             </h2>
             <p className="text-slate-600 mb-8">
-              患者信息已成功保存，医生可以在工作台查看相关数据。
+              {t('messages.patientSaved')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 onClick={resetForm}
                 className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold py-3"
               >
-                {patientId ? '继续编辑' : '录入新患者'}
+                {patientId ? t('messages.continueEdit') : t('messages.newPatient')}
               </Button>
               <Link to={createPageUrl("Dashboard")} className="flex-1">
                 <Button variant="outline" className="w-full py-3">
-                  返回工作台
+                  {t('messages.returnToDashboard')}
                 </Button>
               </Link>
             </div>
@@ -434,7 +436,7 @@ export default function PatientForm() {
   if (showWelcome) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
-        <NavigationHeader title="患者数据收集" />
+        <NavigationHeader title={t('form.title')} />
         <div className="flex items-center justify-center p-4 min-h-[calc(100vh-3.5rem)]">
           <Card className="w-full max-w-2xl border-0 shadow-2xl bg-white/90 backdrop-blur-sm">
           <CardContent className="p-8 md:p-12">
@@ -442,9 +444,9 @@ export default function PatientForm() {
               <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
                 <Smartphone className="w-10 h-10 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-4">患者数据收集</h1>
+              <h1 className="text-3xl font-bold text-slate-800 mb-4">{t('form.title')}</h1>
               <p className="text-slate-600 text-lg">
-                欢迎使用腰痛门诊数据收集系统，请按照以下模块收集患者信息
+                {t('form.welcome')}
               </p>
             </div>
 
@@ -461,7 +463,7 @@ export default function PatientForm() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-slate-800">{section.title}</h3>
                     {section.required && (
-                      <span className="text-xs text-emerald-600 font-medium">必填模块</span>
+                      <span className="text-xs text-emerald-600 font-medium">{t('common.requiredModule')}</span>
                     )}
                   </div>
                 </div>
@@ -475,7 +477,7 @@ export default function PatientForm() {
                   className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold px-8 py-3 text-lg"
                 >
                   <Play className="w-5 h-5 mr-2" />
-                  开始数据收集
+                  {t('form.startCollection')}
                 </Button>
 
                 <Button
@@ -484,13 +486,13 @@ export default function PatientForm() {
                   className="border-2 border-purple-200 text-purple-700 hover:bg-purple-50 px-4 py-3 text-lg font-semibold"
                 >
                   <Image className="w-5 h-5 mr-2" />
-                  上传图片录入
+                  {t('form.uploadImage')}
                 </Button>
 
               </div>
 
               <p className="text-sm text-slate-500">
-                💡 提示：可上传病历截图，AI将自动识别并填写表单
+                {t('form.uploadHint')}
               </p>
             </div>
           </CardContent>
@@ -510,14 +512,14 @@ export default function PatientForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
-      <NavigationHeader title="患者数据收集" />
+      <NavigationHeader title={t('form.title')} />
       <div className="p-4">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Smartphone className="w-6 h-6 text-emerald-600" />
               <h1 className="text-2xl font-bold text-slate-800">
-                {patientId ? '编辑患者信息' : '患者信息收集'}
+                {patientId ? t('form.editTitle') : t('form.collectTitle')}
               </h1>
             </div>
 
@@ -547,8 +549,8 @@ export default function PatientForm() {
               </div>
             </div>
             <p className="text-sm text-slate-600">
-              第 {currentSection + 1} 步，共 {SECTIONS.length} 步 - {SECTIONS[currentSection].title}
-              {SECTIONS[currentSection].required && <span className="text-emerald-600 font-medium"> (必填)</span>}
+              {t('common.step', { current: currentSection + 1, total: SECTIONS.length })} - {SECTIONS[currentSection].title}
+              {SECTIONS[currentSection].required && <span className="text-emerald-600 font-medium"> ({t('common.required')})</span>}
             </p>
           </div>
 
@@ -573,7 +575,7 @@ export default function PatientForm() {
               disabled={currentSection === 0}
               className="border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50"
             >
-              上一步
+              {t('common.previous')}
             </Button>
 
             <div className="flex gap-3">
@@ -583,7 +585,7 @@ export default function PatientForm() {
                 className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
               >
                 <List className="w-4 h-4 mr-2" />
-                目录
+                {t('common.catalog')}
               </Button>
 
               {currentSection === SECTIONS.length - 1 ? (
@@ -592,14 +594,14 @@ export default function PatientForm() {
                   disabled={isSubmitting || !isBasicInfoValid()}
                   className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold px-8"
                 >
-                  {isSubmitting ? "提交中..." : (patientId ? '更新信息' : '完成提交')}
+                  {isSubmitting ? t('common.submitting') : t('common.submit')}
                 </Button>
               ) : (
                 <Button
                   onClick={handleNext}
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold"
                 >
-                  下一步
+                  {t('common.next')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               )}
