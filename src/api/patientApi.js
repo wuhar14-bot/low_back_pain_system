@@ -7,7 +7,7 @@
  */
 
 import axios from 'axios';
-import { API_BASE_URL, API_ENDPOINTS, API_TIMEOUT } from './config';
+import { API_BASE_URL, API_ENDPOINTS, API_TIMEOUT, OCR_SERVICE_URL, POSE_SERVICE_URL } from './config';
 import { getAuthHeaders, getWorkspaceId, getDoctorId } from '../utils/auth';
 
 // 创建axios实例
@@ -201,7 +201,7 @@ export const PatientApi = {
 };
 
 /**
- * OCR服务API
+ * OCR服务API (直接访问Python服务)
  */
 export const OcrApi = {
     /**
@@ -209,12 +209,12 @@ export const OcrApi = {
      * @param {string} base64Image - Base64编码的图片
      */
     async processImage(base64Image) {
-        const response = await apiClient.post(
-            API_ENDPOINTS.OCR,
+        const response = await axios.post(
+            `${OCR_SERVICE_URL}/ocr/process`,
             { image: base64Image },
             { timeout: API_TIMEOUT.OCR }
         );
-        return response;
+        return response.data;
     },
 
     /**
@@ -222,7 +222,7 @@ export const OcrApi = {
      */
     async checkHealth() {
         try {
-            await apiClient.get(API_ENDPOINTS.OCR_HEALTH);
+            await axios.get(`${OCR_SERVICE_URL}/health`);
             return true;
         } catch {
             return false;
@@ -231,7 +231,7 @@ export const OcrApi = {
 };
 
 /**
- * 姿态分析服务API
+ * 姿态分析服务API (直接访问Python服务)
  */
 export const PoseApi = {
     /**
@@ -240,15 +240,15 @@ export const PoseApi = {
      * @param {string} flexionImageBase64 - 屈曲姿态图片 (Base64)
      */
     async analyzeStatic(standingImageBase64, flexionImageBase64) {
-        const response = await apiClient.post(
-            API_ENDPOINTS.POSE,
+        const response = await axios.post(
+            `${POSE_SERVICE_URL}/pose/analyze-static`,
             {
-                standingImage: standingImageBase64,
-                flexionImage: flexionImageBase64
+                standing_image: standingImageBase64,
+                flexion_image: flexionImageBase64
             },
             { timeout: API_TIMEOUT.POSE }
         );
-        return response;
+        return response.data;
     },
 
     /**
@@ -256,7 +256,7 @@ export const PoseApi = {
      */
     async checkHealth() {
         try {
-            await apiClient.get(API_ENDPOINTS.POSE_HEALTH);
+            await axios.get(`${POSE_SERVICE_URL}/health`);
             return true;
         } catch {
             return false;

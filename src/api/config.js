@@ -9,6 +9,10 @@
 // 从环境变量获取API URL,默认为本地开发环境
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
+// Python服务URL (直接访问)
+export const OCR_SERVICE_URL = import.meta.env.VITE_OCR_SERVICE_URL || 'http://localhost:5001';
+export const POSE_SERVICE_URL = import.meta.env.VITE_POSE_SERVICE_URL || 'http://localhost:5002';
+
 // API端点配置
 export const API_ENDPOINTS = {
     // 患者管理
@@ -16,12 +20,6 @@ export const API_ENDPOINTS = {
     PATIENTS_BY_WORKSPACE: (workspaceId) => `/api/app/patient/by-workspace/${workspaceId}`,
     PATIENTS_BY_DOCTOR: (doctorId) => `/api/app/patient/by-doctor/${doctorId}`,
     PATIENT_POSE_ANALYSIS: (id) => `/api/app/patient/${id}/pose-analysis`,
-
-    // Python服务 (通过.NET API转发)
-    OCR: '/api/services/ocr',
-    OCR_HEALTH: '/api/services/ocr/health',
-    POSE: '/api/services/pose',
-    POSE_HEALTH: '/api/services/pose/health',
 
     // 工作室和医生 (如果需要)
     WORKSPACES: '/api/app/workspace',

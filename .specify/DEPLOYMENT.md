@@ -4,6 +4,42 @@ Complete deployment and setup instructions for the Low Back Pain Data Collection
 
 ---
 
+## Render Cloud Deployment (Production)
+
+All services are deployed on Render:
+
+| Service | URL | Type | Region |
+|:---|:---|:---|:---|
+| **Frontend** | https://low-back-pain-system.onrender.com | Static | Global |
+| **Backend API** | https://low-back-pain-backend.onrender.com | Docker | Singapore |
+| **MediaPipe** | https://lowbackpain-mediapipe-service.onrender.com | Docker | Singapore |
+| **OCR** | https://lowbackpain-ocr-service.onrender.com | Docker | Singapore |
+| **Database** | lowbackpain-db (internal) | PostgreSQL 18 | Singapore |
+
+### Health Check URLs
+
+```bash
+# Backend API
+https://low-back-pain-backend.onrender.com/swagger
+
+# MediaPipe Service
+https://lowbackpain-mediapipe-service.onrender.com/health
+
+# OCR Service
+https://lowbackpain-ocr-service.onrender.com/health
+```
+
+### Render Dashboard Links
+
+- Backend: https://dashboard.render.com/web/srv-d4j7k9fpm1nc73dsgtd0
+- MediaPipe: https://dashboard.render.com/web/srv-d4j795fpm1nc73ds96q0
+
+### GitHub Repository
+
+https://github.com/wuhar14-bot/low_back_pain_system
+
+---
+
 ## Table of Contents
 
 1. [System Requirements](#system-requirements)
