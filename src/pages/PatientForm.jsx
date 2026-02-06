@@ -15,7 +15,6 @@ import SubjectiveExamSection from "../components/patient-form/SubjectiveExamSect
 import ObjectiveExamSection from "../components/patient-form/ObjectiveExamSection";
 import FunctionalScoreSection from "../components/patient-form/FunctionalScoreSection";
 import InterventionSection from "../components/patient-form/InterventionSection";
-import WorkspacePrompt from "../components/prompts/WorkspacePrompt";
 import PatientFormCatalog from "../components/patient-form/PatientFormCatalog";
 import ImageUploadModal from "../components/patient-form/ImageUploadModal";
 import NavigationHeader from "@/components/ui/navigation";
@@ -40,7 +39,6 @@ export default function PatientForm() {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [currentWorkspaceId, setCurrentWorkspaceId] = useState(null);
   const [showCatalog, setShowCatalog] = useState(false);
   const [completedSections, setCompletedSections] = useState(new Set());
   const [showWelcome, setShowWelcome] = useState(true);
@@ -51,15 +49,6 @@ export default function PatientForm() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const id = urlParams.get('id');
-    let workspaceId = localStorage.getItem('currentWorkspaceId');
-
-    // If auth is disabled and no workspace ID exists, use a test workspace
-    if (!workspaceId && import.meta.env.VITE_DISABLE_AUTH === 'true') {
-      workspaceId = 'test-workspace';
-      localStorage.setItem('currentWorkspaceId', workspaceId);
-    }
-
-    setCurrentWorkspaceId(workspaceId);
 
     if (id) {
       setPatientId(id);
@@ -139,10 +128,7 @@ export default function PatientForm() {
 
   const autoSave = async (data) => {
     try {
-      await Patient.update(patientId, {
-        ...data,
-        workspace_id: currentWorkspaceId
-      });
+      await Patient.update(patientId, data);
     } catch (error) {
       console.error("自动保存失败:", error);
     }
@@ -293,11 +279,6 @@ export default function PatientForm() {
   };
 
   const handleSubmit = async () => {
-    if (!currentWorkspaceId) {
-      alert("提交失败：未找到工作室信息。请从主系统重新进入本系统。");
-      return;
-    }
-
     const requiredFields = {
       study_id: "Study ID",
       age: "年龄",
@@ -322,7 +303,6 @@ export default function PatientForm() {
     try {
       const dataToSubmit = {
         ...formData,
-        workspace_id: currentWorkspaceId,
         last_sync_timestamp: new Date().toISOString()
       };
 
@@ -379,10 +359,6 @@ export default function PatientForm() {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
       </div>
     );
-  }
-
-  if (!currentWorkspaceId) {
-    return <WorkspacePrompt />;
   }
 
   if (isSuccess) {

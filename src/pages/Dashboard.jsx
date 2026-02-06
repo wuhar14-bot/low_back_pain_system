@@ -38,7 +38,6 @@ import { createPageUrl } from "@/utils";
 
 import StatsCards from "../components/dashboard/StatsCards";
 import PatientList from "../components/dashboard/PatientList";
-import WorkspacePrompt from "../components/prompts/WorkspacePrompt";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -49,7 +48,6 @@ export default function Dashboard() {
   const [filterType, setFilterType] = useState("all");
   const [patientToDelete, setPatientToDelete] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
-  const [currentWorkspaceId, setCurrentWorkspaceId] = useState(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,15 +55,8 @@ export default function Dashboard() {
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    const workspaceId = localStorage.getItem('currentWorkspaceId');
-    setCurrentWorkspaceId(workspaceId);
-
-    const isAuthDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
-    if (isAuthDisabled || workspaceId) {
-      loadPatients(workspaceId);
-    } else {
-      setIsLoading(false);
-    }
+    // Always load patients - workspace filtering removed
+    loadPatients();
   }, []);
 
   useEffect(() => {
@@ -73,16 +64,11 @@ export default function Dashboard() {
     setCurrentPage(1); // Reset to first page when filters change
   }, [patients, searchTerm, filterType]);
 
-  const loadPatients = async (workspaceId) => {
+  const loadPatients = async () => {
     setIsLoading(true);
     try {
       const allPatients = await Patient.list("-created_date");
-      // 认证禁用时显示所有患者，否则按 workspace 过滤
-      const isAuthDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
-      const displayPatients = isAuthDisabled
-        ? allPatients
-        : allPatients.filter(p => p.workspace_id === workspaceId);
-      setPatients(displayPatients);
+      setPatients(allPatients);
     } catch (error) {
       console.error("加载患者数据失败:", error);
     }
@@ -133,9 +119,7 @@ export default function Dashboard() {
       try {
         await Patient.delete(patientToDelete.id);
         setPatientToDelete(null);
-        if (currentWorkspaceId) {
-          await loadPatients(currentWorkspaceId);
-        }
+        await loadPatients();
       } catch (error) {
         console.error("删除患者失败:", error);
         alert("删除患者失败，请重试");
@@ -221,10 +205,6 @@ export default function Dashboard() {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
       </div>
     );
-  }
-
-  if (!currentWorkspaceId) {
-    return <WorkspacePrompt />;
   }
 
   return (
