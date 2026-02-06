@@ -109,8 +109,8 @@ export default function PatientForm() {
   const loadPatient = async (id) => {
     setIsLoading(true);
     try {
-      const patients = await Patient.list();
-      const patientToEdit = patients.find(p => p.id === id);
+      // Use Patient.get(id) to directly fetch by ID instead of loading all patients
+      const patientToEdit = await Patient.get(id);
       if (patientToEdit) {
         setFormData(patientToEdit);
         updateCompletedSections(patientToEdit);
