@@ -65,7 +65,7 @@ export default function PatientForm() {
         setSyncInterval(null);
       }
     };
-  }, [location.search, syncInterval]);
+  }, [location.search]); // Remove syncInterval to prevent infinite loop
 
   const startSync = (patientId) => {
     if (syncInterval) {
