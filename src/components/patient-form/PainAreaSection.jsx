@@ -40,8 +40,7 @@ export default function PainAreaSection({ formData, updateFormData }) {
     return painAreas.filter(area => selected[area.key]);
   };
 
-  // CHOIR Body Map - 38 Posterior Regions
-  // Based on Stanford CHOIR Body Map (Scherrer et al., PLOS Computational Biology, 2022)
+  // 38 Posterior Regions
   const painAreas = [
     // Head regions
     { key: 'head_top_left', label: '头顶左侧', path: 'M189 4.99999V32.5L187.34 33.84C183.89 34.94 160.93 31.42 156.48 30.03C155.18 29.62 154.89 30.8 154.97 28.51C155.04 26.36 155.93 25.1 156.82 23.33C163.2 10.66 174.6 3.98999 189 5.00999V4.99999Z' },
@@ -147,7 +146,7 @@ export default function PainAreaSection({ formData, updateFormData }) {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {/* SVG Body Diagram - CHOIR Body Map */}
+            {/* SVG Body Diagram */}
             <div className="flex justify-center">
               <div className="relative">
                 <svg
