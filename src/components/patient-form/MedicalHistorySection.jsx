@@ -8,9 +8,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, Calendar, AlertCircle, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UploadFile, InvokeLLM } from "@/api/integrations";
+import { useTranslation } from "react-i18next";
 
 
 export default function MedicalHistorySection({ formData, updateFormData }) {
+  const { t } = useTranslation();
   const [isOcrLoading, setIsOcrLoading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -74,13 +76,13 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
         <div className="space-y-2">
           <Label htmlFor="chief_complaint" className="text-slate-700 font-medium flex items-center gap-2">
             <FileText className="w-4 h-4" />
-            主诉
+            {t('form.medicalHistory.chiefComplaint')}
           </Label>
           <Textarea
             id="chief_complaint"
             value={formData.chief_complaint || ''}
             onChange={(e) => handleInputChange('chief_complaint', e.target.value)}
-            placeholder="请描述患者主要症状，或使用文字识别功能"
+            placeholder={t('form.medicalHistory.chiefComplaintPlaceholder')}
             className="bg-white border-slate-200 h-24"
           />
           <div className="flex justify-end">
@@ -101,14 +103,14 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
               ) : (
                 <Camera className="w-4 h-4 mr-2" />
               )}
-              {isOcrLoading ? '识别中...' : '文字识别'}
+              {isOcrLoading ? t('form.medicalHistory.ocrProcessing') : t('form.medicalHistory.ocrButton')}
             </Button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label className="text-slate-700 font-medium">现病史类型</Label>
+            <Label className="text-slate-700 font-medium">{t('form.medicalHistory.historyType')}</Label>
             <RadioGroup
               value={formData.history_type || ''}
               onValueChange={(value) => handleInputChange('history_type', value)}
@@ -116,11 +118,11 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="首次发作" id="history_first" />
-                <Label htmlFor="history_first" className="text-slate-700 font-normal cursor-pointer">首次发作</Label>
+                <Label htmlFor="history_first" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.firstEpisode')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="复发" id="history_relapse" />
-                <Label htmlFor="history_relapse" className="text-slate-700 font-normal cursor-pointer">复发</Label>
+                <Label htmlFor="history_relapse" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.relapse')}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -128,7 +130,7 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
           <div className="space-y-2">
             <Label htmlFor="first_onset_date" className="text-slate-700 font-medium flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              初次发作日期
+              {t('form.medicalHistory.firstOnsetDate')}
             </Label>
             <Input
               id="first_onset_date"
@@ -141,7 +143,7 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-slate-700 font-medium">疼痛类型</Label>
+          <Label className="text-slate-700 font-medium">{t('form.medicalHistory.painType')}</Label>
           <RadioGroup
             value={formData.pain_type || ''}
             onValueChange={(value) => handleInputChange('pain_type', value)}
@@ -149,15 +151,15 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="局部疼痛" id="pain_local" />
-              <Label htmlFor="pain_local" className="text-slate-700 font-normal cursor-pointer">局部疼痛</Label>
+              <Label htmlFor="pain_local" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.localPain')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="放射痛" id="pain_radiating" />
-              <Label htmlFor="pain_radiating" className="text-slate-700 font-normal cursor-pointer">放射痛</Label>
+              <Label htmlFor="pain_radiating" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.radiatingPain')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="牵涉痛" id="pain_referred" />
-              <Label htmlFor="pain_referred" className="text-slate-700 font-normal cursor-pointer">牵涉痛</Label>
+              <Label htmlFor="pain_referred" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.referredPain')}</Label>
             </div>
           </RadioGroup>
         </div>
@@ -165,32 +167,32 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="aggravating_factors" className="text-slate-700 font-medium">
-              加重因素
+              {t('form.medicalHistory.aggravatingFactors')}
             </Label>
             <Textarea
               id="aggravating_factors"
               value={formData.aggravating_factors || ''}
               onChange={(e) => handleInputChange('aggravating_factors', e.target.value)}
-              placeholder="什么情况下疼痛会加重"
+              placeholder={t('form.medicalHistory.aggravatingFactorsPlaceholder')}
               className="bg-white border-slate-200 h-16"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="relieving_factors" className="text-slate-700 font-medium">
-              缓解因素
+              {t('form.medicalHistory.relievingFactors')}
             </Label>
             <Textarea
               id="relieving_factors"
               value={formData.relieving_factors || ''}
               onChange={(e) => handleInputChange('relieving_factors', e.target.value)}
-              placeholder="什么情况下疼痛会缓解"
+              placeholder={t('form.medicalHistory.relievingFactorsPlaceholder')}
               className="bg-white border-slate-200 h-16"
             />
           </div>
         </div>
 
-        {/* 放射痛 */}
+        {/* Radiating Pain */}
         <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -200,20 +202,20 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
             />
             <Label htmlFor="has_radiation" className="text-slate-700 font-medium flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
-              是否有放射痛
+              {t('form.medicalHistory.hasRadiation')}
             </Label>
           </div>
-          
+
           {formData.has_radiation && (
             <div className="space-y-2">
               <Label htmlFor="radiation_location" className="text-slate-700 font-medium">
-                放射至何处
+                {t('form.medicalHistory.radiationLocation')}
               </Label>
               <Input
                 id="radiation_location"
                 value={formData.radiation_location || ''}
                 onChange={(e) => handleInputChange('radiation_location', e.target.value)}
-                placeholder="请描述放射痛的位置"
+                placeholder={t('form.medicalHistory.radiationLocationPlaceholder')}
                 className="bg-white border-slate-200"
               />
             </div>
@@ -223,19 +225,19 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="previous_treatment" className="text-slate-700 font-medium">
-              其他已接受治疗
+              {t('form.medicalHistory.previousTreatment')}
             </Label>
             <Textarea
               id="previous_treatment"
               value={formData.previous_treatment || ''}
               onChange={(e) => handleInputChange('previous_treatment', e.target.value)}
-              placeholder="请描述之前接受过的治疗"
+              placeholder={t('form.medicalHistory.previousTreatmentPlaceholder')}
               className="bg-white border-slate-200 h-16"
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-slate-700 font-medium">病情进展</Label>
+            <Label className="text-slate-700 font-medium">{t('form.medicalHistory.conditionProgress')}</Label>
             <RadioGroup
               value={formData.condition_progress || ''}
               onValueChange={(value) => handleInputChange('condition_progress', value)}
@@ -243,19 +245,19 @@ export default function MedicalHistorySection({ formData, updateFormData }) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="改善" id="progress_improve" />
-                <Label htmlFor="progress_improve" className="text-slate-700 font-normal cursor-pointer">改善</Label>
+                <Label htmlFor="progress_improve" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.improving')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="恶化" id="progress_worsen" />
-                <Label htmlFor="progress_worsen" className="text-slate-700 font-normal cursor-pointer">恶化</Label>
+                <Label htmlFor="progress_worsen" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.worsening')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="稳定" id="progress_stable" />
-                <Label htmlFor="progress_stable" className="text-slate-700 font-normal cursor-pointer">稳定</Label>
+                <Label htmlFor="progress_stable" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.stable')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="波动" id="progress_fluctuate" />
-                <Label htmlFor="progress_fluctuate" className="text-slate-700 font-normal cursor-pointer">波动</Label>
+                <Label htmlFor="progress_fluctuate" className="text-slate-700 font-normal cursor-pointer">{t('form.medicalHistory.fluctuating')}</Label>
               </div>
             </RadioGroup>
           </div>
