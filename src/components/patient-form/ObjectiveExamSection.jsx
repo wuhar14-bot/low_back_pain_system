@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, RotateCcw, Zap, Camera, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PostureAnalysisModal from "./PostureAnalysisModal";
+import { useTranslation } from "react-i18next";
 
 export default function ObjectiveExamSection({ formData, updateFormData }) {
+  const { t } = useTranslation();
   const [showPostureAnalysis, setShowPostureAnalysis] = useState(false);
 
   const handleInputChange = (field, value) => {
@@ -53,23 +55,33 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
   const myotomeScores = ["0", "1", "2", "3", "4", "5"];
 
   const postureOptions = {
-    cervical: ["颈椎前凸过度", "正常曲度", "颈椎前凸消失", "颈椎后凸"],
-    lumbar: ["腰椎前凸过度", "正常曲度", "腰椎曲度变平", "腰椎后凸"]
+    cervical: [
+      { value: "颈椎前凸过度", key: "excessiveLordosis" },
+      { value: "正常曲度", key: "normalCurvature" },
+      { value: "颈椎前凸消失", key: "reducedLordosis" },
+      { value: "颈椎后凸", key: "kyphotic" }
+    ],
+    lumbar: [
+      { value: "腰椎前凸过度", key: "lumbarExcessiveLordosis" },
+      { value: "正常曲度", key: "lumbarNormal" },
+      { value: "腰椎曲度变平", key: "lumbarReduced" },
+      { value: "腰椎后凸", key: "lumbarKyphotic" }
+    ]
   };
 
   return (
     <div className="space-y-6">
-      {/* AI姿态分析模块 */}
+      {/* AI Posture Analysis */}
       <Card className="border-2 border-blue-200 bg-blue-50/30">
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <RotateCcw className="w-5 h-5 text-blue-600" />
-            AI姿态分析
+            {t('form.objective.aiPostureAnalysis')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-sm text-slate-600 mb-4">
-            通过AI分析患者站立和弯腰姿势照片，自动测量脊柱前屈活动范围
+            {t('form.objective.aiPostureDesc')}
           </div>
 
           <Button
@@ -77,35 +89,35 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
             className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
           >
             <Camera className="w-4 h-4 mr-2" />
-            开始姿态分析
+            {t('form.objective.startAnalysis')}
           </Button>
 
-          {/* 显示AI分析结果 */}
+          {/* AI Analysis Result */}
           {formData.ai_posture_analysis && (
             <div className="bg-white p-4 rounded-lg border border-blue-200 mt-4">
-              <h5 className="font-medium text-slate-800 mb-3">AI分析结果：</h5>
+              <h5 className="font-medium text-slate-800 mb-3">{t('form.objective.aiResult')}</h5>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
                 <div>
-                  <span className="text-slate-600">前屈活动范围：</span>
+                  <span className="text-slate-600">{t('form.objective.flexionROM')}</span>
                   <span className="font-semibold text-blue-700 ml-1">
                     {formData.ai_posture_analysis.rom_degrees}°
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-600">功能评估：</span>
+                  <span className="text-slate-600">{t('form.objective.functionalAssessment')}</span>
                   <span className="font-semibold ml-1">
                     {formData.ai_posture_analysis.rom_assessment}
                   </span>
                 </div>
                 {formData.ai_posture_analysis.compensations && (
                   <div className="md:col-span-2">
-                    <span className="text-slate-600">代偿动作：</span>
+                    <span className="text-slate-600">{t('form.objective.compensation')}</span>
                     <span className="ml-1">{formData.ai_posture_analysis.compensations}</span>
                   </div>
                 )}
                 {formData.ai_posture_analysis.recommendations && (
                   <div className="md:col-span-2">
-                    <span className="text-slate-600">建议：</span>
+                    <span className="text-slate-600">{t('form.objective.suggestion')}</span>
                     <span className="ml-1">{formData.ai_posture_analysis.recommendations}</span>
                   </div>
                 )}
@@ -115,20 +127,20 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
                   {formData.ai_posture_analysis.annotatedStandingUrl && (
                     <div className="space-y-2">
-                      <p className="font-medium text-sm text-center text-slate-700">站立位姿态分析</p>
+                      <p className="font-medium text-sm text-center text-slate-700">{t('form.objective.standingAnalysis')}</p>
                       <img
                         src={formData.ai_posture_analysis.annotatedStandingUrl}
-                        alt="站立位姿态分析"
+                        alt={t('form.objective.standingAnalysis')}
                         className="rounded-lg border bg-slate-100 w-full h-[300px] object-contain"
                       />
                     </div>
                   )}
                   {formData.ai_posture_analysis.annotatedFlexionUrl && (
                     <div className="space-y-2">
-                       <p className="font-medium text-sm text-center text-slate-700">屈曲位姿态分析</p>
+                       <p className="font-medium text-sm text-center text-slate-700">{t('form.objective.flexionAnalysis')}</p>
                       <img
                         src={formData.ai_posture_analysis.annotatedFlexionUrl}
-                        alt="屈曲位姿态分析"
+                        alt={t('form.objective.flexionAnalysis')}
                         className="rounded-lg border bg-slate-100 w-full h-[300px] object-contain"
                       />
                     </div>
@@ -140,43 +152,43 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 体态检查 */}
+      {/* Posture Examination */}
       <Card className="border border-slate-200">
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Activity className="w-5 h-5" />
-            体态检查
+            {t('form.objective.postureExam')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-slate-700 font-medium">颈椎体态</Label>
+              <Label className="text-slate-700 font-medium">{t('form.objective.cervicalPosture')}</Label>
               <RadioGroup
                 value={formData.cervical_posture || ''}
                 onValueChange={(value) => handleInputChange('cervical_posture', value)}
                 className="grid grid-cols-1 gap-2"
               >
                 {postureOptions.cervical.map((option, index) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option} id={`cervical_${index}`} />
-                    <Label htmlFor={`cervical_${index}`} className="text-slate-700 font-normal cursor-pointer">{option}</Label>
+                  <div key={option.value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option.value} id={`cervical_${index}`} />
+                    <Label htmlFor={`cervical_${index}`} className="text-slate-700 font-normal cursor-pointer">{t(`form.objective.postures.${option.key}`)}</Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-slate-700 font-medium">腰椎体态</Label>
+              <Label className="text-slate-700 font-medium">{t('form.objective.lumbarPosture')}</Label>
               <RadioGroup
                 value={formData.lumbar_posture || ''}
                 onValueChange={(value) => handleInputChange('lumbar_posture', value)}
                 className="grid grid-cols-1 gap-2"
               >
                 {postureOptions.lumbar.map((option, index) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option} id={`lumbar_${index}`} />
-                    <Label htmlFor={`lumbar_${index}`} className="text-slate-700 font-normal cursor-pointer">{option}</Label>
+                  <div key={option.value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option.value} id={`lumbar_${index}`} />
+                    <Label htmlFor={`lumbar_${index}`} className="text-slate-700 font-normal cursor-pointer">{t(`form.objective.postures.${option.key}`)}</Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -185,58 +197,44 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 活动度检查 */}
+      {/* ROM Examination */}
       <Card className="border border-slate-200">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
               <RotateCcw className="w-5 h-5" />
-              活动度检查 (ROM)
+              {t('form.objective.romExam')}
             </CardTitle>
             <div className="flex items-center gap-2">
               {formData.rom_reviewed && (
                 <span className="text-green-600 font-medium text-sm flex items-center gap-1">
                   <Check className="w-4 h-4" />
-                  已审核
+                  {t('form.objective.reviewed')}
                 </span>
               )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRomReview}
-                className="bg-white"
-              >
-                保存
+              <Button variant="outline" size="sm" onClick={handleRomReview} className="bg-white">
+                {t('form.objective.save')}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRomReview}
-                className="bg-white"
-              >
-                审核
+              <Button variant="outline" size="sm" onClick={handleRomReview} className="bg-white">
+                {t('form.objective.review')}
               </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 颈椎活动度 */}
+          {/* Cervical ROM */}
           <div>
-            <h4 className="font-medium text-slate-700 mb-3">颈椎活动度</h4>
+            <h4 className="font-medium text-slate-700 mb-3">{t('form.objective.cervicalROMTitle')}</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {['flexion', 'extension', 'left_lateral', 'right_lateral', 'left_rotation', 'right_rotation'].map((movement) => (
                 <div key={movement} className="space-y-2">
                   <Label className="text-sm text-slate-600">
-                    {movement === 'flexion' ? '屈曲' :
-                     movement === 'extension' ? '伸展' :
-                     movement === 'left_lateral' ? '左侧屈' :
-                     movement === 'right_lateral' ? '右侧屈' :
-                     movement === 'left_rotation' ? '左侧旋转' : '右侧旋转'}
+                    {t(`form.objective.movements.${movement}`)}
                   </Label>
                   <Input
                     value={(formData.cervical_rom || {})[movement] || ''}
                     onChange={(e) => handleNestedObjectChange('cervical_rom', movement, e.target.value)}
-                    placeholder="角度或描述"
+                    placeholder={t('form.objective.anglePlaceholder')}
                     className="bg-white border-slate-200 text-sm"
                   />
                 </div>
@@ -244,23 +242,19 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
             </div>
           </div>
 
-          {/* 腰椎活动度 */}
+          {/* Lumbar ROM */}
           <div>
-            <h4 className="font-medium text-slate-700 mb-3">腰椎活动度</h4>
+            <h4 className="font-medium text-slate-700 mb-3">{t('form.objective.lumbarROMTitle')}</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {['flexion', 'extension', 'left_lateral', 'right_lateral', 'left_rotation', 'right_rotation'].map((movement) => (
                 <div key={movement} className="space-y-2">
                   <Label className="text-sm text-slate-600">
-                    {movement === 'flexion' ? '屈曲' :
-                     movement === 'extension' ? '伸展' :
-                     movement === 'left_lateral' ? '左侧屈' :
-                     movement === 'right_lateral' ? '右侧屈' :
-                     movement === 'left_rotation' ? '左侧旋转' : '右侧旋转'}
+                    {t(`form.objective.movements.${movement}`)}
                   </Label>
                   <Input
                     value={(formData.lumbar_rom || {})[movement] || ''}
                     onChange={(e) => handleNestedObjectChange('lumbar_rom', movement, e.target.value)}
-                    placeholder="角度或描述"
+                    placeholder={t('form.objective.anglePlaceholder')}
                     className="bg-white border-slate-200 text-sm"
                   />
                 </div>
@@ -270,36 +264,26 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 特殊试验 */}
+      {/* Special Tests */}
       <Card className="border border-blue-200 bg-blue-50/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
               <Zap className="w-5 h-5" />
-              特殊试验
+              {t('form.objective.specialTests')}
             </CardTitle>
             <div className="flex items-center gap-2">
               {formData.special_test_reviewed && (
                 <span className="text-green-600 font-medium text-sm flex items-center gap-1">
                   <Check className="w-4 h-4" />
-                  已审核
+                  {t('form.objective.reviewed')}
                 </span>
               )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSpecialTestReview}
-                className="bg-white"
-              >
-                保存
+              <Button variant="outline" size="sm" onClick={handleSpecialTestReview} className="bg-white">
+                {t('form.objective.save')}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSpecialTestReview}
-                className="bg-white"
-              >
-                审核
+              <Button variant="outline" size="sm" onClick={handleSpecialTestReview} className="bg-white">
+                {t('form.objective.review')}
               </Button>
             </div>
           </div>
@@ -307,38 +291,38 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-slate-700">直腿抬高试验 - 左侧角度</Label>
+              <Label className="text-slate-700">{t('form.objective.slrLeft')}</Label>
               <Input
                 value={(formData.slr_test || {}).left_angle || ''}
                 onChange={(e) => handleNestedObjectChange('slr_test', 'left_angle', e.target.value)}
-                placeholder="角度"
+                placeholder={t('form.objective.anglePlaceholderShort')}
                 className="bg-white border-slate-200"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-700">直腿抬高试验 - 右侧角度</Label>
+              <Label className="text-slate-700">{t('form.objective.slrRight')}</Label>
               <Input
                 value={(formData.slr_test || {}).right_angle || ''}
                 onChange={(e) => handleNestedObjectChange('slr_test', 'right_angle', e.target.value)}
-                placeholder="角度"
+                placeholder={t('form.objective.anglePlaceholderShort')}
                 className="bg-white border-slate-200"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-700">股神经牵拉试验 - 左侧</Label>
+              <Label className="text-slate-700">{t('form.objective.femoralStretchLeft')}</Label>
               <Input
                 value={(formData.femoral_nerve_test || {}).left || ''}
                 onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'left', e.target.value)}
-                placeholder="结果"
+                placeholder={t('form.objective.resultPlaceholder')}
                 className="bg-white border-slate-200"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-700">股神经牵拉试验 - 右侧</Label>
+              <Label className="text-slate-700">{t('form.objective.femoralStretchRight')}</Label>
               <Input
                 value={(formData.femoral_nerve_test || {}).right || ''}
                 onChange={(e) => handleNestedObjectChange('femoral_nerve_test', 'right', e.target.value)}
-                placeholder="结果"
+                placeholder={t('form.objective.resultPlaceholder')}
                 className="bg-white border-slate-200"
               />
             </div>
@@ -346,27 +330,27 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 神经系统检查 - 反射检查 */}
+      {/* Reflex Examination */}
       <Card className="border border-slate-200">
         <CardHeader>
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <Zap className="w-5 h-5" />
-            反射检查
+            {t('form.objective.reflexExam')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
               {[
-                { key: 'biceps', label: '二头肌' },
-                { key: 'triceps', label: '三头肌' },
-                { key: 'knee', label: '膝反射' },
-                { key: 'ankle', label: '踝反射' }
+                { key: 'biceps' },
+                { key: 'triceps' },
+                { key: 'knee' },
+                { key: 'ankle' }
               ].map((reflex) => (
                 <div key={reflex.key} className="border border-slate-200 rounded-lg p-3 bg-white">
-                  <div className="font-medium text-slate-700 mb-3">{reflex.label}</div>
+                  <div className="font-medium text-slate-700 mb-3">{t(`form.objective.reflexes.${reflex.key}`)}</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-sm text-slate-600 mb-2 block">左侧</Label>
+                      <Label className="text-sm text-slate-600 mb-2 block">{t('form.objective.leftSide')}</Label>
                       <RadioGroup
                         value={(formData.reflexes || {})[`${reflex.key}_left`] || ''}
                         onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_left`, value)}
@@ -381,7 +365,7 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
                       </RadioGroup>
                     </div>
                     <div>
-                      <Label className="text-sm text-slate-600 mb-2 block">右侧</Label>
+                      <Label className="text-sm text-slate-600 mb-2 block">{t('form.objective.rightSide')}</Label>
                       <RadioGroup
                         value={(formData.reflexes || {})[`${reflex.key}_right`] || ''}
                         onValueChange={(value) => handleNestedObjectChange('reflexes', `${reflex.key}_right`, value)}
@@ -402,9 +386,9 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         </CardContent>
       </Card>
 
-      {/* 远端下肢脉搏检查 */}
+      {/* Distal Pulse */}
       <div className="space-y-2">
-        <Label className="text-slate-700 font-medium">远端下肢脉搏检查</Label>
+        <Label className="text-slate-700 font-medium">{t('form.objective.distalPulse')}</Label>
         <RadioGroup
           value={formData.distal_pulse || ''}
           onValueChange={(value) => handleInputChange('distal_pulse', value)}
@@ -412,11 +396,11 @@ export default function ObjectiveExamSection({ formData, updateFormData }) {
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="存在" id="pulse_present" />
-            <Label htmlFor="pulse_present" className="text-slate-700 font-normal cursor-pointer">存在</Label>
+            <Label htmlFor="pulse_present" className="text-slate-700 font-normal cursor-pointer">{t('form.objective.pulsePresent')}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="不存在" id="pulse_absent" />
-            <Label htmlFor="pulse_absent" className="text-slate-700 font-normal cursor-pointer">不存在</Label>
+            <Label htmlFor="pulse_absent" className="text-slate-700 font-normal cursor-pointer">{t('form.objective.pulseAbsent')}</Label>
           </div>
         </RadioGroup>
       </div>

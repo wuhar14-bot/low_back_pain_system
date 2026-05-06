@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { User, RotateCcw, CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function PainAreaSection({ formData, updateFormData }) {
+  const { t } = useTranslation();
   const handleAreaToggle = (areaKey) => {
     const currentAreas = formData.pain_areas || {};
     const newAreas = {
@@ -22,9 +24,9 @@ export default function PainAreaSection({ formData, updateFormData }) {
     const selectedAreas = formData.pain_areas || {};
     const selectedCount = Object.values(selectedAreas).filter(Boolean).length;
     if (selectedCount > 0) {
-      alert(`已确认选择 ${selectedCount} 个疼痛区域`);
+      alert(t('form.painAreas.confirmedMsg', { count: selectedCount }));
     } else {
-      alert('请先选择疼痛区域');
+      alert(t('form.painAreas.pleaseSelectFirst'));
     }
   };
 
@@ -120,14 +122,14 @@ export default function PainAreaSection({ formData, updateFormData }) {
     <div className="space-y-6">
       {/* Instructions */}
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <h3 className="text-lg font-semibold text-blue-800 mb-2">疼痛区域选择</h3>
+        <h3 className="text-lg font-semibold text-blue-800 mb-2">{t('form.painAreas.title')}</h3>
         <p className="text-sm text-blue-700 mb-2">
-          请根据患者描述，在下方人体后视图中点击疼痛或不适的区域
+          {t('form.painAreas.instruction')}
         </p>
         <ul className="text-xs text-blue-600 space-y-1">
-          <li>• 白色区域：正常无疼痛</li>
-          <li>• 红色区域：有疼痛或不适</li>
-          <li>• 点击区域可切换选择状态</li>
+          <li>• {t('form.painAreas.legendWhite')}</li>
+          <li>• {t('form.painAreas.legendRed')}</li>
+          <li>• {t('form.painAreas.legendClickHint')}</li>
         </ul>
       </div>
 
@@ -135,10 +137,10 @@ export default function PainAreaSection({ formData, updateFormData }) {
         <CardHeader className="pb-4">
           <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
             <User className="w-5 h-5" />
-            后视疼痛区域选择 (CHOIR Body Map)
+            {t('form.painAreas.posteriorTitle')}
             {getSelectedCount() > 0 && (
               <Badge variant="destructive" className="ml-2">
-                已选择 {getSelectedCount()} 个区域
+                {t('form.painAreas.selectedCount', { count: getSelectedCount() })}
               </Badge>
             )}
           </CardTitle>
@@ -168,7 +170,7 @@ export default function PainAreaSection({ formData, updateFormData }) {
                         className="cursor-pointer transition-all duration-200 hover:opacity-70"
                         onClick={() => handleAreaToggle(area.key)}
                       >
-                        <title>{area.label}</title>
+                        <title>{t(`form.painAreas.areas.${area.key}`)}</title>
                       </path>
                     );
                   })}
@@ -176,8 +178,8 @@ export default function PainAreaSection({ formData, updateFormData }) {
 
                 {/* Label */}
                 <div className="text-center mt-4">
-                  <h4 className="text-sm font-semibold text-slate-700">后视疼痛选择</h4>
-                  <h5 className="text-xs text-slate-500">(CHOIR Body Map - 38区域)</h5>
+                  <h4 className="text-sm font-semibold text-slate-700">{t('form.painAreas.posteriorLabel')}</h4>
+                  <h5 className="text-xs text-slate-500">{t('form.painAreas.posteriorSubLabel')}</h5>
                 </div>
               </div>
             </div>
@@ -191,7 +193,7 @@ export default function PainAreaSection({ formData, updateFormData }) {
                 disabled={getSelectedCount() === 0}
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
-                清除选择
+                {t('form.painAreas.clearSelection')}
               </Button>
               <Button
                 onClick={confirmAreas}
@@ -199,14 +201,14 @@ export default function PainAreaSection({ formData, updateFormData }) {
                 disabled={getSelectedCount() === 0}
               >
                 <CheckCircle2 className="w-4 h-4 mr-2" />
-                确认区域
+                {t('form.painAreas.confirmAreas')}
               </Button>
             </div>
 
             {/* Selected areas list */}
             {getSelectedCount() > 0 && (
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-slate-700">已选择的疼痛区域：</h4>
+                <h4 className="text-sm font-medium text-slate-700">{t('form.painAreas.selectedAreas')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {getSelectedAreas().map((area) => (
                     <Badge
@@ -215,13 +217,13 @@ export default function PainAreaSection({ formData, updateFormData }) {
                       className="cursor-pointer hover:bg-red-600"
                       onClick={() => handleAreaToggle(area.key)}
                     >
-                      {area.label}
+                      {t(`form.painAreas.areas.${area.key}`)}
                       <span className="ml-1 text-xs">×</span>
                     </Badge>
                   ))}
                 </div>
                 <p className="text-xs text-slate-500">
-                  点击标签可取消选择
+                  {t('form.painAreas.clickToDeselect')}
                 </p>
               </div>
             )}
@@ -230,11 +232,11 @@ export default function PainAreaSection({ formData, updateFormData }) {
             <div className="flex justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-red-500 rounded border border-red-600"></div>
-                <span className="text-slate-700">疼痛区域</span>
+                <span className="text-slate-700">{t('form.painAreas.painArea')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-white rounded border border-gray-400"></div>
-                <span className="text-slate-700">无疼痛</span>
+                <span className="text-slate-700">{t('form.painAreas.noPain')}</span>
               </div>
             </div>
           </div>
