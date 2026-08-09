@@ -41,7 +41,7 @@ export default function Home() {
     setIsLoading(true);
     try {
       // 加载患者数据
-      const allPatients = await Patient.list("-created_date");
+      const allPatients = await Patient.list("-created_date", { maxResultCount: 1000 });
 
       // 计算最近24小时的新增患者数量
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);

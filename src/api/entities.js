@@ -1,4 +1,5 @@
 import { patientService, patientImageService } from '../services/apiService';
+import { getPainAssessmentHistory, recordPainAssessment } from '../utils/painAssessmentHistory';
 
 // Default workspaces for local development
 const defaultWorkspaces = [
@@ -120,6 +121,7 @@ class Patient {
       };
 
       const newPatient = await patientService.createPatient(backendData);
+      recordPainAssessment(newPatient.id, data.pain_areas, { timepoint: 'baseline' });
       console.log(`✅ [Backend] Created patient: ${newPatient.id}`);
 
       // Transform back to frontend format for consistency
@@ -161,6 +163,7 @@ class Patient {
       };
 
       const updated = await patientService.updatePatient(id, backendData);
+      recordPainAssessment(id, data.pain_areas, { timepoint: data.assessment_timepoint || 'follow_up' });
       console.log(`✅ [Backend] Updated patient: ${id}`);
 
       return transformToFrontend(updated);
@@ -207,6 +210,7 @@ function transformToFrontend(backendPatient) {
     doctor_name: backendPatient.doctorName,
     medical_history: backendPatient.medicalHistoryJson,
     pain_areas: backendPatient.painAreasJson ? JSON.parse(backendPatient.painAreasJson) : null,
+    pain_assessments: getPainAssessmentHistory(backendPatient.id),
     subjective_exam: backendPatient.subjectiveExamJson,
     objective_exam: backendPatient.objectiveExamJson,
     functional_scores: backendPatient.functionalScoresJson,
